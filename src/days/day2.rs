@@ -12,14 +12,12 @@ pub fn run() -> anyhow::Result<()> {
 pub fn part_a(lines: &[String]) -> anyhow::Result<()> {
     let mut sum = 0;
     let colors = HashMap::from([("red", 12), ("green", 13), ("blue", 14)]);
-
     for line in lines {
         if let Some(iter) = line.strip_prefix("Game ") {
             let (game_id_str, colors_str) = iter
                 .split_once(':')
                 .ok_or_else(|| anyhow::anyhow!("Invalid line format"))?;
             let game_id = game_id_str.parse::<i32>()?;
-
             let valid_game = colors_str.trim().split(';').all(|set| {
                 set.split(',').all(|token| {
                     let tokens = token.trim().split_whitespace().collect::<Vec<&str>>();
@@ -32,7 +30,6 @@ pub fn part_a(lines: &[String]) -> anyhow::Result<()> {
             }
         }
     }
-
     println!("{}", sum);
     Ok(())
 }
