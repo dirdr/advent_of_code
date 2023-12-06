@@ -3,7 +3,7 @@ mod days;
 mod helper_lib;
 
 use clap::Parser;
-use days::day1;
+use days::{day1, day2, day3};
 
 #[macro_use]
 extern crate anyhow;
@@ -23,6 +23,6 @@ macro_rules! dispatch_days {
 fn main() -> anyhow::Result<()> {
     let args = args::Arguments::parse();
     let day = args.day;
-    dispatch_days!(day, 1 => day1)?;
+    dispatch_days!(day, 1 => day1, 2 => day2, 3 => day3)?;
     Ok(())
 }
