@@ -1,16 +1,9 @@
-use std::{
-    collections::{HashMap, HashSet},
-    ops::Range,
-};
-
-use itertools::Itertools;
+use std::collections::{HashMap, HashSet};
 
 use crate::helper_lib::{
     self, input,
     utils::{Matrix, Vec2},
 };
-
-const SYMBOLS: [char; 5] = ['+', '-', '&', '@', '#'];
 
 #[derive(Clone)]
 enum Part {
@@ -60,15 +53,17 @@ fn part_a(lines: &[String]) -> anyhow::Result<()> {
                 _ => {
                     if !number_buffer.is_empty() {
                         let val = number_buffer.parse::<usize>().unwrap();
-                        println!("{val}");
                         if is_part_member {
                             sum += val;
                         }
+                        number_buffer.clear();
+                        is_part_member = false;
                     }
-                    number_buffer.clear();
-                    is_part_member = false;
                 }
             }
+        }
+        if !number_buffer.is_empty() && is_part_member {
+            sum += number_buffer.parse::<usize>().unwrap();
         }
     }
     println!("{}", sum);
@@ -76,24 +71,29 @@ fn part_a(lines: &[String]) -> anyhow::Result<()> {
 }
 
 fn is_around_symbol(row: usize, col: usize, matrix: &Matrix<char>) -> bool {
-    let modifiers: [(i32, i32); 6] = [(0, 1), (0, -1), (1, 0), (-1, 0), (-1, -1), (1, 1)];
+    let modifiers: [(i32, i32); 8] = [
+        (0, 1),
+        (0, -1),
+        (1, 0),
+        (-1, 0),
+        (-1, -1),
+        (1, 1),
+        (-1, 1),
+        (1, -1),
+    ];
     for &(row_mod, col_mod) in &modifiers {
-        let new_row = isize::try_from(row)
-            .ok()
-            .and_then(|r| r.checked_add(row_mod as isize))
-            .and_then(|r| usize::try_from(r).ok());
-        let new_col = isize::try_from(col)
-            .ok()
-            .and_then(|c| c.checked_add(col_mod as isize))
-            .and_then(|c| usize::try_from(c).ok());
-        if let (Some(nr), Some(nc)) = (new_row, new_col) {
-            if nr < matrix.rows && nc < matrix.cols {
-                let ch = *matrix.get(row, col).unwrap();
-                let part: Part = ch.into();
-                match part {
-                    Part::Symbol => return true,
-                    _ => (),
-                }
+        let new_row: i32 = row as i32 + row_mod;
+        let new_col: i32 = col as i32 + col_mod;
+        if new_row >= 0
+            && new_row < matrix.rows as i32
+            && new_col >= 0
+            && new_col < matrix.cols as i32
+        {
+            let ch = *matrix.get(new_row as usize, new_col as usize).unwrap();
+            let part: Part = ch.into();
+            match part {
+                Part::Symbol => return true,
+                _ => (),
             }
         }
     }
