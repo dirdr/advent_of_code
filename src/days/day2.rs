@@ -9,7 +9,7 @@ pub fn run() -> anyhow::Result<()> {
     Ok(())
 }
 
-pub fn part_a(lines: &[String]) -> anyhow::Result<()> {
+fn part_a(lines: &[String]) -> anyhow::Result<()> {
     let mut sum = 0;
     let colors = HashMap::from([("red", 12), ("green", 13), ("blue", 14)]);
     for line in lines {
@@ -34,7 +34,7 @@ pub fn part_a(lines: &[String]) -> anyhow::Result<()> {
     Ok(())
 }
 
-pub fn part_b(lines: &[String]) -> anyhow::Result<()> {
+fn part_b(lines: &[String]) -> anyhow::Result<()> {
     let mut sum = 0;
     for line in lines {
         let mut colors = HashMap::from([("red", 0), ("green", 0), ("blue", 0)]);

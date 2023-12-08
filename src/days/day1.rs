@@ -22,7 +22,7 @@ pub fn part_a(lines: &[String]) -> anyhow::Result<()> {
     Ok(())
 }
 
-pub fn part_b(lines: &[String]) -> anyhow::Result<()> {
+fn part_b(lines: &[String]) -> anyhow::Result<()> {
     let result: u32 = lines
         .iter()
         .map(|l| {
