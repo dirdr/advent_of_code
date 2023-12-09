@@ -1,17 +1,5 @@
 use std::ops::{Index, IndexMut};
 
-#[derive(Clone)]
-pub struct Vec2 {
-    pub x: usize,
-    pub y: usize,
-}
-
-impl Vec2 {
-    pub fn new(x: usize, y: usize) -> Self {
-        Self { x, y }
-    }
-}
-
 pub struct Matrix<T> {
     pub rows: usize,
     pub cols: usize,
