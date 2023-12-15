@@ -1,6 +1,6 @@
 use std::collections::{HashMap, HashSet};
 
-use crate::helper_lib::{self, input, utils::Matrix};
+use crate::helper_lib::{answer::Answer, solution::Solution, utils::Matrix};
 
 #[derive(Clone)]
 enum Part {
@@ -21,52 +21,109 @@ impl From<char> for Part {
     }
 }
 
-pub fn run() -> anyhow::Result<()> {
-    let lines = input::read_file(&format!("{}day_3.txt", helper_lib::FILES_PREFIX))?;
-    part_a(&lines)?;
-    part_b(&lines)?;
-    Ok(())
-}
+pub struct Day3;
 
-fn part_a(lines: &[String]) -> anyhow::Result<()> {
-    let mut sum = 0;
-    let mut matrix: Matrix<char> = Matrix::new(lines.len(), lines[0].len(), ' ');
-    for (row, line) in lines.iter().enumerate() {
-        for (col, ch) in line.chars().enumerate() {
-            *matrix.get_mut(row, col).unwrap() = ch;
+impl Solution for Day3 {
+    fn part_a(&self, lines: &[String]) -> Answer {
+        let mut sum = 0;
+        let mut matrix: Matrix<char> = Matrix::new(lines.len(), lines[0].len(), ' ');
+        for (row, line) in lines.iter().enumerate() {
+            for (col, ch) in line.chars().enumerate() {
+                *matrix.get_mut(row, col).unwrap() = ch;
+            }
         }
-    }
-    for row in 0..matrix.rows {
-        let mut number_buffer = String::new();
-        let mut is_part_member = false;
-        for col in 0..matrix.cols {
-            let ch = *matrix.get(row, col).unwrap();
-            let part: Part = ch.into();
-            match part {
-                Part::Digit => {
-                    number_buffer.push(ch);
-                    if is_around_symbol(row, col, &matrix) {
-                        is_part_member = true;
-                    }
-                }
-                _ => {
-                    if !number_buffer.is_empty() {
-                        let val = number_buffer.parse::<usize>().unwrap();
-                        if is_part_member {
-                            sum += val;
+        for row in 0..matrix.rows {
+            let mut number_buffer = String::new();
+            let mut is_part_member = false;
+            for col in 0..matrix.cols {
+                let ch = *matrix.get(row, col).unwrap();
+                let part: Part = ch.into();
+                match part {
+                    Part::Digit => {
+                        number_buffer.push(ch);
+                        if is_around_symbol(row, col, &matrix) {
+                            is_part_member = true;
                         }
-                        number_buffer.clear();
-                        is_part_member = false;
+                    }
+                    _ => {
+                        if !number_buffer.is_empty() {
+                            let val = number_buffer.parse::<usize>().unwrap();
+                            if is_part_member {
+                                sum += val;
+                            }
+                            number_buffer.clear();
+                            is_part_member = false;
+                        }
                     }
                 }
             }
+            if !number_buffer.is_empty() && is_part_member {
+                sum += number_buffer.parse::<usize>().unwrap();
+            }
         }
-        if !number_buffer.is_empty() && is_part_member {
-            sum += number_buffer.parse::<usize>().unwrap();
-        }
+        sum.into()
     }
-    println!("{}", sum);
-    Ok(())
+
+    fn part_b(&self, lines: &[String]) -> Answer {
+        let mut matrix: Matrix<char> = Matrix::new(lines.len(), lines[0].len(), ' ');
+        let mut map: HashMap<(usize, usize), Vec<usize>> = HashMap::new();
+        for (row, line) in lines.iter().enumerate() {
+            for (col, ch) in line.chars().enumerate() {
+                *matrix
+                    .get_mut(row, col)
+                    .ok_or(anyhow!("can't get the mut element"))
+                    .unwrap() = ch;
+            }
+        }
+        for row in 0..matrix.rows {
+            let mut number_buffer = String::new();
+            // use of an hashset to prevent multiple, same gear insert
+            let mut gears_position: HashSet<(usize, usize)> = HashSet::new();
+            for col in 0..matrix.cols {
+                let ch = *matrix
+                    .get(row, col)
+                    .ok_or(anyhow::anyhow!("can't get the element!"))
+                    .unwrap();
+                let part: Part = ch.into();
+                match part {
+                    Part::Digit => {
+                        number_buffer.push(ch);
+                        let digit_gears_position = nearby_gears_position(row, col, &matrix);
+                        for pos in digit_gears_position {
+                            gears_position.insert(pos);
+                        }
+                    }
+                    _ => {
+                        if !number_buffer.is_empty() {
+                            let parsed = number_buffer.parse::<usize>().unwrap();
+                            for gp in gears_position.iter() {
+                                map.entry(*gp)
+                                    .and_modify(|e| e.push(parsed))
+                                    .or_insert(vec![parsed]);
+                            }
+                            gears_position.clear();
+                            number_buffer.clear();
+                        }
+                    }
+                }
+            }
+            if !number_buffer.is_empty() {
+                let parsed = number_buffer.parse::<usize>().unwrap();
+                for gp in gears_position.iter() {
+                    map.entry(*gp)
+                        .and_modify(|e| e.push(parsed))
+                        .or_insert(vec![parsed]);
+                }
+                gears_position.clear();
+                number_buffer.clear();
+            }
+        }
+        let sum = map
+            .iter()
+            .filter(|(_, v)| v.len() == 2)
+            .fold(0, |acc, (_, v)| acc + (v[0] * v[1]));
+        sum.into()
+    }
 }
 
 fn is_around_symbol(row: usize, col: usize, matrix: &Matrix<char>) -> bool {
@@ -97,66 +154,6 @@ fn is_around_symbol(row: usize, col: usize, matrix: &Matrix<char>) -> bool {
         }
     }
     false
-}
-
-fn part_b(lines: &[String]) -> anyhow::Result<()> {
-    let mut matrix: Matrix<char> = Matrix::new(lines.len(), lines[0].len(), ' ');
-    let mut map: HashMap<(usize, usize), Vec<usize>> = HashMap::new();
-    for (row, line) in lines.iter().enumerate() {
-        for (col, ch) in line.chars().enumerate() {
-            *matrix
-                .get_mut(row, col)
-                .ok_or(anyhow!("can't get the mut element"))? = ch;
-        }
-    }
-    for row in 0..matrix.rows {
-        let mut number_buffer = String::new();
-        // use of an hashset to prevent multiple, same gear insert
-        let mut gears_position: HashSet<(usize, usize)> = HashSet::new();
-        for col in 0..matrix.cols {
-            let ch = *matrix
-                .get(row, col)
-                .ok_or(anyhow::anyhow!("can't get the element!"))?;
-            let part: Part = ch.into();
-            match part {
-                Part::Digit => {
-                    number_buffer.push(ch);
-                    let digit_gears_position = nearby_gears_position(row, col, &matrix);
-                    for pos in digit_gears_position {
-                        gears_position.insert(pos);
-                    }
-                }
-                _ => {
-                    if !number_buffer.is_empty() {
-                        let parsed = number_buffer.parse::<usize>()?;
-                        for gp in gears_position.iter() {
-                            map.entry(*gp)
-                                .and_modify(|e| e.push(parsed))
-                                .or_insert(vec![parsed]);
-                        }
-                        gears_position.clear();
-                        number_buffer.clear();
-                    }
-                }
-            }
-        }
-        if !number_buffer.is_empty() {
-            let parsed = number_buffer.parse::<usize>()?;
-            for gp in gears_position.iter() {
-                map.entry(*gp)
-                    .and_modify(|e| e.push(parsed))
-                    .or_insert(vec![parsed]);
-            }
-            gears_position.clear();
-            number_buffer.clear();
-        }
-    }
-    let sum = map
-        .iter()
-        .filter(|(_, v)| v.len() == 2)
-        .fold(0, |acc, (_, v)| acc + (v[0] * v[1]));
-    println!("{}", sum);
-    Ok(())
 }
 
 fn nearby_gears_position(row: usize, col: usize, matrix: &Matrix<char>) -> Vec<(usize, usize)> {

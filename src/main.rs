@@ -3,26 +3,20 @@ mod days;
 mod helper_lib;
 
 use clap::Parser;
-use days::{day1, day2, day3, day4};
+use days::lib::ALL;
+
+use crate::helper_lib::input;
 
 #[macro_use]
 extern crate anyhow;
 
-macro_rules! dispatch_days {
-    ($day:expr, $($day_num:expr => $day_mod:ident),*) => {{
-        let result: anyhow::Result<()> = match $day {
-            $(
-                $day_num => $day_mod::run(),
-            )*
-            _ => Err(anyhow!("Day not implemented")),
-        };
-        result
-    }};
-}
-
 fn main() -> anyhow::Result<()> {
     let args = args::Arguments::parse();
     let day = args.day;
-    dispatch_days!(day, 1 => day1, 2 => day2, 3 => day3, 4 => day4)?;
+    let solution = ALL[day - 1];
+    let input = input::read_file(&format!("{}day_{}.txt", helper_lib::FILES_PREFIX, day))?;
+    println!("Running Solutions for day {day}");
+    println!("Answer for part A : {}", solution.part_a(&input));
+    println!("Answer for part B : {}", solution.part_b(&input));
     Ok(())
 }

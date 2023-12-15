@@ -1,37 +1,32 @@
-use crate::helper_lib;
-use crate::helper_lib::input;
+use crate::helper_lib::answer::Answer;
+use crate::helper_lib::solution::Solution;
 
-pub fn run() -> anyhow::Result<()> {
-    let lines = input::read_file(&format!("{}day_1.txt", helper_lib::FILES_PREFIX))?;
-    part_a(&lines)?;
-    part_b(&lines)?;
-    Ok(())
-}
+pub struct Day1;
 
-pub fn part_a(lines: &[String]) -> anyhow::Result<()> {
-    let result: u32 = lines
-        .iter()
-        .map(|l| {
-            let mut digits = l.chars().filter_map(|c| c.to_digit(10));
-            let first = digits.next().unwrap();
-            let last = digits.last().unwrap_or(first);
-            first * 10 + last
-        })
-        .sum();
-    println!("{}", result);
-    Ok(())
-}
+impl Solution for Day1 {
+    fn part_a(&self, input: &[String]) -> Answer {
+        let result: u32 = input
+            .iter()
+            .map(|l| {
+                let mut digits = l.chars().filter_map(|c| c.to_digit(10));
+                let first = digits.next().unwrap();
+                let last = digits.last().unwrap_or(first);
+                first * 10 + last
+            })
+            .sum();
+        result.into()
+    }
 
-fn part_b(lines: &[String]) -> anyhow::Result<()> {
-    let result: u32 = lines
-        .iter()
-        .map(|l| {
-            let digits = get_digits(&l);
-            digits[0] * 10 + digits[1]
-        })
-        .sum();
-    println!("{}", result);
-    Ok(())
+    fn part_b(&self, input: &[String]) -> Answer {
+        let result: u32 = input
+            .iter()
+            .map(|l| {
+                let digits = get_digits(&l);
+                digits[0] * 10 + digits[1]
+            })
+            .sum();
+        result.into()
+    }
 }
 
 fn get_digits(i: &str) -> [u32; 2] {
