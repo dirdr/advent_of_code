@@ -1,3 +1,5 @@
+use std::collections::HashSet;
+
 use crate::helper_lib::{answer::Answer, solution::Solution};
 use itertools::Itertools;
 
@@ -19,6 +21,7 @@ impl Solution for Day5 {
             .map(|(_, group)| group.skip(1).collect::<Vec<_>>())
             .collect::<Vec<_>>();
         for map in degrouped {
+            let mut processed_seeds: HashSet<usize> = HashSet::new();
             for entry in map {
                 let entry: Vec<usize> = entry
                     .split_whitespace()
@@ -26,12 +29,14 @@ impl Solution for Day5 {
                     .collect();
                 let (dest, source, len) = (entry[0], entry[1], entry[2]);
                 for val in mapped_seeds.iter_mut() {
-                    if *val >= source && *val <= (source + len) {
+                    if *val >= source && *val < (source + len) && !processed_seeds.contains(&val) {
                         let delta = *val - source;
                         *val = dest + delta;
+                        processed_seeds.insert(*val);
                     }
                 }
             }
+            processed_seeds.clear();
         }
         let min = *mapped_seeds.iter().min().unwrap();
         min.into()
