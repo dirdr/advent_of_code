@@ -60,3 +60,26 @@ fn get_digits(i: &str) -> [u32; 2] {
 
     [first.unwrap(), last]
 }
+
+#[cfg(test)]
+mod test {
+    use crate::helper_lib::{self, answer::Answer, input, solution::Solution};
+
+    use super::Day1;
+
+    #[test]
+    pub fn test_a() {
+        let input =
+            input::read_file(&format!("{}day_1_a_test.txt", helper_lib::FILES_PREFIX)).unwrap();
+        let answer = Day1.part_a(&input);
+        assert_eq!(<i32 as Into<Answer>>::into(142i32), answer);
+    }
+
+    #[test]
+    pub fn test_b() {
+        let input =
+            input::read_file(&format!("{}day_1_b_test.txt", helper_lib::FILES_PREFIX)).unwrap();
+        let answer = Day1.part_b(&input);
+        assert_eq!(<i32 as Into<Answer>>::into(281i32), answer);
+    }
+}

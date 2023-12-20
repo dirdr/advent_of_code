@@ -48,3 +48,26 @@ impl Solution for Day2 {
         sum.into()
     }
 }
+
+#[cfg(test)]
+mod test {
+    use crate::helper_lib::{self, answer::Answer, input, solution::Solution};
+
+    use super::Day2;
+
+    #[test]
+    pub fn test_a() {
+        let input =
+            input::read_file(&format!("{}day_2_test.txt", helper_lib::FILES_PREFIX)).unwrap();
+        let answer = Day2.part_a(&input);
+        assert_eq!(<i32 as Into<Answer>>::into(8i32), answer);
+    }
+
+    #[test]
+    pub fn test_b() {
+        let input =
+            input::read_file(&format!("{}day_2_test.txt", helper_lib::FILES_PREFIX)).unwrap();
+        let answer = Day2.part_b(&input);
+        assert_eq!(<i32 as Into<Answer>>::into(2286i32), answer);
+    }
+}
