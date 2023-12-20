@@ -1,5 +1,3 @@
-use std::cmp::min;
-
 use crate::helper_lib::answer::Answer;
 use crate::helper_lib::solution::Solution;
 

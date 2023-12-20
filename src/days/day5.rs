@@ -1,6 +1,3 @@
-use std::collections::HashSet;
-use std::sync::Mutex;
-
 use crate::helper_lib::{answer::Answer, solution::Solution};
 use itertools::Itertools;
 use rayon::iter::ParallelIterator;
