@@ -1,7 +1,6 @@
 # Advent Of Code 2023 in rust 🦀
 ## About
 This is my attempt to solve as many of the 2023 edition AOC problems as possible !
-The Solution/Answer structs are inspired by [this repository](https://github.com/Basicprogrammer10/advent-of-code)
 
 ## Run
 ```sh
@@ -15,3 +14,5 @@ Options:
 ```sh
 cargo test
 ```
+## Thanks
+The project strcture is inspired by [this repository](https://github.com/Basicprogrammer10/advent-of-code)
