@@ -36,13 +36,9 @@ impl Solution for Day6 {
             .races
             .iter()
             .map(|race| {
-                let mut count = 0;
-                for speed in 0..race.duration {
-                    if speed * (race.duration - speed) > race.record {
-                        count += 1
-                    };
-                }
-                count
+                (0..race.duration)
+                    .filter(|e| e * (race.duration - e) > race.record)
+                    .count() as u32
             })
             .product::<u32>()
             .into()
