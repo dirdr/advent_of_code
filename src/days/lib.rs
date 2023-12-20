@@ -9,4 +9,5 @@ pub const ALL: &[&dyn Solution] = &[
     &day4::Day4,
     &day5::Day5,
     &day6::Day6,
+    &day7::Day7,
 ];
