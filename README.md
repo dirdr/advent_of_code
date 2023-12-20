@@ -11,3 +11,7 @@ Options:
   -d, --day <DAY>
   -h, --help       Print help
 ```
+## Test
+```sh
+cargo test
+```
