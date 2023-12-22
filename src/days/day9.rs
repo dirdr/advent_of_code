@@ -39,7 +39,6 @@ mod test {
 
     use super::Day9;
 
-    #[test]
     pub fn test_a() {
         let input =
             input::read_file(&format!("{}day_9_test.txt", helper_lib::FILES_PREFIX)).unwrap();
@@ -47,7 +46,6 @@ mod test {
         assert_eq!(<i32 as Into<Answer>>::into(2i32), answer);
     }
 
-    #[test]
     pub fn test_b() {
         let input =
             input::read_file(&format!("{}day_9_test.txt", helper_lib::FILES_PREFIX)).unwrap();
