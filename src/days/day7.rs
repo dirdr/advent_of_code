@@ -26,18 +26,32 @@ enum HandType {
     HighCard,
 }
 
-// so we can map our card (char) to u8 value (found index + 2)
-const POSSIBLE_CARDS: [char; 13] = [
+const CARDS_ORDER_A: [char; 13] = [
     '2', '3', '4', '5', '6', '7', '8', '9', 'T', 'J', 'Q', 'K', 'A',
 ];
 
-fn parse(input: &[String]) -> Parsed {
+const CARDS_ORDER_B: [char; 13] = [
+    'J', '2', '3', '4', '5', '6', '7', '8', '9', 'T', 'Q', 'K', 'A',
+];
+
+enum CardsOrder {
+    OrderA,
+    OrderB,
+}
+
+fn parse(input: &[String], card_order: CardsOrder) -> Parsed {
     let mut hands = vec![];
     for line in input {
         let (cards, bid) = line.split_once(" ").unwrap();
         let cards = cards
             .chars()
-            .map(|card| POSSIBLE_CARDS.iter().position(|&ch| ch == card).unwrap() as u8 + 2)
+            .map(|card| {
+                let order = match card_order {
+                    CardsOrder::OrderA => &CARDS_ORDER_A,
+                    CardsOrder::OrderB => &CARDS_ORDER_B,
+                };
+                order.iter().position(|&ch| ch == card).unwrap() as u8
+            })
             .collect();
         let bid = bid.parse::<u32>().unwrap();
         hands.push(Hand { cards, bid });
@@ -55,10 +69,10 @@ impl Hand {
         Ordering::Equal
     }
 
-    fn to_hand_type(&self) -> HandType {
+    fn to_hand_type_a(&self) -> HandType {
         let mut count = [0; 13];
         for card in self.cards.iter() {
-            count[*card as usize - 2] += 1;
+            count[*card as usize] += 1;
         }
         if count.iter().any(|&card| card == 5) {
             return HandType::FiveOfAKind;
@@ -76,14 +90,51 @@ impl Hand {
             HandType::HighCard
         }
     }
+
+    fn to_hand_type_b(&self) -> HandType {
+        let mut count = [0; 13];
+        for card in self.cards.iter() {
+            count[*card as usize] += 1;
+        }
+        let joker_count = count[0];
+
+        let sorted = count[1..13]
+            .iter()
+            .copied()
+            .filter(|&x| x != 0)
+            .sorted()
+            .rev()
+            .collect::<Vec<_>>();
+
+        // if full joker, then sorted len is 0
+        if sorted.len() == 0 || joker_count + sorted[0] == 5 {
+            return HandType::FiveOfAKind;
+        } else if joker_count + sorted[0] == 4 {
+            return HandType::FourOfAKind;
+        } else if ((sorted[0] + joker_count == 3) && (sorted[1] == 2))
+            || ((sorted[0] == 3) && (sorted[1] + joker_count == 2))
+        {
+            return HandType::FullHouse;
+        } else if sorted[0] + joker_count == 3 {
+            return HandType::ThreeOfAKind;
+        } else if ((sorted[0] + joker_count) == 2 && (sorted[1] == 2))
+            || (sorted[0] == 2 && sorted[1] + joker_count == 2)
+        {
+            return HandType::TwoPair;
+        } else if sorted[0] + joker_count == 2 {
+            return HandType::OnePair;
+        } else {
+            HandType::HighCard
+        }
+    }
 }
 
 impl Solution for Day7 {
     fn part_a(&self, input: &[String]) -> Answer {
-        let mut parsed = parse(input);
+        let mut parsed = parse(input, CardsOrder::OrderA);
         parsed.hands.sort_by(|a, b| {
-            a.to_hand_type()
-                .cmp(&b.to_hand_type())
+            a.to_hand_type_a()
+                .cmp(&b.to_hand_type_a())
                 .then_with(|| b.compare(&a))
         });
         parsed
@@ -97,7 +148,20 @@ impl Solution for Day7 {
     }
 
     fn part_b(&self, input: &[String]) -> Answer {
-        todo!()
+        let mut parsed = parse(input, CardsOrder::OrderB);
+        parsed.hands.sort_by(|a, b| {
+            a.to_hand_type_b()
+                .cmp(&b.to_hand_type_b())
+                .then_with(|| b.compare(&a))
+        });
+        parsed
+            .hands
+            .iter()
+            .rev()
+            .enumerate()
+            .map(|(i, hand)| (i + 1) as u32 * hand.bid)
+            .sum::<u32>()
+            .into()
     }
 }
 
@@ -115,10 +179,11 @@ mod test {
         assert_eq!(<i32 as Into<Answer>>::into(6440i32), answer);
     }
 
+    #[test]
     pub fn test_b() {
         let input =
             input::read_file(&format!("{}day_7_test.txt", helper_lib::FILES_PREFIX)).unwrap();
         let answer = Day7.part_b(&input);
-        assert_eq!(<i32 as Into<Answer>>::into(71503i32), answer);
+        assert_eq!(<i32 as Into<Answer>>::into(5905i32), answer);
     }
 }
