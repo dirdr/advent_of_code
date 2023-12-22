@@ -1,0 +1,109 @@
+use std::{collections::HashMap, iter, thread::current};
+
+use crate::helper_lib::{answer::Answer, solution::Solution};
+
+pub struct Day8;
+
+struct Parsed {
+    instructions: Vec<char>,
+    network: HashMap<String, (String, String)>,
+}
+
+fn parse(input: &[String]) -> Parsed {
+    let split_index = input
+        .iter()
+        .enumerate()
+        .find(|&(_, line)| line.trim().is_empty())
+        .map_or(input.len(), |(index, _)| index);
+
+    let (instructions, nodes) = input.split_at(split_index);
+    let instructions = instructions
+        .iter()
+        .flat_map(|s| s.chars())
+        .collect::<Vec<_>>();
+    let mut network = HashMap::new();
+    for line in nodes.iter().skip(1) {
+        let (node, other) = line.split_once("=").unwrap();
+        let (left, right) = other.trim().split_once(",").unwrap();
+        let left = &left[1..];
+        let right = &right[..right.len() - 1];
+        network.insert(
+            node.trim().to_string(),
+            (left.trim().to_string(), right.trim().to_string()),
+        );
+    }
+    Parsed {
+        instructions,
+        network,
+    }
+}
+
+impl Solution for Day8 {
+    fn part_a(&self, input: &[String]) -> Answer {
+        let parsed = parse(input);
+        let mut count = 0;
+        let mut current_node = "AAA";
+        for direction in parsed.instructions.iter().cycle() {
+            if current_node == "ZZZ" {
+                return count.into();
+            }
+            let entry = parsed.network.get(current_node).unwrap();
+            let next_node = match direction {
+                'L' => &entry.0,
+                'R' => &entry.1,
+                _ => unreachable!(),
+            };
+            current_node = next_node;
+            count += 1;
+        }
+        0.into()
+    }
+
+    fn part_b(&self, input: &[String]) -> Answer {
+        let mut parsed = parse(input);
+        let mut starting_nodes: Vec<String> = parsed
+            .network
+            .iter()
+            .map(|(k, _)| k)
+            .filter(|&&k| k.ends_with("A"))
+            .collect();
+        let mut count = 0;
+        let network = parsed.network;
+        for direction in parsed.instructions.iter().cycle() {
+            starting_nodes.iter().map(|cn| {
+                let entry = network.get(cn).unwrap();
+                let next_node = match direction {
+                    'L' => &entry.0,
+                    'R' => &entry.1,
+                    _ => unreachable!(),
+                };
+                return next_node;
+            });
+            count += 1;
+        }
+        0.into()
+    }
+}
+
+#[cfg(test)]
+mod test {
+    use crate::helper_lib::{self, answer::Answer, input, solution::Solution};
+
+    use super::Day8;
+
+    #[test]
+    pub fn test_a() {
+        let input =
+            input::read_file(&format!("{}day_8_a_test.txt", helper_lib::FILES_PREFIX)).unwrap();
+        let answer = Day8.part_a(&input);
+        assert_eq!(<i32 as Into<Answer>>::into(2i32), answer);
+    }
+
+    #[test]
+    pub fn test_b() {
+        let input =
+            input::read_file(&format!("{}day_8_b_test.txt", helper_lib::FILES_PREFIX)).unwrap();
+        let answer = Day8.part_b(&input);
+        assert_eq!(<i32 as Into<Answer>>::into(6i32), answer);
+    }
+}
