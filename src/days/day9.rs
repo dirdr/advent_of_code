@@ -24,7 +24,7 @@ impl Report {
         sequences
     }
 
-    fn predict(&self) -> i32 {
+    fn predict_a(&self) -> i32 {
         let mut sequences = self.reduce();
         sequences.last_mut().unwrap().push(0);
         while let Some(top_sequence) = sequences.pop() {
@@ -37,9 +37,28 @@ impl Report {
                     return 0;
                 }
             }
-
             if sequences.len() == 1 {
                 return sequences[0].last().copied().unwrap_or(0);
+            }
+        }
+        0
+    }
+
+    fn predict_b(&self) -> i32 {
+        let mut sequences = self.reduce();
+        sequences.last_mut().unwrap().insert(0, 0);
+        while let Some(top_sequences) = sequences.pop() {
+            if let Some(last_sequence) = sequences.last_mut() {
+                if let (Some(&value), Some(&top_value)) =
+                    (last_sequence.first(), top_sequences.first())
+                {
+                    last_sequence.insert(0, value - top_value);
+                } else {
+                    return 0;
+                }
+            }
+            if sequences.len() == 1 {
+                return sequences[0].first().copied().unwrap_or(0);
             }
         }
         0
@@ -64,12 +83,17 @@ impl Solution for Day9 {
         parsed
             .reports
             .iter()
-            .fold(0, |acc, x| acc + x.predict())
+            .fold(0, |acc, x| acc + x.predict_a())
             .into()
     }
 
     fn part_b(&self, input: &[String]) -> Answer {
-        todo!()
+        let parsed = parse(input);
+        parsed
+            .reports
+            .iter()
+            .fold(0, |acc, x| acc + x.predict_b())
+            .into()
     }
 }
 
@@ -87,10 +111,11 @@ mod test {
         assert_eq!(<i32 as Into<Answer>>::into(114), answer);
     }
 
+    #[test]
     pub fn test_b() {
         let input =
             input::read_file(&format!("{}day_9_test.txt", helper_lib::FILES_PREFIX)).unwrap();
         let answer = Day9.part_b(&input);
-        assert_eq!(<i32 as Into<Answer>>::into(62), answer);
+        assert_eq!(<i32 as Into<Answer>>::into(2), answer);
     }
 }
