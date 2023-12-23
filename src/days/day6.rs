@@ -80,7 +80,7 @@ mod test {
         let input =
             input::read_file(&format!("{}day_6_test.txt", helper_lib::FILES_PREFIX)).unwrap();
         let answer = Day6.part_a(&input);
-        assert_eq!(<i32 as Into<Answer>>::into(288i32), answer);
+        assert_eq!(<i32 as Into<Answer>>::into(288), answer);
     }
 
     #[test]
@@ -88,6 +88,6 @@ mod test {
         let input =
             input::read_file(&format!("{}day_6_test.txt", helper_lib::FILES_PREFIX)).unwrap();
         let answer = Day6.part_b(&input);
-        assert_eq!(<i32 as Into<Answer>>::into(71503i32), answer);
+        assert_eq!(<i32 as Into<Answer>>::into(71503), answer);
     }
 }
