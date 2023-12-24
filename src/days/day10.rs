@@ -48,7 +48,7 @@ impl Solution for Day10 {
         let grid = parse(input);
         for row in grid.grid {
             for col in row {
-                println!("{}", col.tile);
+                // println!("{}", col.tile);
             }
         }
         0.into()

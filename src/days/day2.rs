@@ -4,48 +4,87 @@ use crate::helper_lib::{answer::Answer, solution::Solution};
 
 pub struct Day2;
 
-impl Solution for Day2 {
-    fn part_a(&self, lines: &[String]) -> Answer {
-        let mut sum = 0;
-        let colors = HashMap::from([("red", 12), ("green", 13), ("blue", 14)]);
-        for line in lines {
-            if let Some(iter) = line.strip_prefix("Game ") {
-                let (game_id_str, colors_str) = iter
-                    .split_once(':')
-                    .ok_or_else(|| anyhow::anyhow!("Invalid line format"))
-                    .unwrap();
-                let game_id = game_id_str.parse::<i32>().unwrap();
-                let valid_game = colors_str.trim().split(';').all(|set| {
-                    set.split(',').all(|token| {
-                        let tokens = token.split_whitespace().collect::<Vec<&str>>();
-                        let val = tokens[0].parse::<i32>().unwrap_or(0);
-                        *colors.get(tokens[1]).unwrap_or(&i32::MAX) >= val
-                    })
-                });
-                if valid_game {
-                    sum += game_id;
+#[derive(Debug)]
+struct Parsed<'a> {
+    games: Vec<Game<'a>>,
+    bag: HashMap<&'a str, usize>,
+}
+
+#[derive(Debug)]
+struct Game<'a> {
+    id: usize,
+    sets: Vec<[(&'a str, usize); 3]>,
+}
+
+impl<'a> Game<'a> {
+    pub fn is_valid(&self, bag: &HashMap<&'a str, usize>) -> bool {
+        self.sets
+            .iter()
+            .all(|set| set.iter().all(|entry| Some(&entry.1) <= bag.get(entry.0)))
+    }
+}
+
+const STARTING_BAG_A: [(&str, usize); 3] = [("red", 12), ("green", 13), ("blue", 14)];
+const STARTING_BAG_B: [(&str, usize); 3] = [("red", 0), ("green", 0), ("blue", 0)];
+
+fn parse<'a>(input: &'a [String], starting_bag: [(&'a str, usize); 3]) -> Parsed<'a> {
+    let mut games = vec![];
+    let bag_map: HashMap<_, _> = starting_bag
+        .iter()
+        .enumerate()
+        .map(|(i, (color, _))| (*color, i))
+        .collect();
+    for line in input {
+        if let Some(iter) = line.strip_prefix("Game ") {
+            let mut sets = vec![];
+            let (id, colors) = iter.split_once(':').unwrap();
+            let id = id.parse::<usize>().unwrap();
+            for sets_str in colors.split(';') {
+                let mut set = starting_bag.map(|(color, _)| (color, 0));
+                for token in sets_str.split(',') {
+                    let (val, color) = token.trim().split_once(' ').unwrap();
+                    let index = *bag_map.get(color).unwrap();
+                    set[index] = (color, val.parse::<usize>().unwrap());
                 }
+                sets.push(set);
             }
+            games.push(Game { id, sets });
         }
-        sum.into()
+    }
+    Parsed {
+        games,
+        bag: HashMap::from(starting_bag),
+    }
+}
+
+impl Solution for Day2 {
+    fn part_a(&self, input: &[String]) -> Answer {
+        let parsed = parse(input, STARTING_BAG_A);
+        parsed
+            .games
+            .iter()
+            .filter(|game| game.is_valid(&parsed.bag))
+            .map(|game| game.id)
+            .sum::<usize>()
+            .into()
     }
 
-    fn part_b(&self, lines: &[String]) -> Answer {
-        let mut sum = 0;
-        for line in lines {
-            let mut colors = HashMap::from([("red", 0), ("green", 0), ("blue", 0)]);
-            if let Some(color_data) = line.strip_prefix("Game ").and_then(|s| s.split_once(':')) {
-                for set in color_data.1.trim().split(';') {
-                    for token in set.split(',') {
-                        let tokens = token.split_whitespace().collect::<Vec<&str>>();
-                        let val = tokens[0].parse::<i32>().unwrap();
-                        colors.entry(tokens[1]).and_modify(|e| *e = max(val, *e));
+    fn part_b(&self, input: &[String]) -> Answer {
+        let parsed = parse(input, STARTING_BAG_B);
+        parsed
+            .games
+            .iter()
+            .map(|game| {
+                let mut bag: HashMap<_, _> = HashMap::from(STARTING_BAG_B);
+                for set in game.sets.iter() {
+                    for entry in set {
+                        bag.entry(entry.0).and_modify(|e| *e = max(entry.1, *e));
                     }
                 }
-            }
-            sum += colors.values().product::<i32>();
-        }
-        sum.into()
+                bag.values().product::<usize>()
+            })
+            .sum::<usize>()
+            .into()
     }
 }
 
