@@ -46,7 +46,11 @@ fn parse(input: &[String]) -> Grid {
 impl Solution for Day10 {
     fn part_a(&self, input: &[String]) -> Answer {
         let grid = parse(input);
-
+        for row in grid.grid {
+            for col in row {
+                println!("{}", col.tile);
+            }
+        }
         0.into()
     }
 
@@ -61,6 +65,7 @@ mod test {
 
     use super::Day10;
 
+    #[test]
     pub fn test_a() {
         let input =
             input::read_file(&format!("{}day_10_test.txt", helper_lib::FILES_PREFIX)).unwrap();

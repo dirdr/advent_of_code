@@ -17,7 +17,7 @@ impl Solution for Day2 {
                 let game_id = game_id_str.parse::<i32>().unwrap();
                 let valid_game = colors_str.trim().split(';').all(|set| {
                     set.split(',').all(|token| {
-                        let tokens = token.trim().split_whitespace().collect::<Vec<&str>>();
+                        let tokens = token.split_whitespace().collect::<Vec<&str>>();
                         let val = tokens[0].parse::<i32>().unwrap_or(0);
                         *colors.get(tokens[1]).unwrap_or(&i32::MAX) >= val
                     })
@@ -37,7 +37,7 @@ impl Solution for Day2 {
             if let Some(color_data) = line.strip_prefix("Game ").and_then(|s| s.split_once(':')) {
                 for set in color_data.1.trim().split(';') {
                     for token in set.split(',') {
-                        let tokens = token.trim().split_whitespace().collect::<Vec<&str>>();
+                        let tokens = token.split_whitespace().collect::<Vec<&str>>();
                         let val = tokens[0].parse::<i32>().unwrap();
                         colors.entry(tokens[1]).and_modify(|e| *e = max(val, *e));
                     }

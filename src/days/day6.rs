@@ -61,7 +61,7 @@ impl Solution for Day6 {
     }
 
     fn part_b(&self, input: &[String]) -> Answer {
-        let race = parse_b(&input);
+        let race = parse_b(input);
         let count = (0..race.duration)
             .filter(|e| e * (race.duration - e) > race.record)
             .count() as u32;

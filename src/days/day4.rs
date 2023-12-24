@@ -15,8 +15,8 @@ struct Card {
 fn parse(input: &[String]) -> Parsed {
     let mut cards = vec![];
     for line in input {
-        let line = line.split_once(":").unwrap().1.trim();
-        let (winning, pick) = line.split_once("|").unwrap();
+        let line = line.split_once(':').unwrap().1.trim();
+        let (winning, pick) = line.split_once('|').unwrap();
         let winning = convert_to_nums(winning);
         let picks = convert_to_nums(pick);
         cards.push(Card { winning, picks });
@@ -46,7 +46,7 @@ impl Solution for Day4 {
             .cards
             .iter()
             .map(|card| {
-                let count = count_winning(&card);
+                let count = count_winning(card);
                 if count == 0 {
                     return 0;
                 }
@@ -62,7 +62,7 @@ impl Solution for Day4 {
         let parsed = parse(input);
         let mut copies: Vec<usize> = vec![1; parsed.cards.len()];
         parsed.cards.iter().enumerate().for_each(|(i, card)| {
-            let winning_count = count_winning(&card);
+            let winning_count = count_winning(card);
             for _ in 0..copies[i] {
                 copies
                     .iter_mut()

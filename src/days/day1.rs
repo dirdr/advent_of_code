@@ -21,7 +21,7 @@ impl Solution for Day1 {
         let result: u32 = input
             .iter()
             .map(|l| {
-                let digits = get_digits(&l);
+                let digits = get_digits(l);
                 digits[0] * 10 + digits[1]
             })
             .sum();

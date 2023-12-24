@@ -42,7 +42,7 @@ enum CardsOrder {
 fn parse(input: &[String], card_order: CardsOrder) -> Parsed {
     let mut hands = vec![];
     for line in input {
-        let (cards, bid) = line.split_once(" ").unwrap();
+        let (cards, bid) = line.split_once(' ').unwrap();
         let cards = cards
             .chars()
             .map(|card| {
@@ -75,17 +75,17 @@ impl Hand {
             count[*card as usize] += 1;
         }
         if count.iter().any(|&card| card == 5) {
-            return HandType::FiveOfAKind;
+            HandType::FiveOfAKind
         } else if count.iter().any(|&card| card == 4) {
-            return HandType::FourOfAKind;
+            HandType::FourOfAKind
         } else if count.iter().any(|&card| card == 3) && count.iter().any(|&card| card == 2) {
-            return HandType::FullHouse;
+            HandType::FullHouse
         } else if count.iter().any(|&card| card == 3) {
-            return HandType::ThreeOfAKind;
+            HandType::ThreeOfAKind
         } else if count.iter().filter(|&&card| card == 2).count() == 2 {
-            return HandType::TwoPair;
+            HandType::TwoPair
         } else if count.iter().any(|&card| card == 2) {
-            return HandType::OnePair;
+            HandType::OnePair
         } else {
             HandType::HighCard
         }
@@ -107,22 +107,22 @@ impl Hand {
             .collect::<Vec<_>>();
 
         // if full joker, then sorted len is 0
-        if sorted.len() == 0 || joker_count + sorted[0] == 5 {
-            return HandType::FiveOfAKind;
+        if sorted.is_empty() || joker_count + sorted[0] == 5 {
+            HandType::FiveOfAKind
         } else if joker_count + sorted[0] == 4 {
-            return HandType::FourOfAKind;
+            HandType::FourOfAKind
         } else if ((sorted[0] + joker_count == 3) && (sorted[1] == 2))
             || ((sorted[0] == 3) && (sorted[1] + joker_count == 2))
         {
-            return HandType::FullHouse;
+            HandType::FullHouse
         } else if sorted[0] + joker_count == 3 {
-            return HandType::ThreeOfAKind;
+            HandType::ThreeOfAKind
         } else if ((sorted[0] + joker_count) == 2 && (sorted[1] == 2))
             || (sorted[0] == 2 && sorted[1] + joker_count == 2)
         {
-            return HandType::TwoPair;
+            HandType::TwoPair
         } else if sorted[0] + joker_count == 2 {
-            return HandType::OnePair;
+            HandType::OnePair
         } else {
             HandType::HighCard
         }
@@ -135,7 +135,7 @@ impl Solution for Day7 {
         parsed.hands.sort_by(|a, b| {
             a.to_hand_type_a()
                 .cmp(&b.to_hand_type_a())
-                .then_with(|| b.compare(&a))
+                .then_with(|| b.compare(a))
         });
         parsed
             .hands
@@ -152,7 +152,7 @@ impl Solution for Day7 {
         parsed.hands.sort_by(|a, b| {
             a.to_hand_type_b()
                 .cmp(&b.to_hand_type_b())
-                .then_with(|| b.compare(&a))
+                .then_with(|| b.compare(a))
         });
         parsed
             .hands

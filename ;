@@ -13,8 +13,8 @@ impl<'a> Parsed<'a> {
     fn get(&self, el: &'a str, direction: &char) -> &'a str {
         let entry = self.network.get(el).unwrap();
         match direction {
-            'L' => entry.0,
-            'R' => entry.1,
+            'L' => &entry.0,
+            'R' => &entry.1,
             _ => unreachable!(),
         }
     }
@@ -34,8 +34,8 @@ fn parse(input: &[String]) -> Parsed {
         .collect::<Vec<_>>();
     let mut network = HashMap::new();
     for line in nodes.iter().skip(1) {
-        let (node, other) = line.split_once('=').unwrap();
-        let (left, right) = other.trim().split_once(',').unwrap();
+        let (node, other) = line.split_once("=").unwrap();
+        let (left, right) = other.trim().split_once(",").unwrap();
         let left = &left[1..];
         let right = &right[..right.len() - 1];
         network.insert(node.trim(), (left.trim(), right.trim()));
@@ -49,12 +49,14 @@ fn parse(input: &[String]) -> Parsed {
 impl Solution for Day8 {
     fn part_a(&self, input: &[String]) -> Answer {
         let parsed = parse(input);
+        let mut count = 0;
         let mut current_node = "AAA";
-        for (count, direction) in parsed.instructions.iter().cycle().enumerate() {
+        for direction in parsed.instructions.iter().cycle() {
             if current_node == "ZZZ" {
                 return count.into();
             }
             current_node = parsed.get(current_node, direction);
+            count += 1;
         }
         0.into()
     }
@@ -64,7 +66,7 @@ impl Solution for Day8 {
         let starting_nodes: Vec<&str> = parsed
             .network
             .iter()
-            .filter(|(&k, _)| k.ends_with('A'))
+            .filter(|(&k, _)| k.ends_with("A"))
             .map(|(&k, _)| k)
             .collect();
         let mut cycles = vec![];

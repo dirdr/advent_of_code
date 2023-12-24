@@ -1,1 +1,1 @@
-pub const FILES_PREFIX: &'static str = "resources/";
+pub const FILES_PREFIX: &str = "resources/";

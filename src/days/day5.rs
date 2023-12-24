@@ -13,7 +13,7 @@ struct Range {
 
 impl Range {
     pub fn contains(&self, value: usize) -> bool {
-        return value >= self.src && value < (self.src + self.len);
+        value >= self.src && value < (self.src + self.len)
     }
 }
 
@@ -45,7 +45,6 @@ fn parse(input: &[String]) -> Parsed {
         .map(|s| s.parse::<usize>().unwrap())
         .collect();
     let degrouped = lines
-        .into_iter()
         .group_by(|line| !line.is_empty())
         .into_iter()
         .filter(|(key, _)| *key)

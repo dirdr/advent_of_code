@@ -15,7 +15,7 @@ impl From<char> for Part {
         match value {
             '.' => Part::Dot,
             '*' => Part::Gear,
-            value if value.is_digit(10) => Part::Digit,
+            value if value.is_ascii_digit() => Part::Digit,
             _ => Part::Symbol,
         }
     }
