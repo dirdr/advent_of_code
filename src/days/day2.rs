@@ -31,6 +31,16 @@ impl<'a> Game<'a> {
             .iter()
             .all(|set| set.iter().all(|entry| Some(&entry.1) <= bag.get(entry.0)))
     }
+
+    pub fn get_minimum_set_power(&self) -> usize {
+        let mut bag: HashMap<_, _> = HashMap::from(STARTING_BAG_B);
+        for set in self.sets.iter() {
+            for entry in set {
+                bag.entry(entry.0).and_modify(|e| *e = max(entry.1, *e));
+            }
+        }
+        bag.values().product::<usize>()
+    }
 }
 
 const STARTING_BAG_A: [(&str, usize); 3] = [("red", 12), ("green", 13), ("blue", 14)];
@@ -82,15 +92,7 @@ impl Solution for Day2 {
         parsed
             .games
             .iter()
-            .map(|game| {
-                let mut bag: HashMap<_, _> = HashMap::from(STARTING_BAG_B);
-                for set in game.sets.iter() {
-                    for entry in set {
-                        bag.entry(entry.0).and_modify(|e| *e = max(entry.1, *e));
-                    }
-                }
-                bag.values().product::<usize>()
-            })
+            .map(|game| game.get_minimum_set_power())
             .sum::<usize>()
             .into()
     }
