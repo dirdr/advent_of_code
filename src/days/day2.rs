@@ -16,6 +16,15 @@ struct Game<'a> {
     sets: Vec<[(&'a str, usize); 3]>,
 }
 
+impl<'a> Parsed<'a> {
+    pub fn get_valid_games(self) -> Vec<Game<'a>> {
+        self.games
+            .into_iter()
+            .filter(|game| game.is_valid(&self.bag))
+            .collect()
+    }
+}
+
 impl<'a> Game<'a> {
     pub fn is_valid(&self, bag: &HashMap<&'a str, usize>) -> bool {
         self.sets
@@ -61,9 +70,8 @@ impl Solution for Day2 {
     fn part_a(&self, input: &[String]) -> Answer {
         let parsed = parse(input, STARTING_BAG_A);
         parsed
-            .games
+            .get_valid_games()
             .iter()
-            .filter(|game| game.is_valid(&parsed.bag))
             .map(|game| game.id)
             .sum::<usize>()
             .into()
