@@ -12,6 +12,15 @@ struct Card {
     picks: Vec<usize>,
 }
 
+impl Card {
+    pub fn count_winning(&self) -> usize {
+        self.picks
+            .iter()
+            .filter(|num| self.winning.contains(num))
+            .count()
+    }
+}
+
 fn parse(input: &[String]) -> Parsed {
     let mut cards = vec![];
     for line in input {
@@ -22,13 +31,6 @@ fn parse(input: &[String]) -> Parsed {
         cards.push(Card { winning, picks });
     }
     Parsed { cards }
-}
-
-fn count_winning(card: &Card) -> usize {
-    card.picks
-        .iter()
-        .filter(|num| card.winning.contains(num))
-        .count()
 }
 
 fn convert_to_nums(str_set: &str) -> Vec<usize> {
@@ -46,7 +48,7 @@ impl Solution for Day4 {
             .cards
             .iter()
             .map(|card| {
-                let count = count_winning(card);
+                let count = card.count_winning();
                 if count == 0 {
                     return 0;
                 }
@@ -62,7 +64,7 @@ impl Solution for Day4 {
         let parsed = parse(input);
         let mut copies: Vec<usize> = vec![1; parsed.cards.len()];
         parsed.cards.iter().enumerate().for_each(|(i, card)| {
-            let winning_count = count_winning(card);
+            let winning_count = card.count_winning();
             for _ in 0..copies[i] {
                 copies
                     .iter_mut()
