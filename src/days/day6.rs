@@ -11,6 +11,14 @@ struct Race {
     record: u64,
 }
 
+impl Race {
+    pub fn count_ways(&self) -> u32 {
+        (0..self.duration)
+            .filter(|e| e * (self.duration - e) > self.record)
+            .count() as u32
+    }
+}
+
 fn parse_a(input: &[String]) -> Parsed {
     let (_, durations) = input[0].split_once("Time:").unwrap();
     let (_, records) = input[1].split_once("Distance:").unwrap();
@@ -51,21 +59,13 @@ impl Solution for Day6 {
         parsed
             .races
             .iter()
-            .map(|race| {
-                (0..race.duration)
-                    .filter(|e| e * (race.duration - e) > race.record)
-                    .count() as u32
-            })
+            .map(|race| race.count_ways())
             .product::<u32>()
             .into()
     }
 
     fn part_b(&self, input: &[String]) -> Answer {
-        let race = parse_b(input);
-        let count = (0..race.duration)
-            .filter(|e| e * (race.duration - e) > race.record)
-            .count() as u32;
-        count.into()
+        parse_b(input).count_ways().into()
     }
 }
 

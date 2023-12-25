@@ -62,8 +62,9 @@ fn parse<'a>(input: &'a [String], starting_bag: [(&'a str, usize); 3]) -> Parsed
                 let mut set = starting_bag.map(|(color, _)| (color, 0));
                 for token in sets_str.split(',') {
                     let (val, color) = token.trim().split_once(' ').unwrap();
-                    let index = *bag_map.get(color).unwrap();
-                    set[index] = (color, val.parse::<usize>().unwrap());
+                    if let Some(&entry) = bag_map.get(color) {
+                        set[entry] = (color, val.parse::<usize>().unwrap());
+                    }
                 }
                 sets.push(set);
             }
