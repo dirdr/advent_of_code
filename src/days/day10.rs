@@ -1,4 +1,9 @@
-use std::{collections::HashSet, ops::Div};
+use std::{
+    collections::HashSet,
+    ops::{Add, Div, Mul, Sub},
+};
+
+use itertools::Itertools;
 
 use crate::helper_lib::{answer::Answer, solution::Solution};
 
@@ -11,7 +16,20 @@ impl Solution for Day10 {
     }
 
     fn part_b(&self, input: &[String]) -> Answer {
-        todo!()
+        let grid = parse(input);
+        let mut path = grid.walk();
+        path.push(grid.start_tile.position);
+        let len = path.len();
+        let area = path
+            .iter()
+            .enumerate()
+            .fold(0i32, |acc, (i, p)| {
+                let l = (i + 1) % len;
+                acc + (p.0 as i32 * path[l].1 as i32 - p.1 as i32 * path[l].0 as i32)
+            })
+            .abs()
+            / 2;
+        (area - (len as i32 / 2) + 1).into()
     }
 }
 
@@ -44,15 +62,14 @@ fn parse(input: &[String]) -> Grid {
 }
 
 impl Grid {
-    pub fn walk(&self) -> HashSet<Tile> {
-        let mut visited = HashSet::new();
-        visited.insert(self.start_tile.clone());
+    pub fn walk(&self) -> Vec<(usize, usize)> {
+        let mut visited = vec![self.start_tile.position];
         let mut current_tile = self.start_tile.clone();
         loop {
             let mut next_tile: Option<Tile> = None;
             for direction in Direction::all() {
                 if let Some(adjacent) = self.try_advance(&current_tile, &direction) {
-                    if !visited.contains(adjacent)
+                    if !visited.contains(&adjacent.position)
                         && current_tile.is_connected_to(adjacent, direction)
                     {
                         next_tile = Some(adjacent.clone());
@@ -69,7 +86,7 @@ impl Grid {
             if current_tile == self.start_tile && !visited.is_empty() {
                 break;
             }
-            visited.insert(current_tile.clone());
+            visited.push(current_tile.position);
         }
         visited
     }
@@ -93,7 +110,7 @@ impl Grid {
     }
 }
 
-#[derive(Debug, Clone, Hash, PartialEq, Eq)]
+#[derive(Debug, Clone, PartialEq, Eq)]
 struct Tile {
     position: (usize, usize),
     tile: char,
@@ -175,15 +192,16 @@ mod test {
     #[test]
     pub fn test_a() {
         let input =
-            input::read_file(&format!("{}day_10_test.txt", helper_lib::FILES_PREFIX)).unwrap();
+            input::read_file(&format!("{}day_10_a_test.txt", helper_lib::FILES_PREFIX)).unwrap();
         let answer = Day10.part_a(&input);
         assert_eq!(<i32 as Into<Answer>>::into(4), answer);
     }
 
+    #[test]
     pub fn test_b() {
         let input =
-            input::read_file(&format!("{}day_10_test.txt", helper_lib::FILES_PREFIX)).unwrap();
+            input::read_file(&format!("{}day_10_b_test.txt", helper_lib::FILES_PREFIX)).unwrap();
         let answer = Day10.part_b(&input);
-        assert_eq!(<i32 as Into<Answer>>::into(281), answer);
+        assert_eq!(<i32 as Into<Answer>>::into(10), answer);
     }
 }
