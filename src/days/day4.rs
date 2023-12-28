@@ -3,44 +3,6 @@ use crate::helper_lib::solution::Solution;
 
 pub struct Day4;
 
-struct Parsed {
-    cards: Vec<Card>,
-}
-
-struct Card {
-    winning: Vec<usize>,
-    picks: Vec<usize>,
-}
-
-impl Card {
-    pub fn count_winning(&self) -> usize {
-        self.picks
-            .iter()
-            .filter(|num| self.winning.contains(num))
-            .count()
-    }
-}
-
-fn parse(input: &[String]) -> Parsed {
-    let mut cards = vec![];
-    for line in input {
-        let line = line.split_once(':').unwrap().1.trim();
-        let (winning, pick) = line.split_once('|').unwrap();
-        let winning = convert_to_nums(winning);
-        let picks = convert_to_nums(pick);
-        cards.push(Card { winning, picks });
-    }
-    Parsed { cards }
-}
-
-fn convert_to_nums(str_set: &str) -> Vec<usize> {
-    let mut nums = vec![];
-    for token in str_set.split_whitespace() {
-        nums.push(token.parse::<usize>().unwrap())
-    }
-    nums
-}
-
 impl Solution for Day4 {
     fn part_a(&self, input: &[String]) -> Answer {
         let parsed = parse(input);
@@ -75,6 +37,44 @@ impl Solution for Day4 {
         });
         copies.iter().sum::<usize>().into()
     }
+}
+
+struct Parsed {
+    cards: Vec<Card>,
+}
+
+fn parse(input: &[String]) -> Parsed {
+    let mut cards = vec![];
+    for line in input {
+        let line = line.split_once(':').unwrap().1.trim();
+        let (winning, pick) = line.split_once('|').unwrap();
+        let winning = convert_to_nums(winning);
+        let picks = convert_to_nums(pick);
+        cards.push(Card { winning, picks });
+    }
+    Parsed { cards }
+}
+
+struct Card {
+    winning: Vec<usize>,
+    picks: Vec<usize>,
+}
+
+impl Card {
+    pub fn count_winning(&self) -> usize {
+        self.picks
+            .iter()
+            .filter(|num| self.winning.contains(num))
+            .count()
+    }
+}
+
+fn convert_to_nums(str_set: &str) -> Vec<usize> {
+    let mut nums = vec![];
+    for token in str_set.split_whitespace() {
+        nums.push(token.parse::<usize>().unwrap())
+    }
+    nums
 }
 
 #[cfg(test)]

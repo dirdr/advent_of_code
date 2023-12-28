@@ -5,30 +5,38 @@ use rayon::slice::ParallelSlice;
 
 pub struct Day5;
 
-struct Range {
-    src: usize,
-    dest: usize,
-    len: usize,
-}
-
-impl Range {
-    pub fn contains(&self, value: usize) -> bool {
-        value >= self.src && value < (self.src + self.len)
-    }
-}
-
-struct Map {
-    ranges: Vec<Range>,
-}
-
-impl Map {
-    pub fn map(&self, seed: usize) -> usize {
-        for range in &self.ranges {
-            if range.contains(seed) {
-                return range.dest + seed - range.src;
+impl Solution for Day5 {
+    fn part_a(&self, input: &[String]) -> Answer {
+        let parsed = parse(input);
+        let seeds = parsed.seeds;
+        let mut min = usize::MAX;
+        for mut seed in seeds {
+            for map in &parsed.maps {
+                seed = map.map(seed);
             }
+            min = min.min(seed);
         }
-        seed
+        min.into()
+    }
+
+    fn part_b(&self, input: &[String]) -> Answer {
+        let parsed = parse(input);
+        let seeds = parsed.seeds;
+        seeds
+            .par_chunks_exact(2)
+            .map(|sr| {
+                let mut min = usize::MAX;
+                for mut seed in sr[0]..=(sr[0] + sr[1]) {
+                    for map in &parsed.maps {
+                        seed = map.map(seed);
+                    }
+                    min = min.min(seed);
+                }
+                min
+            })
+            .min()
+            .unwrap()
+            .into()
     }
 }
 
@@ -66,38 +74,30 @@ fn parse(input: &[String]) -> Parsed {
     Parsed { seeds, maps }
 }
 
-impl Solution for Day5 {
-    fn part_a(&self, input: &[String]) -> Answer {
-        let parsed = parse(input);
-        let seeds = parsed.seeds;
-        let mut min = usize::MAX;
-        for mut seed in seeds {
-            for map in &parsed.maps {
-                seed = map.map(seed);
-            }
-            min = min.min(seed);
-        }
-        min.into()
-    }
+struct Map {
+    ranges: Vec<Range>,
+}
 
-    fn part_b(&self, input: &[String]) -> Answer {
-        let parsed = parse(input);
-        let seeds = parsed.seeds;
-        seeds
-            .par_chunks_exact(2)
-            .map(|sr| {
-                let mut min = usize::MAX;
-                for mut seed in sr[0]..=(sr[0] + sr[1]) {
-                    for map in &parsed.maps {
-                        seed = map.map(seed);
-                    }
-                    min = min.min(seed);
-                }
-                min
-            })
-            .min()
-            .unwrap()
-            .into()
+impl Map {
+    pub fn map(&self, seed: usize) -> usize {
+        for range in &self.ranges {
+            if range.contains(seed) {
+                return range.dest + seed - range.src;
+            }
+        }
+        seed
+    }
+}
+
+struct Range {
+    src: usize,
+    dest: usize,
+    len: usize,
+}
+
+impl Range {
+    pub fn contains(&self, value: usize) -> bool {
+        value >= self.src && value < (self.src + self.len)
     }
 }
 

@@ -35,6 +35,37 @@ struct Parsed<'a> {
     bag: HashMap<&'a str, usize>,
 }
 
+fn parse<'a>(input: &'a [String], starting_bag: [(&'a str, usize); 3]) -> Parsed<'a> {
+    let mut games = vec![];
+    let bag_map: HashMap<_, _> = starting_bag
+        .iter()
+        .enumerate()
+        .map(|(i, (color, _))| (*color, i))
+        .collect();
+    for line in input {
+        if let Some(iter) = line.strip_prefix("Game ") {
+            let mut sets = vec![];
+            let (id, colors) = iter.split_once(':').unwrap();
+            let id = id.parse::<usize>().unwrap();
+            for sets_str in colors.split(';') {
+                let mut set = starting_bag.map(|(color, _)| (color, 0));
+                for token in sets_str.split(',') {
+                    let (val, color) = token.trim().split_once(' ').unwrap();
+                    if let Some(&entry) = bag_map.get(color) {
+                        set[entry] = (color, val.parse::<usize>().unwrap());
+                    }
+                }
+                sets.push(set);
+            }
+            games.push(Game { id, sets });
+        }
+    }
+    Parsed {
+        games,
+        bag: HashMap::from(starting_bag),
+    }
+}
+
 impl<'a> Parsed<'a> {
     pub fn get_valid_games(self) -> Vec<Game<'a>> {
         self.games
@@ -65,37 +96,6 @@ impl<'a> Game<'a> {
             }
         }
         bag.values().product::<usize>()
-    }
-}
-
-fn parse<'a>(input: &'a [String], starting_bag: [(&'a str, usize); 3]) -> Parsed<'a> {
-    let mut games = vec![];
-    let bag_map: HashMap<_, _> = starting_bag
-        .iter()
-        .enumerate()
-        .map(|(i, (color, _))| (*color, i))
-        .collect();
-    for line in input {
-        if let Some(iter) = line.strip_prefix("Game ") {
-            let mut sets = vec![];
-            let (id, colors) = iter.split_once(':').unwrap();
-            let id = id.parse::<usize>().unwrap();
-            for sets_str in colors.split(';') {
-                let mut set = starting_bag.map(|(color, _)| (color, 0));
-                for token in sets_str.split(',') {
-                    let (val, color) = token.trim().split_once(' ').unwrap();
-                    if let Some(&entry) = bag_map.get(color) {
-                        set[entry] = (color, val.parse::<usize>().unwrap());
-                    }
-                }
-                sets.push(set);
-            }
-            games.push(Game { id, sets });
-        }
-    }
-    Parsed {
-        games,
-        bag: HashMap::from(starting_bag),
     }
 }
 
