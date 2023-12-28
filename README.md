@@ -25,6 +25,6 @@ cargo test
 - [Day 07: Camel Cards](src/days/day07.rs) ⭐⭐
 - [Day 08: Haunted Wasteland](src/days/day08.rs) ⭐⭐
 - [Day 09: Mirage Maintenance](src/days/day09.rs) ⭐⭐
-- [Day 10: Pipe Maze](src/days/day10.rs) ⭐
+- [Day 10: Pipe Maze](src/days/day10.rs) ⭐⭐
 ## Thanks
 The project structure is inspired by [this repository](https://github.com/Basicprogrammer10/advent-of-code)
