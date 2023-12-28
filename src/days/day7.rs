@@ -5,27 +5,6 @@ use itertools::Itertools;
 
 pub struct Day7;
 
-struct Parsed {
-    hands: Vec<Hand>,
-}
-
-#[derive(Debug)]
-struct Hand {
-    cards: Vec<u8>,
-    bid: u32,
-}
-
-#[derive(PartialEq, Eq, PartialOrd, Ord)]
-enum HandType {
-    FiveOfAKind,
-    FourOfAKind,
-    FullHouse,
-    ThreeOfAKind,
-    TwoPair,
-    OnePair,
-    HighCard,
-}
-
 const CARDS_ORDER_A: [char; 13] = [
     '2', '3', '4', '5', '6', '7', '8', '9', 'T', 'J', 'Q', 'K', 'A',
 ];
@@ -34,9 +13,44 @@ const CARDS_ORDER_B: [char; 13] = [
     'J', '2', '3', '4', '5', '6', '7', '8', '9', 'T', 'Q', 'K', 'A',
 ];
 
-enum CardsOrder {
-    OrderA,
-    OrderB,
+impl Solution for Day7 {
+    fn part_a(&self, input: &[String]) -> Answer {
+        let mut parsed = parse(input, CardsOrder::OrderA);
+        parsed.hands.sort_by(|a, b| {
+            a.to_hand_type_a()
+                .cmp(&b.to_hand_type_a())
+                .then_with(|| b.compare(a))
+        });
+        parsed
+            .hands
+            .iter()
+            .rev()
+            .enumerate()
+            .map(|(i, hand)| (i + 1) as u32 * hand.bid)
+            .sum::<u32>()
+            .into()
+    }
+
+    fn part_b(&self, input: &[String]) -> Answer {
+        let mut parsed = parse(input, CardsOrder::OrderB);
+        parsed.hands.sort_by(|a, b| {
+            a.to_hand_type_b()
+                .cmp(&b.to_hand_type_b())
+                .then_with(|| b.compare(a))
+        });
+        parsed
+            .hands
+            .iter()
+            .rev()
+            .enumerate()
+            .map(|(i, hand)| (i + 1) as u32 * hand.bid)
+            .sum::<u32>()
+            .into()
+    }
+}
+
+struct Parsed {
+    hands: Vec<Hand>,
 }
 
 fn parse(input: &[String], card_order: CardsOrder) -> Parsed {
@@ -57,6 +71,12 @@ fn parse(input: &[String], card_order: CardsOrder) -> Parsed {
         hands.push(Hand { cards, bid });
     }
     Parsed { hands }
+}
+
+#[derive(Debug)]
+struct Hand {
+    cards: Vec<u8>,
+    bid: u32,
 }
 
 impl Hand {
@@ -129,40 +149,20 @@ impl Hand {
     }
 }
 
-impl Solution for Day7 {
-    fn part_a(&self, input: &[String]) -> Answer {
-        let mut parsed = parse(input, CardsOrder::OrderA);
-        parsed.hands.sort_by(|a, b| {
-            a.to_hand_type_a()
-                .cmp(&b.to_hand_type_a())
-                .then_with(|| b.compare(a))
-        });
-        parsed
-            .hands
-            .iter()
-            .rev()
-            .enumerate()
-            .map(|(i, hand)| (i + 1) as u32 * hand.bid)
-            .sum::<u32>()
-            .into()
-    }
+#[derive(PartialEq, Eq, PartialOrd, Ord)]
+enum HandType {
+    FiveOfAKind,
+    FourOfAKind,
+    FullHouse,
+    ThreeOfAKind,
+    TwoPair,
+    OnePair,
+    HighCard,
+}
 
-    fn part_b(&self, input: &[String]) -> Answer {
-        let mut parsed = parse(input, CardsOrder::OrderB);
-        parsed.hands.sort_by(|a, b| {
-            a.to_hand_type_b()
-                .cmp(&b.to_hand_type_b())
-                .then_with(|| b.compare(a))
-        });
-        parsed
-            .hands
-            .iter()
-            .rev()
-            .enumerate()
-            .map(|(i, hand)| (i + 1) as u32 * hand.bid)
-            .sum::<u32>()
-            .into()
-    }
+enum CardsOrder {
+    OrderA,
+    OrderB,
 }
 
 #[cfg(test)]
