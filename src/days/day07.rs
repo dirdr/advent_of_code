@@ -174,7 +174,7 @@ mod test {
     #[test]
     pub fn test_a() {
         let input =
-            input::read_file(&format!("{}day_7_test.txt", helper_lib::FILES_PREFIX)).unwrap();
+            input::read_file(&format!("{}day_07_test.txt", helper_lib::FILES_PREFIX)).unwrap();
         let answer = Day7.part_a(&input);
         assert_eq!(<i32 as Into<Answer>>::into(6440), answer);
     }
@@ -182,7 +182,7 @@ mod test {
     #[test]
     pub fn test_b() {
         let input =
-            input::read_file(&format!("{}day_7_test.txt", helper_lib::FILES_PREFIX)).unwrap();
+            input::read_file(&format!("{}day_07_test.txt", helper_lib::FILES_PREFIX)).unwrap();
         let answer = Day7.part_b(&input);
         assert_eq!(<i32 as Into<Answer>>::into(5905), answer);
     }
