@@ -89,12 +89,10 @@ impl Sky {
         b: (usize, usize),
         expansion_factor: usize,
     ) -> usize {
-        let dx = (a.0 as isize - b.0 as isize).abs() as usize;
-        let dy = (a.1 as isize - b.1 as isize).abs() as usize;
-
+        let dx = (a.0 as isize - b.0 as isize).unsigned_abs();
+        let dy = (a.1 as isize - b.1 as isize).unsigned_abs();
         let expanded_dx = dx + self.count_empty_col_between(a, b) * (expansion_factor - 1);
         let expanded_dy = dy + self.count_empty_row_between(a, b) * (expansion_factor - 1);
-
         expanded_dx + expanded_dy
     }
 
