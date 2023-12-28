@@ -1,10 +1,3 @@
-use std::{
-    collections::HashSet,
-    ops::{Add, Div, Mul, Sub},
-};
-
-use itertools::Itertools;
-
 use crate::helper_lib::{answer::Answer, solution::Solution};
 
 pub struct Day10;
@@ -12,11 +5,12 @@ pub struct Day10;
 impl Solution for Day10 {
     fn part_a(&self, input: &[String]) -> Answer {
         let grid = parse(input);
-        (grid.walk().len().div(2)).into()
+        (grid.walk().len() / 2).into()
     }
 
     fn part_b(&self, input: &[String]) -> Answer {
         let grid = parse(input);
+        // use of the shoelace polygon area formula
         let mut path = grid.walk();
         path.push(grid.start_tile.position);
         let len = path.len();
