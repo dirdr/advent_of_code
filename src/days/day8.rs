@@ -4,6 +4,43 @@ use crate::helper_lib::{answer::Answer, lcm, solution::Solution};
 
 pub struct Day8;
 
+impl Solution for Day8 {
+    fn part_a(&self, input: &[String]) -> Answer {
+        let parsed = parse(input);
+        let mut current_node = "AAA";
+        for (count, direction) in parsed.instructions.iter().cycle().enumerate() {
+            if current_node == "ZZZ" {
+                return count.into();
+            }
+            current_node = parsed.get(current_node, direction);
+        }
+        0.into()
+    }
+
+    fn part_b(&self, input: &[String]) -> Answer {
+        let parsed = parse(input);
+        let starting_nodes: Vec<&str> = parsed
+            .network
+            .iter()
+            .filter(|(&k, _)| k.ends_with('A'))
+            .map(|(&k, _)| k)
+            .collect();
+        let mut cycles = vec![];
+        for node in starting_nodes {
+            let mut current_node = node;
+            for (cycle_len, direction) in parsed.instructions.iter().cycle().enumerate() {
+                if current_node.ends_with('Z') {
+                    cycles.push(cycle_len as i64);
+                    break;
+                }
+                current_node = parsed.get(current_node, direction);
+            }
+        }
+        let lcm = cycles.iter().copied().reduce(lcm).unwrap_or(1);
+        lcm.into()
+    }
+}
+
 struct Parsed<'a> {
     instructions: Vec<char>,
     network: HashMap<&'a str, (&'a str, &'a str)>,
@@ -43,43 +80,6 @@ fn parse(input: &[String]) -> Parsed {
     Parsed {
         instructions,
         network,
-    }
-}
-
-impl Solution for Day8 {
-    fn part_a(&self, input: &[String]) -> Answer {
-        let parsed = parse(input);
-        let mut current_node = "AAA";
-        for (count, direction) in parsed.instructions.iter().cycle().enumerate() {
-            if current_node == "ZZZ" {
-                return count.into();
-            }
-            current_node = parsed.get(current_node, direction);
-        }
-        0.into()
-    }
-
-    fn part_b(&self, input: &[String]) -> Answer {
-        let parsed = parse(input);
-        let starting_nodes: Vec<&str> = parsed
-            .network
-            .iter()
-            .filter(|(&k, _)| k.ends_with('A'))
-            .map(|(&k, _)| k)
-            .collect();
-        let mut cycles = vec![];
-        for node in starting_nodes {
-            let mut current_node = node;
-            for (cycle_len, direction) in parsed.instructions.iter().cycle().enumerate() {
-                if current_node.ends_with('Z') {
-                    cycles.push(cycle_len as i64);
-                    break;
-                }
-                current_node = parsed.get(current_node, direction);
-            }
-        }
-        let lcm = cycles.iter().copied().reduce(lcm).unwrap_or(1);
-        lcm.into()
     }
 }
 
