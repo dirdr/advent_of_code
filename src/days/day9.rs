@@ -2,8 +2,40 @@ use crate::helper_lib::{answer::Answer, solution::Solution};
 
 pub struct Day9;
 
+impl Solution for Day9 {
+    fn part_a(&self, input: &[String]) -> Answer {
+        let parsed = parse(input);
+        parsed
+            .reports
+            .iter()
+            .fold(0, |acc, x| acc + x.predict_a())
+            .into()
+    }
+
+    fn part_b(&self, input: &[String]) -> Answer {
+        let parsed = parse(input);
+        parsed
+            .reports
+            .iter()
+            .fold(0, |acc, x| acc + x.predict_b())
+            .into()
+    }
+}
+
 struct Parsed {
     reports: Vec<Report>,
+}
+
+fn parse(input: &[String]) -> Parsed {
+    let mut reports = vec![];
+    for line in input {
+        let history = line
+            .split_whitespace()
+            .map(|e| e.parse::<i32>().unwrap())
+            .collect();
+        reports.push(Report { history });
+    }
+    Parsed { reports }
 }
 
 struct Report {
@@ -62,38 +94,6 @@ impl Report {
             }
         }
         0
-    }
-}
-
-fn parse(input: &[String]) -> Parsed {
-    let mut reports = vec![];
-    for line in input {
-        let history = line
-            .split_whitespace()
-            .map(|e| e.parse::<i32>().unwrap())
-            .collect();
-        reports.push(Report { history });
-    }
-    Parsed { reports }
-}
-
-impl Solution for Day9 {
-    fn part_a(&self, input: &[String]) -> Answer {
-        let parsed = parse(input);
-        parsed
-            .reports
-            .iter()
-            .fold(0, |acc, x| acc + x.predict_a())
-            .into()
-    }
-
-    fn part_b(&self, input: &[String]) -> Answer {
-        let parsed = parse(input);
-        parsed
-            .reports
-            .iter()
-            .fold(0, |acc, x| acc + x.predict_b())
-            .into()
     }
 }
 
