@@ -2,24 +2,22 @@ use crate::helper_lib::{answer::Answer, solution::Solution};
 
 pub struct Day6;
 
-struct Parsed {
-    races: Vec<Race>,
-}
+impl Solution for Day6 {
+    fn part_a(&self, input: &[String]) -> Answer {
+        let races = parse_a(input);
+        races
+            .iter()
+            .map(|race| race.count_ways())
+            .product::<u32>()
+            .into()
+    }
 
-struct Race {
-    duration: u64,
-    record: u64,
-}
-
-impl Race {
-    pub fn count_ways(&self) -> u32 {
-        (0..self.duration)
-            .filter(|e| e * (self.duration - e) > self.record)
-            .count() as u32
+    fn part_b(&self, input: &[String]) -> Answer {
+        parse_b(input).count_ways().into()
     }
 }
 
-fn parse_a(input: &[String]) -> Parsed {
+fn parse_a(input: &[String]) -> Vec<Race> {
     let (_, durations) = input[0].split_once("Time:").unwrap();
     let (_, records) = input[1].split_once("Distance:").unwrap();
     let durations: Vec<u64> = durations
@@ -34,7 +32,7 @@ fn parse_a(input: &[String]) -> Parsed {
     for (&duration, &record) in durations.iter().zip(&records) {
         races.push(Race { duration, record });
     }
-    Parsed { races }
+    races
 }
 
 fn parse_b(input: &[String]) -> Race {
@@ -53,19 +51,16 @@ fn parse_b(input: &[String]) -> Race {
     Race { duration, record }
 }
 
-impl Solution for Day6 {
-    fn part_a(&self, input: &[String]) -> Answer {
-        let parsed = parse_a(input);
-        parsed
-            .races
-            .iter()
-            .map(|race| race.count_ways())
-            .product::<u32>()
-            .into()
-    }
+struct Race {
+    duration: u64,
+    record: u64,
+}
 
-    fn part_b(&self, input: &[String]) -> Answer {
-        parse_b(input).count_ways().into()
+impl Race {
+    pub fn count_ways(&self) -> u32 {
+        (0..self.duration)
+            .filter(|e| e * (self.duration - e) > self.record)
+            .count() as u32
     }
 }
 
