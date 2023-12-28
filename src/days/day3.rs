@@ -2,25 +2,6 @@ use std::collections::{HashMap, HashSet};
 
 use crate::helper_lib::{answer::Answer, solution::Solution, utils::Matrix};
 
-#[derive(Clone)]
-enum Part {
-    Dot,
-    Digit,
-    Gear,
-    Symbol,
-}
-
-impl From<char> for Part {
-    fn from(value: char) -> Self {
-        match value {
-            '.' => Part::Dot,
-            '*' => Part::Gear,
-            value if value.is_ascii_digit() => Part::Digit,
-            _ => Part::Symbol,
-        }
-    }
-}
-
 pub struct Day3;
 
 impl Solution for Day3 {
@@ -123,6 +104,25 @@ impl Solution for Day3 {
             .filter(|(_, v)| v.len() == 2)
             .fold(0, |acc, (_, v)| acc + (v[0] * v[1]));
         sum.into()
+    }
+}
+
+#[derive(Clone)]
+enum Part {
+    Dot,
+    Digit,
+    Gear,
+    Symbol,
+}
+
+impl From<char> for Part {
+    fn from(value: char) -> Self {
+        match value {
+            '.' => Part::Dot,
+            '*' => Part::Gear,
+            value if value.is_ascii_digit() => Part::Digit,
+            _ => Part::Symbol,
+        }
     }
 }
 
