@@ -1,7 +1,6 @@
 # Advent Of Code 2023 🎁 in rust 🦀
 ## About
 This is my attempt to solve as many of the 2023 edition AOC problems as possible !
-some problems may have bad implementations but i tried my best
 
 ## Run
 ```sh
