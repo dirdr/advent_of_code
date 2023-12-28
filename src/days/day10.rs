@@ -21,25 +21,29 @@ struct Grid {
     start_tile: Tile,
 }
 
-impl Grid {
-    pub fn try_advance(&self, tile: &Tile, direction: &Direction) -> Option<&Tile> {
-        let (x_offset, y_offset) = direction.to_offset();
-        let (x, y) = (tile.position.0, tile.position.1);
-        let (new_x, new_y) = (
-            x as isize + x_offset as isize,
-            y as isize + y_offset as isize,
-        );
-        // check if out of bounds
-        if (new_x < 0)
-            || (new_x >= self.grid[0].len() as isize)
-            || (new_y < 0)
-            || (new_y >= self.grid.len() as isize)
-        {
-            return None;
+fn parse(input: &[String]) -> Grid {
+    let mut grid = vec![];
+    for (i, row) in input.iter().enumerate() {
+        let mut row_buffer = vec![];
+        for (j, col) in row.chars().enumerate() {
+            let tile = Tile {
+                position: (j, i),
+                tile: col,
+            };
+            row_buffer.push(tile);
         }
-        Some(&self.grid[new_y as usize][new_x as usize])
+        grid.push(row_buffer);
     }
+    let start_tile = grid
+        .iter()
+        .flatten()
+        .find(|tile| tile.tile == 'S')
+        .unwrap()
+        .clone();
+    Grid { grid, start_tile }
+}
 
+impl Grid {
     pub fn walk(&self) -> HashSet<Tile> {
         let mut visited = HashSet::new();
         visited.insert(self.start_tile.clone());
@@ -69,6 +73,24 @@ impl Grid {
         }
         visited
     }
+
+    pub fn try_advance(&self, tile: &Tile, direction: &Direction) -> Option<&Tile> {
+        let (x_offset, y_offset) = direction.to_offset();
+        let (x, y) = (tile.position.0, tile.position.1);
+        let (new_x, new_y) = (
+            x as isize + x_offset as isize,
+            y as isize + y_offset as isize,
+        );
+        // check if out of bounds
+        if (new_x < 0)
+            || (new_x >= self.grid[0].len() as isize)
+            || (new_y < 0)
+            || (new_y >= self.grid.len() as isize)
+        {
+            return None;
+        }
+        Some(&self.grid[new_y as usize][new_x as usize])
+    }
 }
 
 #[derive(Debug, Clone, Hash, PartialEq, Eq)]
@@ -78,6 +100,15 @@ struct Tile {
 }
 
 impl Tile {
+    pub fn is_connected_to(&self, other: &Tile, direction: Direction) -> bool {
+        if other.tile == '.' {
+            return false;
+        }
+        let directions = self.get_connections();
+        let other_directions = other.get_connections();
+        directions.contains(&direction) && other_directions.contains(&direction.opposite())
+    }
+
     pub fn get_connections(&self) -> Vec<Direction> {
         match self.tile {
             '|' => vec![Direction::South, Direction::North],
@@ -95,15 +126,6 @@ impl Tile {
             _ => vec![],
         }
     }
-
-    pub fn is_connected_to(&self, other: &Tile, direction: Direction) -> bool {
-        if other.tile == '.' {
-            return false;
-        }
-        let directions = self.get_connections();
-        let other_directions = other.get_connections();
-        directions.contains(&direction) && other_directions.contains(&direction.opposite())
-    }
 }
 
 #[derive(PartialEq)]
@@ -115,6 +137,16 @@ pub enum Direction {
 }
 
 impl Direction {
+    pub fn all() -> impl Iterator<Item = Direction> {
+        vec![
+            Direction::North,
+            Direction::South,
+            Direction::East,
+            Direction::West,
+        ]
+        .into_iter()
+    }
+
     pub fn to_offset(&self) -> (i8, i8) {
         match &self {
             Self::North => (0, -1),
@@ -132,38 +164,6 @@ impl Direction {
             Direction::West => Direction::East,
         }
     }
-
-    pub fn all() -> impl Iterator<Item = Direction> {
-        vec![
-            Direction::North,
-            Direction::South,
-            Direction::East,
-            Direction::West,
-        ]
-        .into_iter()
-    }
-}
-
-fn parse(input: &[String]) -> Grid {
-    let mut grid = vec![];
-    for (i, row) in input.iter().enumerate() {
-        let mut row_buffer = vec![];
-        for (j, col) in row.chars().enumerate() {
-            let tile = Tile {
-                position: (j, i),
-                tile: col,
-            };
-            row_buffer.push(tile);
-        }
-        grid.push(row_buffer);
-    }
-    let start_tile = grid
-        .iter()
-        .flatten()
-        .find(|tile| tile.tile == 'S')
-        .unwrap()
-        .clone();
-    Grid { grid, start_tile }
 }
 
 #[cfg(test)]
