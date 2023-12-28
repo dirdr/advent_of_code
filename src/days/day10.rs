@@ -1,16 +1,112 @@
+use std::{collections::HashSet, ops::Div};
+
 use crate::helper_lib::{answer::Answer, solution::Solution};
 
 pub struct Day10;
 
-struct Grid {
-    grid: Vec<Vec<Tile>>,
+impl Solution for Day10 {
+    fn part_a(&self, input: &[String]) -> Answer {
+        let grid = parse(input);
+        (grid.walk().len().div(2)).into()
+    }
+
+    fn part_b(&self, input: &[String]) -> Answer {
+        todo!()
+    }
 }
 
+#[derive(Debug)]
+struct Grid {
+    grid: Vec<Vec<Tile>>,
+    start_tile: Tile,
+}
+
+impl Grid {
+    pub fn try_advance(&self, tile: &Tile, direction: &Direction) -> Option<&Tile> {
+        let (x_offset, y_offset) = direction.to_offset();
+        let (x, y) = (tile.position.0, tile.position.1);
+        let (new_x, new_y) = (
+            x as isize + x_offset as isize,
+            y as isize + y_offset as isize,
+        );
+        // check if out of bounds
+        if (new_x < 0)
+            || (new_x >= self.grid[0].len() as isize)
+            || (new_y < 0)
+            || (new_y >= self.grid.len() as isize)
+        {
+            return None;
+        }
+        Some(&self.grid[new_y as usize][new_x as usize])
+    }
+
+    pub fn walk(&self) -> HashSet<Tile> {
+        let mut visited = HashSet::new();
+        visited.insert(self.start_tile.clone());
+        let mut current_tile = self.start_tile.clone();
+        loop {
+            let mut next_tile: Option<Tile> = None;
+            for direction in Direction::all() {
+                if let Some(adjacent) = self.try_advance(&current_tile, &direction) {
+                    if !visited.contains(adjacent)
+                        && current_tile.is_connected_to(adjacent, direction)
+                    {
+                        next_tile = Some(adjacent.clone());
+                        break;
+                    }
+                }
+            }
+            match next_tile {
+                Some(tile) => {
+                    current_tile = tile;
+                }
+                None => break,
+            }
+            if current_tile == self.start_tile && !visited.is_empty() {
+                break;
+            }
+            visited.insert(current_tile.clone());
+        }
+        visited
+    }
+}
+
+#[derive(Debug, Clone, Hash, PartialEq, Eq)]
 struct Tile {
-    position: [usize; 2],
+    position: (usize, usize),
     tile: char,
 }
 
+impl Tile {
+    pub fn get_connections(&self) -> Vec<Direction> {
+        match self.tile {
+            '|' => vec![Direction::South, Direction::North],
+            '-' => vec![Direction::East, Direction::West],
+            'L' => vec![Direction::North, Direction::East],
+            'J' => vec![Direction::North, Direction::West],
+            '7' => vec![Direction::South, Direction::West],
+            'F' => vec![Direction::South, Direction::East],
+            'S' => vec![
+                Direction::North,
+                Direction::South,
+                Direction::East,
+                Direction::West,
+            ],
+            _ => vec![],
+        }
+    }
+
+    pub fn is_connected_to(&self, other: &Tile, direction: Direction) -> bool {
+        if other.tile == '.' {
+            return false;
+        }
+        let directions = self.get_connections();
+        let other_directions = other.get_connections();
+        directions.contains(&direction) && other_directions.contains(&direction.opposite())
+    }
+}
+
+#[derive(PartialEq)]
 pub enum Direction {
     North,
     South,
@@ -18,14 +114,35 @@ pub enum Direction {
     West,
 }
 
-const TILES: [(char, [Direction; 2]); 6] = [
-    ('|', [Direction::South, Direction::North]),
-    ('-', [Direction::West, Direction::East]),
-    ('F', [Direction::South, Direction::East]),
-    ('7', [Direction::South, Direction::West]),
-    ('L', [Direction::North, Direction::East]),
-    ('J', [Direction::North, Direction::West]),
-];
+impl Direction {
+    pub fn to_offset(&self) -> (i8, i8) {
+        match &self {
+            Self::North => (0, -1),
+            Self::South => (0, 1),
+            Self::East => (1, 0),
+            Self::West => (-1, 0),
+        }
+    }
+
+    pub fn opposite(&self) -> Direction {
+        match self {
+            Direction::North => Direction::South,
+            Direction::South => Direction::North,
+            Direction::East => Direction::West,
+            Direction::West => Direction::East,
+        }
+    }
+
+    pub fn all() -> impl Iterator<Item = Direction> {
+        vec![
+            Direction::North,
+            Direction::South,
+            Direction::East,
+            Direction::West,
+        ]
+        .into_iter()
+    }
+}
 
 fn parse(input: &[String]) -> Grid {
     let mut grid = vec![];
@@ -33,30 +150,20 @@ fn parse(input: &[String]) -> Grid {
         let mut row_buffer = vec![];
         for (j, col) in row.chars().enumerate() {
             let tile = Tile {
-                position: [i, j],
+                position: (j, i),
                 tile: col,
             };
             row_buffer.push(tile);
         }
         grid.push(row_buffer);
     }
-    Grid { grid }
-}
-
-impl Solution for Day10 {
-    fn part_a(&self, input: &[String]) -> Answer {
-        let grid = parse(input);
-        for row in grid.grid {
-            for col in row {
-                // println!("{}", col.tile);
-            }
-        }
-        0.into()
-    }
-
-    fn part_b(&self, input: &[String]) -> Answer {
-        todo!()
-    }
+    let start_tile = grid
+        .iter()
+        .flatten()
+        .find(|tile| tile.tile == 'S')
+        .unwrap()
+        .clone();
+    Grid { grid, start_tile }
 }
 
 #[cfg(test)]
@@ -70,7 +177,7 @@ mod test {
         let input =
             input::read_file(&format!("{}day_10_test.txt", helper_lib::FILES_PREFIX)).unwrap();
         let answer = Day10.part_a(&input);
-        assert_eq!(<i32 as Into<Answer>>::into(142), answer);
+        assert_eq!(<i32 as Into<Answer>>::into(4), answer);
     }
 
     pub fn test_b() {

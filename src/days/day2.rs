@@ -4,16 +4,35 @@ use crate::helper_lib::{answer::Answer, solution::Solution};
 
 pub struct Day2;
 
+const STARTING_BAG_A: [(&str, usize); 3] = [("red", 12), ("green", 13), ("blue", 14)];
+const STARTING_BAG_B: [(&str, usize); 3] = [("red", 0), ("green", 0), ("blue", 0)];
+
+impl Solution for Day2 {
+    fn part_a(&self, input: &[String]) -> Answer {
+        let parsed = parse(input, STARTING_BAG_A);
+        parsed
+            .get_valid_games()
+            .iter()
+            .map(|game| game.id)
+            .sum::<usize>()
+            .into()
+    }
+
+    fn part_b(&self, input: &[String]) -> Answer {
+        let parsed = parse(input, STARTING_BAG_B);
+        parsed
+            .games
+            .iter()
+            .map(|game| game.get_minimum_set_power())
+            .sum::<usize>()
+            .into()
+    }
+}
+
 #[derive(Debug)]
 struct Parsed<'a> {
     games: Vec<Game<'a>>,
     bag: HashMap<&'a str, usize>,
-}
-
-#[derive(Debug)]
-struct Game<'a> {
-    id: usize,
-    sets: Vec<[(&'a str, usize); 3]>,
 }
 
 impl<'a> Parsed<'a> {
@@ -23,6 +42,12 @@ impl<'a> Parsed<'a> {
             .filter(|game| game.is_valid(&self.bag))
             .collect()
     }
+}
+
+#[derive(Debug)]
+struct Game<'a> {
+    id: usize,
+    sets: Vec<[(&'a str, usize); 3]>,
 }
 
 impl<'a> Game<'a> {
@@ -42,9 +67,6 @@ impl<'a> Game<'a> {
         bag.values().product::<usize>()
     }
 }
-
-const STARTING_BAG_A: [(&str, usize); 3] = [("red", 12), ("green", 13), ("blue", 14)];
-const STARTING_BAG_B: [(&str, usize); 3] = [("red", 0), ("green", 0), ("blue", 0)];
 
 fn parse<'a>(input: &'a [String], starting_bag: [(&'a str, usize); 3]) -> Parsed<'a> {
     let mut games = vec![];
@@ -74,28 +96,6 @@ fn parse<'a>(input: &'a [String], starting_bag: [(&'a str, usize); 3]) -> Parsed
     Parsed {
         games,
         bag: HashMap::from(starting_bag),
-    }
-}
-
-impl Solution for Day2 {
-    fn part_a(&self, input: &[String]) -> Answer {
-        let parsed = parse(input, STARTING_BAG_A);
-        parsed
-            .get_valid_games()
-            .iter()
-            .map(|game| game.id)
-            .sum::<usize>()
-            .into()
-    }
-
-    fn part_b(&self, input: &[String]) -> Answer {
-        let parsed = parse(input, STARTING_BAG_B);
-        parsed
-            .games
-            .iter()
-            .map(|game| game.get_minimum_set_power())
-            .sum::<usize>()
-            .into()
     }
 }
 
