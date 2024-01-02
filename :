@@ -28,7 +28,7 @@ impl Parsed {
         }
         let mut count = 0;
         for row in self.rows.iter() {
-            count += dfs(&row.conditions, &mut row.group_sizes.clone(), 0);
+            count += dfs(row, 0, &mut row.group_sizes.clone());
         }
         count
     }
