@@ -43,7 +43,7 @@ fn parse(input: &[String]) -> Parsed {
             .collect::<Vec<_>>();
         let mut conditions = conditions
             .chars()
-            .map(|c| SpringCondition::from(c))
+            .map(SpringCondition::from)
             .collect::<Vec<_>>();
         // to ensure block separation at the end
         conditions.push(SpringCondition::Working);
@@ -162,16 +162,22 @@ mod test {
 
     #[test]
     pub fn test_a() {
-        let input =
-            input::read_file(&format!("{}day_12_test.txt", helper_lib::FILES_PREFIX)).unwrap();
+        let input = input::read_file(&format!(
+            "{}day_12_test.txt",
+            helper_lib::consts::FILES_PREFIX
+        ))
+        .unwrap();
         let answer = Day12.part_a(&input);
         assert_eq!(<i32 as Into<Answer>>::into(21), answer);
     }
 
     #[test]
     pub fn test_b() {
-        let input =
-            input::read_file(&format!("{}day_12_test.txt", helper_lib::FILES_PREFIX)).unwrap();
+        let input = input::read_file(&format!(
+            "{}day_12_test.txt",
+            helper_lib::consts::FILES_PREFIX
+        ))
+        .unwrap();
         let answer = Day12.part_b(&input);
         assert_eq!(<i32 as Into<Answer>>::into(525152), answer);
     }

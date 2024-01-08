@@ -1,6 +1,6 @@
 use std::collections::{HashMap, HashSet};
 
-use crate::helper_lib::{answer::Answer, solution::Solution, utils::Matrix};
+use crate::helper_lib::{answer::Answer, matrix::Matrix, solution::Solution};
 
 pub struct Day3;
 
@@ -8,21 +8,21 @@ impl Solution for Day3 {
     fn part_a(&self, lines: &[String]) -> Answer {
         let mut sum = 0;
         let mut matrix: Matrix<char> = Matrix::new(lines.len(), lines[0].len(), ' ');
-        for (row, line) in lines.iter().enumerate() {
-            for (col, ch) in line.chars().enumerate() {
-                *matrix.get_mut(row, col).unwrap() = ch;
+        for (y, line) in lines.iter().enumerate() {
+            for (x, ch) in line.chars().enumerate() {
+                matrix[(x, y)] = ch;
             }
         }
-        for row in 0..matrix.rows {
+        for y in 0..matrix.rows {
             let mut number_buffer = String::new();
             let mut is_part_member = false;
-            for col in 0..matrix.cols {
-                let ch = *matrix.get(row, col).unwrap();
-                let part: Part = ch.into();
+            for x in 0..matrix.cols {
+                let ch = matrix[(x, y)];
+                let part = Part::from(ch);
                 match part {
                     Part::Digit => {
                         number_buffer.push(ch);
-                        if is_around_symbol(row, col, &matrix) {
+                        if is_around_symbol(y, x, &matrix) {
                             is_part_member = true;
                         }
                     }
@@ -48,28 +48,22 @@ impl Solution for Day3 {
     fn part_b(&self, lines: &[String]) -> Answer {
         let mut matrix: Matrix<char> = Matrix::new(lines.len(), lines[0].len(), ' ');
         let mut map: HashMap<(usize, usize), Vec<usize>> = HashMap::new();
-        for (row, line) in lines.iter().enumerate() {
-            for (col, ch) in line.chars().enumerate() {
-                *matrix
-                    .get_mut(row, col)
-                    .ok_or(anyhow!("can't get the mut element"))
-                    .unwrap() = ch;
+        for (y, line) in lines.iter().enumerate() {
+            for (x, ch) in line.chars().enumerate() {
+                matrix[(x, y)] = ch;
             }
         }
-        for row in 0..matrix.rows {
+        for y in 0..matrix.rows {
             let mut number_buffer = String::new();
             // use of an hashset to prevent multiple, same gear insert
             let mut gears_position: HashSet<(usize, usize)> = HashSet::new();
-            for col in 0..matrix.cols {
-                let ch = *matrix
-                    .get(row, col)
-                    .ok_or(anyhow::anyhow!("can't get the element!"))
-                    .unwrap();
-                let part: Part = ch.into();
+            for x in 0..matrix.cols {
+                let ch = matrix[(x, y)];
+                let part = Part::from(ch);
                 match part {
                     Part::Digit => {
                         number_buffer.push(ch);
-                        let digit_gears_position = nearby_gears_position(row, col, &matrix);
+                        let digit_gears_position = nearby_gears_position(y, x, &matrix);
                         for pos in digit_gears_position {
                             gears_position.insert(pos);
                         }
@@ -127,7 +121,7 @@ impl From<char> for Part {
 }
 
 fn is_around_symbol(row: usize, col: usize, matrix: &Matrix<char>) -> bool {
-    let modifiers: [(i32, i32); 8] = [
+    let modifiers: [(isize, isize); 8] = [
         (0, 1),
         (0, -1),
         (1, 0),
@@ -138,16 +132,11 @@ fn is_around_symbol(row: usize, col: usize, matrix: &Matrix<char>) -> bool {
         (1, -1),
     ];
     for &(row_mod, col_mod) in &modifiers {
-        let new_row: i32 = row as i32 + row_mod;
-        let new_col: i32 = col as i32 + col_mod;
-        if new_row >= 0
-            && new_row < matrix.rows as i32
-            && new_col >= 0
-            && new_col < matrix.cols as i32
-        {
-            let ch = *matrix.get(new_row as usize, new_col as usize).unwrap();
-            let part: Part = ch.into();
-            match part {
+        let new_row = row as isize + row_mod;
+        let new_col = col as isize + col_mod;
+        let el = matrix.get(new_row, new_col);
+        if let Some(&el) = el {
+            match Part::from(el) {
                 Part::Symbol | Part::Gear => return true,
                 _ => (),
             }
@@ -158,7 +147,7 @@ fn is_around_symbol(row: usize, col: usize, matrix: &Matrix<char>) -> bool {
 
 fn nearby_gears_position(row: usize, col: usize, matrix: &Matrix<char>) -> Vec<(usize, usize)> {
     let mut answer = vec![];
-    let modifiers: [(i32, i32); 8] = [
+    let modifiers: [(isize, isize); 8] = [
         (0, 1),
         (0, -1),
         (1, 0),
@@ -169,15 +158,11 @@ fn nearby_gears_position(row: usize, col: usize, matrix: &Matrix<char>) -> Vec<(
         (1, -1),
     ];
     for &(row_mod, col_mod) in &modifiers {
-        let new_row: i32 = row as i32 + row_mod;
-        let new_col: i32 = col as i32 + col_mod;
-        if new_row >= 0
-            && new_row < matrix.rows as i32
-            && new_col >= 0
-            && new_col < matrix.cols as i32
-        {
-            let ch = *matrix.get(new_row as usize, new_col as usize).unwrap();
-            let part: Part = ch.into();
+        let new_row = row as isize + row_mod;
+        let new_col = col as isize + col_mod;
+        let ch = matrix.get(new_row, new_col);
+        if let Some(&ch) = ch {
+            let part = Part::from(ch);
             if let Part::Gear = part {
                 answer.push((new_row as usize, new_col as usize));
             }
@@ -194,16 +179,22 @@ mod test {
 
     #[test]
     pub fn test_a() {
-        let input =
-            input::read_file(&format!("{}day_03_test.txt", helper_lib::FILES_PREFIX)).unwrap();
+        let input = input::read_file(&format!(
+            "{}day_03_test.txt",
+            helper_lib::consts::FILES_PREFIX
+        ))
+        .unwrap();
         let answer = Day3.part_a(&input);
         assert_eq!(<i32 as Into<Answer>>::into(4361), answer);
     }
 
     #[test]
     pub fn test_b() {
-        let input =
-            input::read_file(&format!("{}day_03_test.txt", helper_lib::FILES_PREFIX)).unwrap();
+        let input = input::read_file(&format!(
+            "{}day_03_test.txt",
+            helper_lib::consts::FILES_PREFIX
+        ))
+        .unwrap();
         let answer = Day3.part_b(&input);
         assert_eq!(<i32 as Into<Answer>>::into(467835), answer);
     }

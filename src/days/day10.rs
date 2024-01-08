@@ -1,4 +1,4 @@
-use crate::helper_lib::{answer::Answer, solution::Solution};
+use crate::helper_lib::{answer::Answer, directions::Direction, solution::Solution};
 
 pub struct Day10;
 
@@ -88,10 +88,7 @@ impl Grid {
     pub fn try_advance(&self, tile: &Tile, direction: &Direction) -> Option<&Tile> {
         let (x_offset, y_offset) = direction.to_offset();
         let (x, y) = (tile.position.0, tile.position.1);
-        let (new_x, new_y) = (
-            x as isize + x_offset as isize,
-            y as isize + y_offset as isize,
-        );
+        let (new_x, new_y) = (x as isize + x_offset, y as isize + y_offset);
         // check if out of bounds
         if (new_x < 0)
             || (new_x >= self.grid[0].len() as isize)
@@ -139,44 +136,6 @@ impl Tile {
     }
 }
 
-#[derive(PartialEq)]
-pub enum Direction {
-    North,
-    South,
-    East,
-    West,
-}
-
-impl Direction {
-    pub fn all() -> impl Iterator<Item = Direction> {
-        vec![
-            Direction::North,
-            Direction::South,
-            Direction::East,
-            Direction::West,
-        ]
-        .into_iter()
-    }
-
-    pub fn to_offset(&self) -> (i8, i8) {
-        match &self {
-            Self::North => (0, -1),
-            Self::South => (0, 1),
-            Self::East => (1, 0),
-            Self::West => (-1, 0),
-        }
-    }
-
-    pub fn opposite(&self) -> Direction {
-        match self {
-            Direction::North => Direction::South,
-            Direction::South => Direction::North,
-            Direction::East => Direction::West,
-            Direction::West => Direction::East,
-        }
-    }
-}
-
 #[cfg(test)]
 mod test {
     use crate::helper_lib::{self, answer::Answer, input, solution::Solution};
@@ -185,16 +144,22 @@ mod test {
 
     #[test]
     pub fn test_a() {
-        let input =
-            input::read_file(&format!("{}day_10_a_test.txt", helper_lib::FILES_PREFIX)).unwrap();
+        let input = input::read_file(&format!(
+            "{}day_10_a_test.txt",
+            helper_lib::consts::FILES_PREFIX
+        ))
+        .unwrap();
         let answer = Day10.part_a(&input);
         assert_eq!(<i32 as Into<Answer>>::into(4), answer);
     }
 
     #[test]
     pub fn test_b() {
-        let input =
-            input::read_file(&format!("{}day_10_b_test.txt", helper_lib::FILES_PREFIX)).unwrap();
+        let input = input::read_file(&format!(
+            "{}day_10_b_test.txt",
+            helper_lib::consts::FILES_PREFIX
+        ))
+        .unwrap();
         let answer = Day10.part_b(&input);
         assert_eq!(<i32 as Into<Answer>>::into(10), answer);
     }
