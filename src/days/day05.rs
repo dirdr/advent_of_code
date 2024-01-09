@@ -79,7 +79,7 @@ struct Map {
 }
 
 impl Map {
-    pub fn map(&self, seed: usize) -> usize {
+    fn map(&self, seed: usize) -> usize {
         for range in &self.ranges {
             if range.contains(seed) {
                 return range.dest + seed - range.src;
@@ -96,7 +96,7 @@ struct Range {
 }
 
 impl Range {
-    pub fn contains(&self, value: usize) -> bool {
+    fn contains(&self, value: usize) -> bool {
         value >= self.src && value < (self.src + self.len)
     }
 }

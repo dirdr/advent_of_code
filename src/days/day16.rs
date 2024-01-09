@@ -1,14 +1,34 @@
-use crate::helper_lib::{answer::Answer, solution::Solution};
+use crate::helper_lib::{
+    answer::Answer, directions::Direction, matrix::Matrix, solution::Solution,
+};
 
 pub struct Day16;
 
 impl Solution for Day16 {
     fn part_a(&self, input: &[String]) -> Answer {
+        let grid = parse(input);
+        let (initial_direction, initial_position) = ((0, 0), Direction::East);
         todo!()
     }
 
     fn part_b(&self, input: &[String]) -> Answer {
         todo!()
+    }
+}
+
+struct Grid {
+    matrix: Matrix<char>,
+}
+
+impl Grid {
+    fn simulate_beam(&self) -> usize {
+        0
+    }
+}
+
+fn parse(input: &[String]) -> Grid {
+    Grid {
+        matrix: Matrix::from_chars(input),
     }
 }
 

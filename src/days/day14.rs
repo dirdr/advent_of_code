@@ -36,13 +36,13 @@ struct Plateform {
 }
 
 impl Plateform {
-    pub fn tilt_cycle(&mut self) {
+    fn tilt_cycle(&mut self) {
         for direction in Direction::counter_clockwise_cycle() {
             self.tilt(direction);
         }
     }
 
-    pub fn tilt(&mut self, direction: Direction) {
+    fn tilt(&mut self, direction: Direction) {
         let offset = direction.to_offset();
         loop {
             let mut moved = false;
@@ -72,7 +72,7 @@ impl Plateform {
         }
     }
 
-    pub fn score(&self) -> usize {
+    fn score(&self) -> usize {
         let mut score = 0;
         for y in 0..self.plateform.rows {
             for x in 0..self.plateform.cols {

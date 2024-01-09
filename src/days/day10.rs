@@ -56,7 +56,7 @@ fn parse(input: &[String]) -> Grid {
 }
 
 impl Grid {
-    pub fn walk(&self) -> Vec<(usize, usize)> {
+    fn walk(&self) -> Vec<(usize, usize)> {
         let mut visited = vec![self.start_tile.position];
         let mut current_tile = self.start_tile.clone();
         loop {
@@ -85,7 +85,7 @@ impl Grid {
         visited
     }
 
-    pub fn try_advance(&self, tile: &Tile, direction: &Direction) -> Option<&Tile> {
+    fn try_advance(&self, tile: &Tile, direction: &Direction) -> Option<&Tile> {
         let (x_offset, y_offset) = direction.to_offset();
         let (x, y) = (tile.position.0, tile.position.1);
         let (new_x, new_y) = (x as isize + x_offset, y as isize + y_offset);
@@ -108,7 +108,7 @@ struct Tile {
 }
 
 impl Tile {
-    pub fn is_connected_to(&self, other: &Tile, direction: Direction) -> bool {
+    fn is_connected_to(&self, other: &Tile, direction: Direction) -> bool {
         if other.tile == '.' {
             return false;
         }
@@ -117,7 +117,7 @@ impl Tile {
         directions.contains(&direction) && other_directions.contains(&direction.opposite())
     }
 
-    pub fn get_connections(&self) -> Vec<Direction> {
+    fn get_connections(&self) -> Vec<Direction> {
         match self.tile {
             '|' => vec![Direction::South, Direction::North],
             '-' => vec![Direction::East, Direction::West],

@@ -60,14 +60,14 @@ struct Pattern {
 }
 
 impl Pattern {
-    pub fn transpose(&self) -> Vec<Vec<char>> {
+    fn transpose(&self) -> Vec<Vec<char>> {
         let rows = self.rows.clone();
         (0..rows[0].len())
             .map(|col| (0..rows.len()).map(|row| rows[row][col]).collect())
             .collect()
     }
 
-    pub fn count_before_reflection(buffer: &Vec<Vec<char>>, limit: usize) -> usize {
+    fn count_before_reflection(buffer: &Vec<Vec<char>>, limit: usize) -> usize {
         for mid in 1..=buffer.len() - 1 {
             let side = mid.min(buffer.len() - mid);
             let start = mid - side;

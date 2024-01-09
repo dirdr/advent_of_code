@@ -57,7 +57,7 @@ struct Race {
 }
 
 impl Race {
-    pub fn count_ways(&self) -> u32 {
+    fn count_ways(&self) -> u32 {
         (0..self.duration)
             .filter(|e| e * (self.duration - e) > self.record)
             .count() as u32

@@ -61,7 +61,7 @@ struct Card {
 }
 
 impl Card {
-    pub fn count_winning(&self) -> usize {
+    fn count_winning(&self) -> usize {
         self.picks
             .iter()
             .filter(|num| self.winning.contains(num))

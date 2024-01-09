@@ -56,13 +56,13 @@ fn parse(input: &[String]) -> Parsed {
 }
 
 #[derive(Clone)]
-pub struct Row {
+struct Row {
     conditions: Vec<SpringCondition>,
     group_sizes: Vec<usize>,
 }
 
 impl Row {
-    pub fn count_arrangements(&self) -> usize {
+    fn count_arrangements(&self) -> usize {
         fn dfs(
             memo: &mut HashMap<(usize, usize, usize), usize>,
             row: &Row,
@@ -106,7 +106,7 @@ impl Row {
         dfs(&mut HashMap::new(), self, 0, 0, 0)
     }
 
-    pub fn expand(&self) -> Self {
+    fn expand(&self) -> Self {
         let mut new_condition = self.conditions.clone();
         *new_condition.last_mut().unwrap() = SpringCondition::Unknown;
         Self {
@@ -117,7 +117,7 @@ impl Row {
 }
 
 #[derive(Clone, PartialEq, Copy)]
-pub enum SpringCondition {
+enum SpringCondition {
     Broken,
     Working,
     Unknown,

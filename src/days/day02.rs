@@ -67,7 +67,7 @@ fn parse<'a>(input: &'a [String], starting_bag: [(&'a str, usize); 3]) -> Parsed
 }
 
 impl<'a> Parsed<'a> {
-    pub fn get_valid_games(self) -> Vec<Game<'a>> {
+    fn get_valid_games(self) -> Vec<Game<'a>> {
         self.games
             .into_iter()
             .filter(|game| game.is_valid(&self.bag))
@@ -82,13 +82,13 @@ struct Game<'a> {
 }
 
 impl<'a> Game<'a> {
-    pub fn is_valid(&self, bag: &HashMap<&'a str, usize>) -> bool {
+    fn is_valid(&self, bag: &HashMap<&'a str, usize>) -> bool {
         self.sets
             .iter()
             .all(|set| set.iter().all(|entry| Some(&entry.1) <= bag.get(entry.0)))
     }
 
-    pub fn get_minimum_set_power(&self) -> usize {
+    fn get_minimum_set_power(&self) -> usize {
         let mut bag: HashMap<_, _> = HashMap::from(STARTING_BAG_B);
         for set in self.sets.iter() {
             for entry in set {

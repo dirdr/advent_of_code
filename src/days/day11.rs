@@ -17,7 +17,7 @@ impl Solution for Day11 {
     }
 }
 
-pub fn solve(input: &[String], expansion_factor: usize) -> Answer {
+fn solve(input: &[String], expansion_factor: usize) -> Answer {
     let sky = parse(input);
     sky.make_pairs()
         .iter()
@@ -43,7 +43,7 @@ impl Sky {
         galaxies_pos
     }
 
-    pub fn make_pairs(&self) -> HashSet<((usize, usize), (usize, usize))> {
+    fn make_pairs(&self) -> HashSet<((usize, usize), (usize, usize))> {
         let mut pairs = HashSet::new();
         let galaxies = self.retrieve_galaxies_positions();
         for (i, &el) in galaxies.iter().enumerate() {
