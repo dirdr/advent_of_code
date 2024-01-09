@@ -84,7 +84,7 @@ impl<'a> Display for Box<'a> {
 }
 
 impl<'a> Box<'a> {
-    pub fn new() -> Self {
+    fn new() -> Self {
         Self { lens: vec![] }
     }
 }
@@ -135,7 +135,7 @@ mod test {
     use super::Day15;
 
     #[test]
-    pub fn test_a() {
+    fn test_a() {
         let input = input::read_file(&format!(
             "{}day_15_test.txt",
             helper_lib::consts::FILES_PREFIX
@@ -146,7 +146,7 @@ mod test {
     }
 
     #[test]
-    pub fn test_b() {
+    fn test_b() {
         let input = input::read_file(&format!(
             "{}day_15_test.txt",
             helper_lib::consts::FILES_PREFIX

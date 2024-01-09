@@ -68,7 +68,7 @@ mod test {
     use super::Day1;
 
     #[test]
-    pub fn test_a() {
+    fn test_a() {
         let input = input::read_file(&format!(
             "{}day_01_a_test.txt",
             helper_lib::consts::FILES_PREFIX
@@ -79,7 +79,7 @@ mod test {
     }
 
     #[test]
-    pub fn test_b() {
+    fn test_b() {
         let input = input::read_file(&format!(
             "{}day_01_b_test.txt",
             helper_lib::consts::FILES_PREFIX

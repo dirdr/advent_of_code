@@ -83,7 +83,7 @@ impl Sky {
         count
     }
 
-    pub fn expansion_taxicab(
+    fn expansion_taxicab(
         &self,
         a: (usize, usize),
         b: (usize, usize),
@@ -136,7 +136,7 @@ mod test {
     use super::Day11;
 
     #[test]
-    pub fn test_a() {
+    fn test_a() {
         let input = input::read_file(&format!(
             "{}day_11_test.txt",
             helper_lib::consts::FILES_PREFIX
@@ -147,7 +147,7 @@ mod test {
     }
 
     #[test]
-    pub fn test_b() {
+    fn test_b() {
         let input = input::read_file(&format!(
             "{}day_11_test.txt",
             helper_lib::consts::FILES_PREFIX
