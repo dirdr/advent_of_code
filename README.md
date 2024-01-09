@@ -30,7 +30,7 @@ cargo test
 - [Day 12: Hot Springs](src/days/day12.rs) ⭐⭐
 - [Day 13: Point of Incidence](src/days/day13.rs) ⭐⭐
 - [Day 14: Parabolic Reflector Dish](src/days/day14.rs) ⭐⭐
-- [Day 15: Lens Library](src/days/day15.rs) ⭐
+- [Day 15: Lens Library](src/days/day15.rs) ⭐⭐
 
 ## Thanks
 The project structure is inspired by [this repository](https://github.com/Basicprogrammer10/advent-of-code)
