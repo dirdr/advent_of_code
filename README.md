@@ -27,7 +27,10 @@ cargo test
 - [Day 09: Mirage Maintenance](src/days/day09.rs) ⭐⭐
 - [Day 10: Pipe Maze](src/days/day10.rs) ⭐⭐
 - [Day 11: Cosmic Expansion](src/days/day11.rs) ⭐⭐
-- [Day 12: Hot Springs](src/days/day12.rs)
+- [Day 12: Hot Springs](src/days/day12.rs) ⭐⭐
+- [Day 13: Point of Incidence](src/days/day13.rs) ⭐⭐
+- [Day 14: Parabolic Reflector Dish](src/days/day14.rs) ⭐⭐
+- [Day 15: Lens Library](src/days/day15.rs) ⭐
 
 ## Thanks
 The project structure is inspired by [this repository](https://github.com/Basicprogrammer10/advent-of-code)
