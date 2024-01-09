@@ -7,7 +7,6 @@ use days::lib::ALL;
 
 use crate::helper_lib::input;
 
-#[macro_use]
 extern crate anyhow;
 
 fn main() -> anyhow::Result<()> {

@@ -14,11 +14,6 @@ impl Solution for Day15 {
         let mut boxes = vec![Box::new(); 256];
         let sequences = parse(input);
         solve(sequences, &mut boxes);
-        for b in boxes.iter() {
-            if !b.lens.is_empty() {
-                println!("{}", b);
-            }
-        }
         boxes
             .iter()
             .enumerate()
@@ -36,13 +31,13 @@ impl Solution for Day15 {
 
 fn solve<'a>(init: InitializationSequence<'a>, boxes: &mut [Box<'a>]) {
     for sequence in init.sequences {
-        match sequence.op {
+        match sequence {
             Operation::Dash(label) => {
-                let b = &mut boxes[hash(sequence.raw)];
+                let b = &mut boxes[hash(label)];
                 b.operate_dash(label);
             }
             Operation::Equal(label, fl) => {
-                let b = &mut boxes[hash(sequence.raw)];
+                let b = &mut boxes[hash(label)];
                 b.operate_equal(label, fl);
             }
         }
@@ -50,12 +45,7 @@ fn solve<'a>(init: InitializationSequence<'a>, boxes: &mut [Box<'a>]) {
 }
 
 struct InitializationSequence<'a> {
-    sequences: Vec<FullOperation<'a>>,
-}
-
-struct FullOperation<'a> {
-    raw: &'a str,
-    op: Operation<'a>,
+    sequences: Vec<Operation<'a>>,
 }
 
 enum Operation<'a> {
@@ -68,16 +58,10 @@ fn parse(input: &[String]) -> InitializationSequence {
     let raws = input[0].split(',').collect::<Vec<&str>>();
     for raw_op in raws {
         if let Some((label, fl)) = raw_op.split_once('=') {
-            sequences.push(FullOperation {
-                op: Operation::Equal(label, fl.parse::<usize>().unwrap()),
-                raw: raw_op,
-            });
+            sequences.push(Operation::Equal(label, fl.parse::<usize>().unwrap()));
         } else {
             let op = raw_op.trim_end_matches('-');
-            sequences.push(FullOperation {
-                op: Operation::Dash(op),
-                raw: raw_op,
-            });
+            sequences.push(Operation::Dash(op));
         }
     }
     InitializationSequence { sequences }
