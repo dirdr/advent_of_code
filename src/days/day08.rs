@@ -1,6 +1,6 @@
 use std::collections::HashMap;
 
-use crate::helper_lib::{answer::Answer, lcm, solution::Solution};
+use crate::helper_lib::{answer::Answer, maths, solution::Solution};
 
 pub struct Day8;
 
@@ -36,7 +36,7 @@ impl Solution for Day8 {
                 current_node = parsed.get(current_node, direction);
             }
         }
-        let lcm = cycles.iter().copied().reduce(lcm).unwrap_or(1);
+        let lcm = cycles.iter().copied().reduce(maths::lcm).unwrap_or(1);
         lcm.into()
     }
 }
