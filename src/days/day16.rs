@@ -1,4 +1,6 @@
-use std::collections::HashSet;
+use std::{collections::HashSet, default};
+
+use rayon::vec;
 
 use crate::helper_lib::{
     answer::Answer, directions::Direction, matrix::Matrix, solution::Solution, vec2::Vec2,
@@ -25,45 +27,88 @@ impl Solution for Day16 {
 }
 
 struct Grid {
-    matrix: Matrix<char>,
+    grid: Matrix<Tile>,
+}
+
+fn parse(input: &[String]) -> Grid {
+    Grid {
+        grid: Matrix::from_chars(input).map_to(Tile::from),
+    }
 }
 
 impl Grid {
     fn simulate(&self, rays: &mut Vec<Ray>) -> usize {
         let mut energized: HashSet<Vec2<isize>> = HashSet::new();
+        let mut lc = 0;
         while !rays.is_empty() {
-            let mut to_remove = vec![];
-            let mut to_add = vec![];
-            for (i, ray) in rays.iter_mut().enumerate() {
-                let pos = Vec2::new(ray.pos.x, ray.pos.y);
-                if let Some(&p) = self.matrix.get(pos.y, pos.x) {
-                    energized.insert(pos.clone());
-                    match p {
-                        '.' => {}
-                        '/' => {}
-                        '\\' => {}
-                        '-' => {}
-                        '|' => {}
-                        _ => unreachable!(),
-                    };
-                } else {
-                    to_remove.push(i);
+            println!("{:?}", rays);
+            lc += 1;
+            if lc == 100 {
+                return 0;
+            }
+            let mut next_rays = vec![];
+            for ray in rays.iter_mut() {
+                let pos = ray.pos + ray.direction.to_offset();
+
+                if !self.grid.contains(pos) {
+                    continue;
                 }
+
+                let tile = self.grid[Vec2::<usize>::try_from(pos).unwrap()];
+
+                if tile == Tile::Empty || tile.matching_direction(&ray.direction) {
+                    ray.pos = pos;
+                    next_rays.push(ray.clone());
+                    continue;
+                }
+
+                ray.pos = pos;
+
+                match tile {
+                    Tile::RightReflector => {
+                        ray.direction = match ray.direction {
+                            Direction::North => Direction::East,
+                            Direction::East => Direction::North,
+                            Direction::South => Direction::West,
+                            Direction::West => Direction::South,
+                        };
+                        next_rays.push(ray.clone());
+                    }
+                    Tile::LeftReflector => {
+                        ray.direction = match ray.direction {
+                            Direction::North => Direction::West,
+                            Direction::East => Direction::South,
+                            Direction::South => Direction::East,
+                            Direction::West => Direction::North,
+                        };
+                        next_rays.push(ray.clone());
+                    }
+                    Tile::Horizontal => {
+                        next_rays.push(Ray {
+                            direction: Direction::East,
+                            pos: pos,
+                        });
+                        next_rays.push(Ray {
+                            direction: Direction::West,
+                            pos: pos,
+                        });
+                    }
+                    Tile::Vertical => {
+                        next_rays.push(Ray {
+                            direction: Direction::North,
+                            pos: pos,
+                        });
+                        next_rays.push(Ray {
+                            direction: Direction::South,
+                            pos: pos,
+                        });
+                    }
+                    _ => (),
+                };
             }
-            for ta in to_add {
-                rays.push(ta);
-            }
-            for tr in to_remove {
-                rays.remove(tr);
-            }
+            std::mem::swap(rays, &mut next_rays);
         }
         energized.len()
-    }
-}
-
-fn parse(input: &[String]) -> Grid {
-    Grid {
-        matrix: Matrix::from_chars(input),
     }
 }
 
@@ -73,9 +118,36 @@ struct Ray {
     pos: Vec2<isize>,
 }
 
-impl Ray {
-    fn new(direction: Direction, pos: Vec2<isize>) -> Self {
-        Self { direction, pos }
+#[derive(Copy, Clone, Default, PartialEq, Eq)]
+enum Tile {
+    RightReflector,
+    LeftReflector,
+    Horizontal,
+    Vertical,
+    #[default]
+    Empty,
+}
+
+impl Tile {
+    fn matching_direction(&self, direction: &Direction) -> bool {
+        matches!(
+            (self, direction),
+            (Tile::Horizontal, Direction::East | Direction::West)
+                | (Tile::Vertical, Direction::North | Direction::South)
+        )
+    }
+}
+
+impl From<char> for Tile {
+    fn from(value: char) -> Self {
+        match value {
+            '.' => Tile::Empty,
+            '/' => Tile::RightReflector,
+            '\\' => Tile::LeftReflector,
+            '-' => Tile::Horizontal,
+            '|' => Tile::Vertical,
+            _ => unreachable!(),
+        }
     }
 }
 

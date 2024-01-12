@@ -1,7 +1,7 @@
 use std::collections::HashMap;
 
 use crate::helper_lib::{
-    answer::Answer, directions::Direction, matrix::Matrix, solution::Solution,
+    answer::Answer, directions::Direction, matrix::Matrix, solution::Solution, vec2::Vec2,
 };
 
 pub struct Day14;
@@ -9,17 +9,19 @@ pub struct Day14;
 impl Solution for Day14 {
     fn part_a(&self, input: &[String]) -> Answer {
         let mut plateform = parse(input);
+        println!("{:?}", plateform.plateform);
         plateform.tilt(Direction::North);
+        println!("{:?}", plateform.plateform);
         plateform.score().into()
     }
 
     fn part_b(&self, input: &[String]) -> Answer {
         let mut plateform = parse(input);
-        let iterations = 1000000000;
+        const ITERATIONS: usize = 1000000000;
         let mut seen = HashMap::new();
-        for i in 0..iterations {
+        for i in 0..ITERATIONS {
             if let Some(previous) = seen.get(&plateform) {
-                if (iterations - i) % (i - previous) == 0 {
+                if (ITERATIONS - i) % (i - previous) == 0 {
                     return plateform.score().into();
                 }
             }
@@ -48,20 +50,19 @@ impl Plateform {
             let mut moved = false;
             for y in 0..self.plateform.rows {
                 for x in 0..self.plateform.cols {
-                    let pos = (y, x);
+                    let pos = Vec2::new(x, y);
                     let current = self.plateform[pos];
                     if current != 'O' {
                         continue;
                     }
-                    let new_position = (y as isize + offset.1, x as isize + offset.0);
-                    let el_at_new_position = self.plateform.get(new_position.1, new_position.0);
+                    let new_position = Vec2::<isize>::from(pos) + offset;
+                    let el_at_new_position = self.plateform.get(new_position);
                     if let Some(&np) = el_at_new_position {
                         if np != '.' {
                             continue;
                         }
-                        let new_position = (new_position.0 as usize, new_position.1 as usize);
-                        self.plateform[new_position] = 'O';
-                        self.plateform[(y, x)] = '.';
+                        self.plateform[Vec2::<usize>::try_from(new_position).unwrap()] = 'O';
+                        self.plateform[pos] = '.';
                         moved = true;
                     }
                 }
@@ -76,7 +77,8 @@ impl Plateform {
         let mut score = 0;
         for y in 0..self.plateform.rows {
             for x in 0..self.plateform.cols {
-                if self.plateform[(y, x)] == 'O' {
+                let pos = Vec2::new(x, y);
+                if self.plateform[pos] == 'O' {
                     score += self.plateform.rows - y;
                 }
             }

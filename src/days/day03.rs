@@ -1,28 +1,33 @@
 use std::collections::{HashMap, HashSet};
 
-use crate::helper_lib::{answer::Answer, matrix::Matrix, solution::Solution};
+use crate::helper_lib::{
+    answer::Answer,
+    matrix::Matrix,
+    solution::Solution,
+    vec2::{self, Vec2},
+};
 
 pub struct Day3;
 
 impl Solution for Day3 {
-    fn part_a(&self, lines: &[String]) -> Answer {
+    fn part_a(&self, input: &[String]) -> Answer {
         let mut sum = 0;
-        let mut matrix: Matrix<char> = Matrix::new(lines.len(), lines[0].len(), ' ');
-        for (y, line) in lines.iter().enumerate() {
-            for (x, ch) in line.chars().enumerate() {
-                matrix[(x, y)] = ch;
-            }
-        }
-        for y in 0..matrix.rows {
+        let parsed = parse(input);
+        let grid = &parsed.grid;
+        for y in 0..grid.rows {
             let mut number_buffer = String::new();
             let mut is_part_member = false;
-            for x in 0..matrix.cols {
-                let ch = matrix[(x, y)];
+            for x in 0..grid.cols {
+                let pos = Vec2::new(x, y);
+                let ch = grid[pos];
                 let part = Part::from(ch);
                 match part {
                     Part::Digit => {
                         number_buffer.push(ch);
-                        if is_around_symbol(y, x, &matrix) {
+                        if !parsed
+                            .get_parts_positions_around(pos, &[Part::Gear, Part::Symbol])
+                            .is_empty()
+                        {
                             is_part_member = true;
                         }
                     }
@@ -45,28 +50,27 @@ impl Solution for Day3 {
         sum.into()
     }
 
-    fn part_b(&self, lines: &[String]) -> Answer {
-        let mut matrix: Matrix<char> = Matrix::new(lines.len(), lines[0].len(), ' ');
-        let mut map: HashMap<(usize, usize), Vec<usize>> = HashMap::new();
-        for (y, line) in lines.iter().enumerate() {
-            for (x, ch) in line.chars().enumerate() {
-                matrix[(x, y)] = ch;
-            }
-        }
-        for y in 0..matrix.rows {
+    fn part_b(&self, input: &[String]) -> Answer {
+        let parsed = parse(input);
+        let grid = &parsed.grid;
+        let mut map: HashMap<Vec2<usize>, Vec<usize>> = HashMap::new();
+        for y in 0..grid.rows {
             let mut number_buffer = String::new();
-            // use of an hashset to prevent multiple, same gear insert
-            let mut gears_position: HashSet<(usize, usize)> = HashSet::new();
-            for x in 0..matrix.cols {
-                let ch = matrix[(x, y)];
+            // use of an hashset to prevent same insert
+            let mut gears_position: HashSet<Vec2<usize>> = HashSet::new();
+            for x in 0..grid.cols {
+                let pos = Vec2::new(x, y);
+                let ch = grid[pos];
                 let part = Part::from(ch);
                 match part {
                     Part::Digit => {
                         number_buffer.push(ch);
-                        let digit_gears_position = nearby_gears_position(y, x, &matrix);
-                        for pos in digit_gears_position {
-                            gears_position.insert(pos);
-                        }
+                        gears_position.extend(
+                            parsed
+                                .get_parts_positions_around(pos, &[Part::Gear])
+                                .iter()
+                                .cloned(),
+                        );
                     }
                     _ => {
                         if !number_buffer.is_empty() {
@@ -101,7 +105,46 @@ impl Solution for Day3 {
     }
 }
 
-#[derive(Clone)]
+struct Parsed {
+    grid: Matrix<char>,
+}
+
+fn parse(input: &[String]) -> Parsed {
+    Parsed {
+        grid: Matrix::from_chars(input),
+    }
+}
+
+impl Parsed {
+    fn get_parts_positions_around(&self, pos: Vec2<usize>, parts: &[Part]) -> Vec<Vec2<usize>> {
+        let offsets: [Vec2<isize>; 8] = [
+            Vec2::new(0, 1),
+            Vec2::new(0, -1),
+            Vec2::new(1, 0),
+            Vec2::new(-1, 0),
+            Vec2::new(-1, -1),
+            Vec2::new(1, 1),
+            Vec2::new(-1, 1),
+            Vec2::new(1, -1),
+        ];
+        let mut positions = vec![];
+        for &offset in &offsets {
+            let new_pos = Vec2::<isize>::from(pos) + offset;
+            let el = self.grid.get(new_pos);
+            if let Some(&el) = el {
+                for part in parts {
+                    let cp = Part::from(el);
+                    if cp == *part {
+                        positions.push(Vec2::<usize>::try_from(new_pos).unwrap())
+                    }
+                }
+            }
+        }
+        positions
+    }
+}
+
+#[derive(Clone, PartialEq, Eq)]
 enum Part {
     Dot,
     Digit,
@@ -118,57 +161,6 @@ impl From<char> for Part {
             _ => Part::Symbol,
         }
     }
-}
-
-fn is_around_symbol(row: usize, col: usize, matrix: &Matrix<char>) -> bool {
-    let modifiers: [(isize, isize); 8] = [
-        (0, 1),
-        (0, -1),
-        (1, 0),
-        (-1, 0),
-        (-1, -1),
-        (1, 1),
-        (-1, 1),
-        (1, -1),
-    ];
-    for &(row_mod, col_mod) in &modifiers {
-        let new_row = row as isize + row_mod;
-        let new_col = col as isize + col_mod;
-        let el = matrix.get(new_row, new_col);
-        if let Some(&el) = el {
-            match Part::from(el) {
-                Part::Symbol | Part::Gear => return true,
-                _ => (),
-            }
-        }
-    }
-    false
-}
-
-fn nearby_gears_position(row: usize, col: usize, matrix: &Matrix<char>) -> Vec<(usize, usize)> {
-    let mut answer = vec![];
-    let modifiers: [(isize, isize); 8] = [
-        (0, 1),
-        (0, -1),
-        (1, 0),
-        (-1, 0),
-        (-1, -1),
-        (1, 1),
-        (-1, 1),
-        (1, -1),
-    ];
-    for &(row_mod, col_mod) in &modifiers {
-        let new_row = row as isize + row_mod;
-        let new_col = col as isize + col_mod;
-        let ch = matrix.get(new_row, new_col);
-        if let Some(&ch) = ch {
-            let part = Part::from(ch);
-            if let Part::Gear = part {
-                answer.push((new_row as usize, new_col as usize));
-            }
-        }
-    }
-    answer
 }
 
 #[cfg(test)]

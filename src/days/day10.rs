@@ -1,4 +1,6 @@
-use crate::helper_lib::{answer::Answer, directions::Direction, solution::Solution};
+use crate::helper_lib::{
+    answer::Answer, directions::Direction, matrix::Matrix, solution::Solution, vec2::Vec2,
+};
 
 pub struct Day10;
 
@@ -19,7 +21,7 @@ impl Solution for Day10 {
             .enumerate()
             .fold(0i32, |acc, (i, p)| {
                 let l = (i + 1) % len;
-                acc + (p.0 as i32 * path[l].1 as i32 - p.1 as i32 * path[l].0 as i32)
+                acc + (p.x as i32 * path[l].y as i32 - p.y as i32 * path[l].x as i32)
             })
             .abs()
             / 2;
@@ -29,18 +31,18 @@ impl Solution for Day10 {
 
 #[derive(Debug)]
 struct Grid {
-    grid: Vec<Vec<Tile>>,
+    grid: Matrix<Tile>,
     start_tile: Tile,
 }
 
 fn parse(input: &[String]) -> Grid {
     let mut grid = vec![];
-    for (i, row) in input.iter().enumerate() {
+    for (y, row) in input.iter().enumerate() {
         let mut row_buffer = vec![];
-        for (j, col) in row.chars().enumerate() {
+        for (x, ch) in row.chars().enumerate() {
             let tile = Tile {
-                position: (j, i),
-                tile: col,
+                position: Vec2::new(x, y),
+                tile: ch,
             };
             row_buffer.push(tile);
         }
@@ -52,11 +54,14 @@ fn parse(input: &[String]) -> Grid {
         .find(|tile| tile.tile == 'S')
         .unwrap()
         .clone();
-    Grid { grid, start_tile }
+    Grid {
+        grid: Matrix::<Tile>::from(grid),
+        start_tile,
+    }
 }
 
 impl Grid {
-    fn walk(&self) -> Vec<(usize, usize)> {
+    fn walk(&self) -> Vec<Vec2<usize>> {
         let mut visited = vec![self.start_tile.position];
         let mut current_tile = self.start_tile.clone();
         loop {
@@ -86,24 +91,14 @@ impl Grid {
     }
 
     fn try_advance(&self, tile: &Tile, direction: &Direction) -> Option<&Tile> {
-        let (x_offset, y_offset) = direction.to_offset();
-        let (x, y) = (tile.position.0, tile.position.1);
-        let (new_x, new_y) = (x as isize + x_offset, y as isize + y_offset);
-        // check if out of bounds
-        if (new_x < 0)
-            || (new_x >= self.grid[0].len() as isize)
-            || (new_y < 0)
-            || (new_y >= self.grid.len() as isize)
-        {
-            return None;
-        }
-        Some(&self.grid[new_y as usize][new_x as usize])
+        let next_pos = Vec2::<isize>::from(tile.position) + direction.to_offset();
+        self.grid.get(next_pos)
     }
 }
 
 #[derive(Debug, Clone, PartialEq, Eq)]
 struct Tile {
-    position: (usize, usize),
+    position: Vec2<usize>,
     tile: char,
 }
 
