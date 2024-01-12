@@ -39,13 +39,7 @@ fn parse(input: &[String]) -> Grid {
 impl Grid {
     fn simulate(&self, rays: &mut Vec<Ray>) -> usize {
         let mut energized: HashSet<Vec2<isize>> = HashSet::new();
-        let mut lc = 0;
         while !rays.is_empty() {
-            println!("{:?}", rays);
-            lc += 1;
-            if lc == 100 {
-                return 0;
-            }
             let mut next_rays = vec![];
             for ray in rays.iter_mut() {
                 let pos = ray.pos + ray.direction.to_offset();
@@ -55,6 +49,8 @@ impl Grid {
                 }
 
                 let tile = self.grid[Vec2::<usize>::try_from(pos).unwrap()];
+
+                let not_seen = energized.insert(pos);
 
                 if tile == Tile::Empty || tile.matching_direction(&ray.direction) {
                     ray.pos = pos;
@@ -83,24 +79,24 @@ impl Grid {
                         };
                         next_rays.push(ray.clone());
                     }
-                    Tile::Horizontal => {
+                    Tile::Horizontal if not_seen => {
                         next_rays.push(Ray {
                             direction: Direction::East,
-                            pos: pos,
+                            pos,
                         });
                         next_rays.push(Ray {
                             direction: Direction::West,
-                            pos: pos,
+                            pos,
                         });
                     }
-                    Tile::Vertical => {
+                    Tile::Vertical if not_seen => {
                         next_rays.push(Ray {
                             direction: Direction::North,
-                            pos: pos,
+                            pos,
                         });
                         next_rays.push(Ray {
                             direction: Direction::South,
-                            pos: pos,
+                            pos,
                         });
                     }
                     _ => (),

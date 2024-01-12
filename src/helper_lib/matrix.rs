@@ -26,6 +26,7 @@ impl<T> IndexMut<Vec2<usize>> for Matrix<T> {
     }
 }
 
+#[allow(dead_code)]
 impl<T> Matrix<T>
 where
     T: Clone,
