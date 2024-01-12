@@ -1,11 +1,6 @@
 use std::collections::{HashMap, HashSet};
 
-use crate::helper_lib::{
-    answer::Answer,
-    matrix::Matrix,
-    solution::Solution,
-    vec2::{self, Vec2},
-};
+use crate::helper_lib::{answer::Answer, matrix::Matrix, solution::Solution, vec2::Vec2};
 
 pub struct Day3;
 
