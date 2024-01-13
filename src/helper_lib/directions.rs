@@ -1,6 +1,6 @@
 use super::vec2::Vec2;
 
-#[derive(Clone, PartialEq, Debug)]
+#[derive(Copy, Clone, PartialEq, Eq, Debug, Hash)]
 pub enum Direction {
     North,
     South,
@@ -44,6 +44,24 @@ impl Direction {
             Direction::South => Direction::North,
             Direction::East => Direction::West,
             Direction::West => Direction::East,
+        }
+    }
+
+    pub fn turn_left(&self) -> Direction {
+        match self {
+            Direction::North => Direction::West,
+            Direction::West => Direction::South,
+            Direction::South => Direction::East,
+            Direction::East => Direction::North,
+        }
+    }
+
+    pub fn turn_right(&self) -> Direction {
+        match self {
+            Direction::North => Direction::East,
+            Direction::East => Direction::South,
+            Direction::South => Direction::West,
+            Direction::West => Direction::North,
         }
     }
 }
