@@ -29,7 +29,7 @@ impl Direction {
         .into_iter()
     }
 
-    pub fn to_offset(&self) -> Vec2<isize> {
+    pub fn to_offset(self) -> Vec2<isize> {
         match self {
             Self::North => Vec2::new(0, -1),
             Self::South => Vec2::new(0, 1),
