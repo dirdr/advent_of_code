@@ -1,5 +1,7 @@
 use std::fmt::Debug;
-use std::ops::Add;
+use std::ops::{Add, Sub};
+
+use num::{Num, Signed, Unsigned};
 
 #[derive(Copy, Clone, Debug, PartialEq, Eq, Hash)]
 pub struct Vec2<T> {
@@ -7,9 +9,18 @@ pub struct Vec2<T> {
     pub y: T,
 }
 
-impl<T> Vec2<T> {
+impl<T: Num> Vec2<T> {
     pub fn new(x: T, y: T) -> Self {
         Self { x, y }
+    }
+}
+
+impl<T: Signed + Copy> Vec2<T> {
+    pub fn abs(&self) -> Vec2<T> {
+        Self {
+            x: self.x.abs(),
+            y: self.y.abs(),
+        }
     }
 }
 
@@ -20,6 +31,17 @@ impl<T: Add<Output = T>> Add for Vec2<T> {
         Self {
             x: self.x + other.x,
             y: self.y + other.y,
+        }
+    }
+}
+
+impl<T: Sub<Output = T>> Sub for Vec2<T> {
+    type Output = Self;
+
+    fn sub(self, other: Self) -> Self {
+        Self {
+            x: self.x - other.x,
+            y: self.y - other.y,
         }
     }
 }
