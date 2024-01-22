@@ -75,6 +75,12 @@ where
         pos.x >= 0 && pos.x < self.cols as isize && pos.y >= 0 && pos.y < self.rows as isize
     }
 
+    pub fn get_rows_uncheked(&self, index: usize) -> Vec<T> {
+        (0..self.cols)
+            .map(|i| self[Vec2::new(i, index)].clone())
+            .collect::<Vec<T>>()
+    }
+
     fn in_range(&self, pos: Vec2<usize>) -> bool {
         pos.x < self.cols && pos.y < self.rows
     }
