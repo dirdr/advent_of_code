@@ -1,7 +1,7 @@
 use std::fmt::Debug;
 use std::ops::{Add, Sub};
 
-use num::{Num, Signed, Unsigned};
+use num::{Num, Signed};
 
 #[derive(Copy, Clone, Debug, PartialEq, Eq, Hash)]
 pub struct Vec2<T> {

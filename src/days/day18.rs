@@ -38,7 +38,7 @@ impl Trench {
             })
             .abs()
             / 2;
-        (area - (len as i32 / 2) + 1) as i32
+        area - (len as i32 / 2) + 1
     }
 }
 
