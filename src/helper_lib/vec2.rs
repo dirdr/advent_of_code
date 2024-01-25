@@ -1,5 +1,5 @@
 use std::fmt::Debug;
-use std::ops::{Add, Sub};
+use std::ops::{Add, AddAssign, Mul, Sub};
 
 use num::{Num, Signed};
 
@@ -15,6 +15,7 @@ impl<T: Num> Vec2<T> {
     }
 }
 
+#[allow(dead_code)]
 impl<T: Signed + Copy> Vec2<T> {
     pub fn abs(&self) -> Vec2<T> {
         Self {
@@ -35,6 +36,13 @@ impl<T: Add<Output = T>> Add for Vec2<T> {
     }
 }
 
+impl<T: AddAssign> AddAssign for Vec2<T> {
+    fn add_assign(&mut self, other: Self) {
+        self.x += other.x;
+        self.y += other.y;
+    }
+}
+
 impl<T: Sub<Output = T>> Sub for Vec2<T> {
     type Output = Self;
 
@@ -42,6 +50,17 @@ impl<T: Sub<Output = T>> Sub for Vec2<T> {
         Self {
             x: self.x - other.x,
             y: self.y - other.y,
+        }
+    }
+}
+
+impl<T: Num + Copy> Mul<T> for Vec2<T> {
+    type Output = Vec2<T>;
+
+    fn mul(self, scalar: T) -> Vec2<T> {
+        Vec2 {
+            x: self.x * scalar,
+            y: self.y * scalar,
         }
     }
 }
