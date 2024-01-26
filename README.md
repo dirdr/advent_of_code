@@ -34,7 +34,7 @@ cargo test
 - [Day 16: The Floor Will Be Lava](src/days/day16.rs) ⭐⭐
 - [Day 17: Clumsy Crucible](src/days/day17.rs) ⭐⭐
 - [Day 18: Lavaduct Lagoon](src/days/day18.rs) ⭐⭐
-- [Day 19: Aplenty](src/days/day19.rs) ⭐⭐
+- [Day 19: Aplenty](src/days/day19.rs) ⭐
 
 ## Thanks
 The project structure is inspired by [this repository](https://github.com/Basicprogrammer10/advent-of-code)
