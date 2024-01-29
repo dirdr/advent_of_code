@@ -15,7 +15,7 @@ impl Solution for Day19 {
                     break;
                 }
                 if current_workflow == *"A" {
-                    sum += part.ratings.values().sum::<usize>();
+                    sum += part.ratings.iter().sum::<usize>();
                     break;
                 }
                 for rule in parsed.workflows.get(&current_workflow).unwrap() {
@@ -35,8 +35,49 @@ impl Solution for Day19 {
 
     fn part_b(&self, input: &[String]) -> Answer {
         let parsed = parse(input);
-        todo!()
+        solve_b([(1, 4000); 4], &parsed.workflows, "in".to_owned()).into()
     }
+}
+
+fn solve_b(
+    mut ranges: [(usize, usize); 4],
+    workflows: &HashMap<String, Vec<Rule>>,
+    current_workflow: String,
+) -> usize {
+    let mut sum = 0;
+    // base case
+    if *current_workflow == *"R" {
+        return sum;
+    }
+    if *current_workflow == *"A" {
+        return sum + count_ranges_combinations(&ranges);
+    }
+    for rule in workflows.get(&current_workflow).unwrap() {
+        if let Some(condition) = &rule.condition {
+            let index = Part::to_rating_index(condition.category);
+            let mut valid_ranges = ranges;
+            let valid_rating = &mut valid_ranges[index];
+            let invalid_rating = &mut ranges[index];
+
+            match condition.condition_type {
+                ConditionType::LessThan if valid_rating.0 < condition.value => {
+                    valid_rating.1 = valid_rating.1.min(condition.value - 1);
+                    invalid_rating.0 = invalid_rating.0.max(condition.value);
+                }
+                ConditionType::GreaterThan if valid_rating.1 > condition.value => {
+                    valid_rating.0 = valid_rating.0.max(condition.value + 1);
+                    invalid_rating.1 = invalid_rating.1.min(condition.value);
+                }
+                _ => continue,
+            };
+
+            // we explore with new valid range
+            sum += solve_b(valid_ranges, workflows, rule.next_workflow.clone());
+        } else {
+            sum += solve_b(ranges, workflows, rule.next_workflow.clone())
+        }
+    }
+    sum
 }
 
 fn parse(input: &[String]) -> Parsed {
@@ -71,14 +112,14 @@ fn parse(input: &[String]) -> Parsed {
     }
     for part in parts_str {
         let part = part[1..part.len() - 1].to_owned();
-        let ratings = part.split(',').collect::<Vec<_>>();
-        let mut map = HashMap::new();
-        for token in ratings {
+        let ratings_str = part.split(',').collect::<Vec<_>>();
+        let mut ratings = [0; 4];
+        for token in ratings_str {
             let (rating, value) = token.split_once('=').unwrap();
             let rating = rating.chars().next().unwrap();
-            map.insert(rating, value.parse::<usize>().unwrap());
+            ratings[Part::to_rating_index(rating)] = value.parse::<usize>().unwrap();
         }
-        parts.push(Part { ratings: map });
+        parts.push(Part { ratings });
     }
     Parsed { workflows, parts }
 }
@@ -97,7 +138,10 @@ struct Condition {
 
 impl Condition {
     fn valid(&self, part: &Part) -> bool {
-        let part_value = part.ratings.get(&self.category).unwrap();
+        let part_value = part
+            .ratings
+            .get(Part::to_rating_index(self.category))
+            .unwrap();
         match self.condition_type {
             ConditionType::GreaterThan => part_value > &self.value,
             ConditionType::LessThan => part_value < &self.value,
@@ -129,7 +173,23 @@ impl From<&str> for ConditionType {
 
 #[derive(Debug)]
 struct Part {
-    ratings: HashMap<char, usize>,
+    ratings: [usize; 4],
+}
+
+impl Part {
+    fn to_rating_index(ch: char) -> usize {
+        match ch {
+            'x' => 0,
+            'm' => 1,
+            'a' => 2,
+            's' => 3,
+            _ => unreachable!(),
+        }
+    }
+}
+
+fn count_ranges_combinations(ranges: &[(usize, usize); 4]) -> usize {
+    ranges.iter().map(|r| r.1 - r.0 + 1).product::<usize>()
 }
 
 #[cfg(test)]
@@ -149,6 +209,7 @@ mod test {
         assert_eq!(<i32 as Into<Answer>>::into(19114), answer);
     }
 
+    #[test]
     fn test_b() {
         let input = input::read_file(&format!(
             "{}day_19_test.txt",
