@@ -35,7 +35,7 @@ cargo test
 - [Day 17: Clumsy Crucible](src/days/day17.rs) ⭐⭐
 - [Day 18: Lavaduct Lagoon](src/days/day18.rs) ⭐⭐
 - [Day 19: Aplenty](src/days/day19.rs) ⭐⭐
-- [Day 20: Pulse Propagation](src/days/day20.rs)
+- [Day 20: Pulse Propagation](src/days/day20.rs) ⭐⭐
 - [Day 21: Step Counter](src/days/day21.rs)
 - [Day 22: Sand Slabs](src/days/day22.rs)
 - [Day 23: A Long Walk](src/days/day23.rs)
