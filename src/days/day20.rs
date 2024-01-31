@@ -7,27 +7,40 @@ pub struct Day20;
 impl Solution for Day20 {
     fn part_a(&self, input: &[String]) -> Answer {
         let modules = parse(input);
-        let result = simulate_button_presses(&modules, 1000);
+        let mut flip_flops_memory = HashMap::new();
+        let mut conjuctions_memory = HashMap::new();
+        let mut result = [0_usize; 2];
+        for _ in 0..1000 {
+            let simulation_count =
+                simulate_button_presses(&modules, &mut flip_flops_memory, &mut conjuctions_memory);
+            result[0] += simulation_count[0];
+            result[1] += simulation_count[1];
+        }
         (result[0] * result[1]).into()
     }
 
     fn part_b(&self, input: &[String]) -> Answer {
+        let modules = parse(input);
+        let ic = important_connections(&modules);
+        for i in 0..1000 {}
+        println!("{:?}", ic);
         todo!()
     }
 }
 
-fn simulate_button_presses(modules: &HashMap<&str, Module>, number: usize) -> [usize; 2] {
+fn simulate_button_presses<'a>(
+    modules: &HashMap<&'a str, Module<'a>>,
+    flip_flop_mem: &mut HashMap<&'a str, FlipFlopState>,
+    conjuctions_mem: &mut HashMap<&'a str, HashMap<&'a str, Pulse>>,
+) -> [usize; 2] {
     // 0 is for low pulses, 1 if for high pulses
     let mut count = [0_usize; 2];
     let mut queue = VecDeque::new();
 
-    let mut flip_flops_memory = HashMap::new();
-    let mut conjuctions_memory = HashMap::new();
-
     for m in modules.values() {
         match m.module_type {
             ModuleType::FlipFlop => {
-                flip_flops_memory.insert(m.source, FlipFlopState::Off);
+                flip_flop_mem.insert(m.source, FlipFlopState::Off);
             }
             ModuleType::Conjuction => {
                 let mut map = HashMap::new();
@@ -36,70 +49,80 @@ fn simulate_button_presses(modules: &HashMap<&str, Module>, number: usize) -> [u
                         map.insert(om.source, Pulse::Low);
                     }
                 }
-                conjuctions_memory.insert(m.source, map);
+                conjuctions_mem.insert(m.source, map);
             }
             _ => continue,
         }
     }
 
-    for _ in 0..number {
-        let broadcaster = modules.get("broadcaster").unwrap();
-        for t in broadcaster.destinations.iter() {
-            queue.push_back(("broadcaster", *t, Pulse::Low));
+    let broadcaster = modules.get("broadcaster").unwrap();
+    for t in broadcaster.destinations.iter() {
+        queue.push_back(("broadcaster", *t, Pulse::Low));
+    }
+    count[0] += 1;
+
+    while let Some((curr, dest, pulse)) = queue.pop_front() {
+        match pulse {
+            Pulse::Low => count[0] += 1,
+            Pulse::High => count[1] += 1,
         }
-        count[0] += 1;
 
-        while let Some((curr, dest, pulse)) = queue.pop_front() {
-            println!("{:?} -{:?} -> {:?}", curr, pulse, dest);
-            match pulse {
-                Pulse::Low => count[0] += 1,
-                Pulse::High => count[1] += 1,
-            }
+        let Some(module) = modules.get(dest) else {
+            continue;
+        };
 
-            let Some(module) = modules.get(dest) else {
-                continue;
-            };
-
-            let pulse_type = match module.module_type {
-                ModuleType::Normal => continue,
-                ModuleType::FlipFlop => {
-                    let state = flip_flops_memory.get_mut(dest).unwrap();
-                    match pulse {
-                        Pulse::High => continue,
-                        Pulse::Low => match state {
-                            FlipFlopState::On => {
-                                *state = FlipFlopState::Off;
-                                Pulse::Low
-                            }
-                            FlipFlopState::Off => {
-                                *state = FlipFlopState::On;
-                                Pulse::High
-                            }
-                        },
-                    }
+        let pulse_type = match module.module_type {
+            ModuleType::Normal => continue,
+            ModuleType::FlipFlop => {
+                let state = flip_flop_mem.get_mut(dest).unwrap();
+                match pulse {
+                    Pulse::High => continue,
+                    Pulse::Low => match state {
+                        FlipFlopState::On => {
+                            *state = FlipFlopState::Off;
+                            Pulse::Low
+                        }
+                        FlipFlopState::Off => {
+                            *state = FlipFlopState::On;
+                            Pulse::High
+                        }
+                    },
                 }
-                ModuleType::Conjuction => {
-                    let entry = conjuctions_memory
-                        .get_mut(dest)
-                        .unwrap()
-                        .get_mut(curr)
-                        .unwrap();
-                    *entry = pulse;
-                    if conjuctions_memory[dest].values().all(|&p| p == Pulse::High) {
-                        Pulse::Low
-                    } else {
-                        Pulse::High
-                    }
-                }
-                _ => continue,
-            };
-
-            for futur in module.destinations.iter() {
-                queue.push_back((dest, futur, pulse_type));
             }
+            ModuleType::Conjuction => {
+                let module_mem = conjuctions_mem.get_mut(dest).unwrap();
+                let previous_state = module_mem.get_mut(curr).unwrap();
+                *previous_state = pulse;
+                if module_mem.values().all(|&p| p == Pulse::High) {
+                    Pulse::Low
+                } else {
+                    Pulse::High
+                }
+            }
+            _ => continue,
+        };
+
+        for futur in module.destinations.iter() {
+            queue.push_back((dest, futur, pulse_type));
         }
     }
     count
+}
+
+fn important_connections<'a>(modules: &HashMap<&'a str, Module>) -> Vec<&'a str> {
+    // the final module 'rx' in my input is targeted by only one conjuction module,
+    // which gonna send a Low pulse only if all connected modules Last sent pulse was high
+    // this function find all those 'important' modules;
+    let mut connected_to_finals = modules
+        .iter()
+        .find(|(k, v)| v.destinations.contains(&"rx"))
+        .map(|(k, v)| k)
+        .unwrap();
+    modules
+        .iter()
+        .filter(|(k, v)| v.destinations.contains(connected_to_finals))
+        .map(|(&k, v)| k)
+        .collect::<Vec<_>>()
 }
 
 fn parse(input: &[String]) -> HashMap<&str, Module> {
@@ -192,9 +215,10 @@ mod test {
         assert_eq!(<i32 as Into<Answer>>::into(11687500), answer);
     }
 
+    #[test]
     fn test_b() {
         let input = input::read_file(&format!(
-            "{}day_20_test.txt",
+            "{}day_20_b_test.txt",
             helper_lib::consts::FILES_PREFIX
         ))
         .unwrap();
