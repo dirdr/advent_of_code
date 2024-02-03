@@ -86,6 +86,21 @@ where
     }
 }
 
+impl<T: PartialEq> Matrix<T> {
+    // find the first `el` and return it's coordinates
+    pub fn find(&self, el: T) -> Option<Vec2<usize>> {
+        for r in 0..self.rows {
+            for c in 0..self.cols {
+                let coord = Vec2::new(c, r);
+                if self[coord] == el {
+                    return Some(coord);
+                }
+            }
+        }
+        return None;
+    }
+}
+
 impl Matrix<char> {
     pub fn from_chars(input: &[String]) -> Self {
         let mut matrix: Matrix<char> = Self::new(input.len(), input[0].len(), ' ');
