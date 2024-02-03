@@ -15,7 +15,7 @@ fn main() -> anyhow::Result<()> {
     let solution = ALL[day - 1];
     let input = input::read_file(&format!(
         "{}day_{:02}.txt",
-        helper_lib::consts::FILES_PREFIX,
+        helper_lib::consts::FILES_PREFIX_REAL,
         day
     ))?;
     println!("Running Solutions for day {day}");

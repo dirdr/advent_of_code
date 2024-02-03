@@ -168,7 +168,7 @@ mod test {
     fn test_a() {
         let input = input::read_file(&format!(
             "{}day_03_test.txt",
-            helper_lib::consts::FILES_PREFIX
+            helper_lib::consts::FILES_PREFIX_TEST
         ))
         .unwrap();
         let answer = Day3.part_a(&input);
@@ -179,7 +179,7 @@ mod test {
     fn test_b() {
         let input = input::read_file(&format!(
             "{}day_03_test.txt",
-            helper_lib::consts::FILES_PREFIX
+            helper_lib::consts::FILES_PREFIX_TEST
         ))
         .unwrap();
         let answer = Day3.part_b(&input);
