@@ -9,17 +9,47 @@ pub struct Day21;
 impl Solution for Day21 {
     fn part_a(&self, input: &[String]) -> Answer {
         let parsed = parse(input);
-        let bfs = solve_bfs(&parsed);
-        bfs.into()
+        let mut queue = HashSet::new();
+        queue.insert(parsed.starting_pos);
+        for _ in 0..64 {
+            let mut next = HashSet::new();
+            for pos in queue.iter() {
+                for t in next_tiles(&parsed.map, *pos) {
+                    next.insert(t);
+                }
+            }
+            std::mem::swap(&mut queue, &mut next);
+        }
+        queue.len().into()
     }
 
     fn part_b(&self, input: &[String]) -> Answer {
-        todo!()
+        let parsed = parse(input);
+        let mut queue = HashSet::new();
+        queue.insert(parsed.starting_pos);
+        let map = &parsed.map;
+        for _ in 0..26501365 {
+            let mut next = HashSet::new();
+            for pos in queue.iter() {
+                let mut pos = pos.clone();
+                if pos.x > map.cols {
+                    pos.x = pos.x % map.cols;
+                }
+                if pos.y > map.rows {
+                    pos.y = pos.y % map.rows;
+                }
+                for t in next_tiles(map, pos) {
+                    next.insert(t);
+                }
+            }
+            std::mem::swap(&mut queue, &mut next);
+        }
+        queue.len().into()
     }
 }
 
-// horrible performance, i think because of ciruclar path finding with large number of step
-// bfs impl better here
+// first solution but with horrible performance,
+// I think because of ciruclar path finding with large number of steps
 #[allow(dead_code)]
 fn solve_dfs(parsed: &Parsed) -> usize {
     let mut visited = HashSet::new();
@@ -40,22 +70,6 @@ fn solve_dfs(parsed: &Parsed) -> usize {
     }
     dfs(&parsed.map, parsed.starting_pos, 0, &mut visited);
     visited.len()
-}
-
-fn solve_bfs(parsed: &Parsed) -> usize {
-    let map = &parsed.map;
-    let mut queue = HashSet::new();
-    queue.insert(parsed.starting_pos);
-    for _ in 0..64 {
-        let mut next = HashSet::new();
-        for pos in queue.iter() {
-            for t in next_tiles(map, *pos) {
-                next.insert(t);
-            }
-        }
-        std::mem::swap(&mut queue, &mut next);
-    }
-    queue.len()
 }
 
 fn next_tiles(map: &Matrix<char>, pos: Vec2<usize>) -> Vec<Vec2<usize>> {
