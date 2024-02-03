@@ -3,7 +3,7 @@
 This is my attempt to solve as many of the 2023 edition AOC problems as possible !
 
 ## Setup
-if you want the run this aoc repo with your input, please provide them with the following name `day_{day_number}.txt`
+If you want the run this aoc repo with your input, please provide them with the following name `day_{day_number}.txt`
 in the folder ./resources/{year}/real/
 ## Run
 ```sh
