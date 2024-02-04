@@ -1,4 +1,6 @@
-use std::collections::{HashSet, VecDeque};
+use std::collections::HashSet;
+
+use polynomial::Polynomial;
 
 use crate::helper_lib::{
     answer::Answer, directions::Direction, matrix::Matrix, solution::Solution, vec2::Vec2,
@@ -27,24 +29,29 @@ impl Solution for Day21 {
         let parsed = parse(input);
         let mut queue = HashSet::new();
         queue.insert(parsed.starting_pos);
+
         let map = &parsed.map;
-        for _ in 0..26501365 {
+        let mut points = vec![];
+        for i in 0.. {
+            if i % map.cols == 65 {
+                points.push(Vec2::new(i, queue.len()));
+                if points.len() >= 20 {
+                    break;
+                }
+            }
             let mut next = HashSet::new();
             for pos in queue.iter() {
-                let mut pos = pos.clone();
-                if pos.x > map.cols {
-                    pos.x = pos.x % map.cols;
-                }
-                if pos.y > map.rows {
-                    pos.y = pos.y % map.rows;
-                }
-                for t in next_tiles(map, pos) {
+                for t in next_tiles(map, *pos) {
                     next.insert(t);
                 }
             }
             std::mem::swap(&mut queue, &mut next);
         }
-        queue.len().into()
+        println!("points: {:?}", points);
+        let x = points.iter().map(|p| p.x as f64).collect::<Vec<_>>();
+        let y = points.iter().map(|p| p.y as f64).collect::<Vec<_>>();
+        let pol = Polynomial::lagrange(&x, &y).unwrap();
+        (pol.eval(26501365.0).round() as u64).into()
     }
 }
 
@@ -116,13 +123,14 @@ mod test {
         assert_eq!(<i32 as Into<Answer>>::into(42), answer);
     }
 
+    #[test]
     fn test_b() {
         let input = input::read_file(&format!(
             "{}day_21_test.txt",
             helper_lib::consts::FILES_PREFIX_TEST
         ))
         .unwrap();
-        let answer = Day21.part_a(&input);
-        assert_eq!(<i32 as Into<Answer>>::into(16), answer);
+        let answer = Day21.part_b(&input);
+        assert_eq!(<i32 as Into<Answer>>::into(16733044), answer);
     }
 }

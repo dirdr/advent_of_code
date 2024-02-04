@@ -88,3 +88,9 @@ impl From<Vec2<usize>> for Vec2<isize> {
         Vec2::new(value.x as isize, value.y as isize)
     }
 }
+
+impl From<Vec2<usize>> for Vec2<f64> {
+    fn from(value: Vec2<usize>) -> Self {
+        Vec2::new(value.x as f64, value.y as f64)
+    }
+}
