@@ -97,7 +97,7 @@ impl<T: PartialEq> Matrix<T> {
                 }
             }
         }
-        return None;
+        None
     }
 }
 

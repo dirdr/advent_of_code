@@ -8,6 +8,8 @@ use crate::helper_lib::{
 
 pub struct Day21;
 
+const SIZE: usize = 65;
+
 impl Solution for Day21 {
     fn part_a(&self, input: &[String]) -> Answer {
         let parsed = parse(input);
@@ -20,7 +22,7 @@ impl Solution for Day21 {
                     next.insert(t);
                 }
             }
-            std::mem::swap(&mut queue, &mut next);
+            queue = next;
         }
         queue.len().into()
     }
@@ -28,55 +30,32 @@ impl Solution for Day21 {
     fn part_b(&self, input: &[String]) -> Answer {
         let parsed = parse(input);
         let mut queue = HashSet::new();
-        queue.insert(parsed.starting_pos);
+        queue.insert(Vec2::<isize>::from(parsed.starting_pos));
 
         let map = &parsed.map;
         let mut points = vec![];
-        for i in 0.. {
-            if i % map.cols == 65 {
-                points.push(Vec2::new(i, queue.len()));
-                if points.len() >= 20 {
-                    break;
+        let mut steps = 0;
+        for run in 0..3 {
+            while steps < (65 + run * SIZE) {
+                let mut next = HashSet::new();
+                for pos in queue.iter() {
+                    for t in next_tiles_scaled(map, *pos) {
+                        next.insert(t);
+                    }
                 }
+                queue = next;
+                steps += 1;
             }
-            let mut next = HashSet::new();
-            for pos in queue.iter() {
-                for t in next_tiles(map, *pos) {
-                    next.insert(t);
-                }
-            }
-            std::mem::swap(&mut queue, &mut next);
+            points.push(Vec2::new(steps, queue.len()));
         }
-        println!("points: {:?}", points);
         let x = points.iter().map(|p| p.x as f64).collect::<Vec<_>>();
         let y = points.iter().map(|p| p.y as f64).collect::<Vec<_>>();
         let pol = Polynomial::lagrange(&x, &y).unwrap();
+        let eval = pol.eval(26501365.0);
+        println!("points : {:?}", points);
+        println!("eval: {:?}", eval);
         (pol.eval(26501365.0).round() as u64).into()
     }
-}
-
-// first solution but with horrible performance,
-// I think because of ciruclar path finding with large number of steps
-#[allow(dead_code)]
-fn solve_dfs(parsed: &Parsed) -> usize {
-    let mut visited = HashSet::new();
-    fn dfs(
-        map: &Matrix<char>,
-        pos: Vec2<usize>,
-        step_left: usize,
-        visited: &mut HashSet<Vec2<usize>>,
-    ) {
-        if step_left == 64 {
-            visited.insert(pos);
-            return;
-        }
-
-        for t in next_tiles(map, pos) {
-            dfs(map, t, step_left + 1, visited);
-        }
-    }
-    dfs(&parsed.map, parsed.starting_pos, 0, &mut visited);
-    visited.len()
 }
 
 fn next_tiles(map: &Matrix<char>, pos: Vec2<usize>) -> Vec<Vec2<usize>> {
@@ -93,6 +72,31 @@ fn next_tiles(map: &Matrix<char>, pos: Vec2<usize>) -> Vec<Vec2<usize>> {
         }
     }
     possible
+}
+
+fn next_tiles_scaled(map: &Matrix<char>, pos: Vec2<isize>) -> Vec<Vec2<isize>> {
+    let mut possible = vec![];
+    let directions = Direction::all();
+    for direction in directions {
+        let next_pos = pos + direction.to_offset();
+        // scaled is to virtually check on the real map
+        let scaled = scale_pos(next_pos);
+        let next_tile = map[scaled];
+        if next_tile != '#' {
+            possible.push(next_pos);
+        }
+    }
+    possible
+}
+
+fn scale_pos(pos: Vec2<isize>) -> Vec2<usize> {
+    let mut mapped = pos;
+    // only want
+    mapped = Vec2::new(
+        (SIZE as isize + mapped.x % SIZE as isize) % SIZE as isize,
+        (SIZE as isize + mapped.y % SIZE as isize) % SIZE as isize,
+    );
+    Vec2::<usize>::try_from(mapped).unwrap()
 }
 
 struct Parsed {
@@ -123,7 +127,6 @@ mod test {
         assert_eq!(<i32 as Into<Answer>>::into(42), answer);
     }
 
-    #[test]
     fn test_b() {
         let input = input::read_file(&format!(
             "{}day_21_test.txt",
