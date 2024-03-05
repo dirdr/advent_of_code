@@ -1,4 +1,4 @@
-use std::collections::HashSet;
+use std::collections::{HashMap, HashSet};
 
 use crate::helper_lib::{answer::Answer, matrix::Matrix, solution::Solution, vec2::Vec2};
 
@@ -6,14 +6,14 @@ pub struct Day22;
 
 impl Solution for Day22 {
     fn part_a(&self, input: &[String]) -> Answer {
-        let mut bricks = parse(input);
+        let mut playground = parse(input);
         // sort bricks by z value to start by the bottom
-        bricks.sort_unstable_by(|a, b| a.end.2.cmp(&b.end.2));
-        let mut height_map = create_height_map(&bricks);
-        release_bricks(&mut bricks, &mut height_map);
-        let base_bricks = get_base_bricks(&bricks);
-        println!("{:?}", base_bricks);
-        (bricks.len() - base_bricks.len()).into()
+        playground
+            .bricks
+            .sort_unstable_by(|a, b| a.end.2.cmp(&b.end.2));
+        let brick_at_levels = playground.release_bricks();
+        let base_bricks = get_base_bricks(&playground.bricks, brick_at_levels);
+        (playground.bricks.len() - base_bricks.len()).into()
     }
 
     fn part_b(&self, input: &[String]) -> Answer {
@@ -21,7 +21,7 @@ impl Solution for Day22 {
     }
 }
 
-fn parse(input: &[String]) -> Vec<Brick> {
+fn parse(input: &[String]) -> Playground {
     let mut bricks = vec![];
     for line in input {
         let (start, end) = line.split_once('~').unwrap();
@@ -38,31 +38,28 @@ fn parse(input: &[String]) -> Vec<Brick> {
             end: (end[0], end[1], end[2]),
         });
     }
-    bricks
+    let height_map = create_height_map(&bricks);
+    Playground { bricks, height_map }
 }
 
-fn release_bricks(bricks: &mut Vec<Brick>, height_map: &mut HeightMap) {
-    println!("{:?}", bricks);
-    for brick in bricks.iter_mut() {
-        let brick_area = brick.get_area_coords();
-        let z = height_map.get_heighest_z_in_area(brick_area.0, brick_area.1);
-        brick.start.2 = z + 1;
-        height_map.update_max_height_in_area(brick_area.0, brick_area.1, brick.end.2);
-    }
-}
-
-fn get_base_bricks(bricks: &Vec<Brick>) -> HashSet<Brick> {
-    println!("{:?}", bricks);
-    let mut set = HashSet::new();
-    for brick in bricks.iter() {
-        for other in bricks.iter() {
-            //println!("self z : {}, other z: {}", brick.start.2, other.end.2);
-            if brick != other && brick.start.2 >= other.end.2 && brick.intersect_with(other) {
-                set.insert(*other);
+fn get_base_bricks(
+    bricks: &[Brick],
+    brick_at_level: HashMap<usize, HashSet<Brick>>,
+) -> HashMap<&Brick, HashSet<Brick>> {
+    let mut out: HashMap<&Brick, HashSet<Brick>> = HashMap::new();
+    for brick in bricks {
+        if let Some(others) = brick_at_level.get(&(brick.start.2 - 1)) {
+            // for bricks that are in the z level below us
+            for other in others {
+                // if we intersect with on of those bricks, the other brick is a base brick
+                if brick.intersect_with(other) {
+                    out.entry(brick).or_default().insert(other.clone());
+                }
             }
         }
     }
-    set
+    println!("{:?}", out);
+    out
 }
 
 fn create_height_map(bricks: &Vec<Brick>) -> HeightMap {
@@ -85,20 +82,46 @@ struct HeightMap {
     map: Matrix<usize>,
 }
 
+struct Playground {
+    bricks: Vec<Brick>,
+    height_map: HeightMap,
+}
+
+impl Playground {
+    fn release_bricks(&mut self) -> HashMap<usize, HashSet<Brick>> {
+        let mut out: HashMap<usize, HashSet<Brick>> = HashMap::new();
+        for brick in self.bricks.iter_mut() {
+            let area = brick.get_area();
+            let below_z = self.height_map.get_heighest_z(&area);
+            // set the brick on top of the max height for area of new brick
+            brick.set_new_z(below_z + 1);
+            self.height_map.set_max_height(&area, brick.end.2);
+            out.entry(brick.end.2).or_default().insert(*brick);
+        }
+        out
+    }
+}
+
+#[derive(Debug)]
+struct Area {
+    tl: Vec2<usize>,
+    br: Vec2<usize>,
+}
+
 impl HeightMap {
-    fn get_heighest_z_in_area(&self, tl: Vec2<usize>, br: Vec2<usize>) -> usize {
+    fn get_heighest_z(&self, area: &Area) -> usize {
         let mut max = 0;
-        for x in tl.x..br.x {
-            for y in tl.y..br.y {
+        for x in area.tl.x..(area.br.x + 1) {
+            for y in area.tl.y..(area.br.y + 1) {
                 max = std::cmp::max(max, self.map[Vec2::new(x, y)]);
             }
         }
         max
     }
 
-    fn update_max_height_in_area(&mut self, tl: Vec2<usize>, br: Vec2<usize>, z: usize) {
-        for x in tl.x..br.x {
-            for y in tl.y..br.y {
+    fn set_max_height(&mut self, area: &Area, z: usize) {
+        for x in area.tl.x..(area.br.x + 1) {
+            for y in area.tl.y..(area.br.y + 1) {
                 self.map[Vec2::new(x, y)] = z;
             }
         }
@@ -112,18 +135,31 @@ struct Brick {
 }
 
 impl Brick {
-    fn get_area_coords(&self) -> (Vec2<usize>, Vec2<usize>) {
-        (
-            Vec2::new(self.start.0, self.start.1),
-            Vec2::new(self.end.0, self.end.1),
-        )
+    fn get_area(&self) -> Area {
+        Area {
+            tl: Vec2::new(self.start.0, self.start.1),
+            br: Vec2::new(self.end.0, self.end.1),
+        }
     }
 
     fn intersect_with(&self, other: &Brick) -> bool {
-        self.start.0 < other.end.0
-            && self.end.0 > other.start.0
-            && self.start.1 > other.end.1
-            && self.end.1 < other.start.1
+        if self.start.0 < other.end.0 || other.end.0 < self.start.0 {
+            return false;
+        }
+        if self.start.1 < other.end.1 || other.end.0 < self.start.1 {
+            return false;
+        }
+        true
+    }
+
+    fn get_height(&self) -> usize {
+        self.end.2 - self.start.2 + 1
+    }
+
+    fn set_new_z(&mut self, new_bottom: usize) {
+        let delta = self.start.2 - new_bottom;
+        self.start.2 = self.start.2 - delta;
+        self.end.2 = self.end.2 - delta;
     }
 }
 
