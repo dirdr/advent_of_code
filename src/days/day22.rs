@@ -13,6 +13,8 @@ impl Solution for Day22 {
             .sort_unstable_by(|a, b| a.end.2.cmp(&b.end.2));
         let brick_at_levels = playground.release_bricks();
         let base_bricks = get_base_bricks(&playground.bricks, brick_at_levels);
+        println!("{:?}", base_bricks);
+        println!("{:?}", base_bricks.len());
         (playground.bricks.len() - base_bricks.len()).into()
     }
 
@@ -45,20 +47,22 @@ fn parse(input: &[String]) -> Playground {
 fn get_base_bricks(
     bricks: &[Brick],
     brick_at_level: HashMap<usize, HashSet<Brick>>,
-) -> HashMap<&Brick, HashSet<Brick>> {
-    let mut out: HashMap<&Brick, HashSet<Brick>> = HashMap::new();
+) -> HashSet<Brick> {
+    let mut out = HashSet::new();
     for brick in bricks {
         if let Some(others) = brick_at_level.get(&(brick.start.2 - 1)) {
             // for bricks that are in the z level below us
             for other in others {
+                println!("current brick {:?}", brick);
+                println!("other brick {:?}", other);
+                println!();
                 // if we intersect with on of those bricks, the other brick is a base brick
                 if brick.intersect_with(other) {
-                    out.entry(brick).or_default().insert(other.clone());
+                    out.insert(other.clone());
                 }
             }
         }
     }
-    println!("{:?}", out);
     out
 }
 
@@ -143,10 +147,10 @@ impl Brick {
     }
 
     fn intersect_with(&self, other: &Brick) -> bool {
-        if self.start.0 < other.end.0 || other.end.0 < self.start.0 {
+        if self.end.0 < other.start.0 || self.start.0 > other.end.0 {
             return false;
         }
-        if self.start.1 < other.end.1 || other.end.0 < self.start.1 {
+        if self.end.1 < other.start.1 || self.start.0 > self.end.1 {
             return false;
         }
         true

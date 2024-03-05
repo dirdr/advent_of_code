@@ -6,4 +6,3 @@ pub mod maths;
 pub mod matrix;
 pub mod solution;
 pub mod vec2;
-pub mod vec3;
