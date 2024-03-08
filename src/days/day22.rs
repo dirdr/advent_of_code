@@ -44,19 +44,9 @@ impl Solution for Day22 {
             }
         }
 
-        // println!("base to upper");
-        // for (k, v) in base_to_upper_bricks.iter() {
-        //     println!("base : {:?}, upper : {:?}", k, v);
-        // }
-        // println!("");
-        // println!("upper to base");
-        // for (k, v) in upper_to_base_bricks.iter() {
-        //     println!("upper : {:?}, base: {:?}", k, v);
-        // }
-
         let mut total = 0;
         for brick in playground.bricks.iter() {
-            if let None = base_to_upper_bricks.get(&brick) {
+            if base_to_upper_bricks.get(brick).is_none() {
                 continue;
             }
             let mut falling = HashSet::new();
@@ -73,7 +63,7 @@ impl Solution for Day22 {
             falling.insert(*brick);
             while !queue.is_empty() {
                 let upper = queue.pop_front().unwrap();
-                if let None = base_to_upper_bricks.get(&upper) {
+                if base_to_upper_bricks.get(&upper).is_none() {
                     continue;
                 }
                 let ups = base_to_upper_bricks
@@ -86,7 +76,7 @@ impl Solution for Day22 {
                     // if the brick is only supported by falling brick, this brick falls to
                     let base_bricks = upper_to_base_bricks.get(up).unwrap();
                     if base_bricks.iter().all(|support| falling.contains(support)) {
-                        falling.insert(up.clone());
+                        falling.insert(*up);
                         queue.push_back(*up);
                     }
                 }
@@ -134,7 +124,7 @@ fn get_upper_to_base_bricks(
             // for bricks that are in the z level below us
             for other in others {
                 if brick.intersect_with(other) {
-                    out.entry(brick).or_default().insert(other.clone());
+                    out.entry(brick).or_default().insert(*other);
                 }
             }
         }
@@ -234,8 +224,8 @@ impl Brick {
 
     fn set_new_z(&mut self, new_bottom: usize) {
         let delta = self.start.2 - new_bottom;
-        self.start.2 = self.start.2 - delta;
-        self.end.2 = self.end.2 - delta;
+        self.start.2 -= delta;
+        self.end.2 -= delta;
     }
 }
 
