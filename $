@@ -1,6 +1,4 @@
-use std::collections::{HashMap, HashSet, VecDeque};
-
-use itertools::Itertools;
+use std::collections::{HashMap, HashSet};
 
 use crate::helper_lib::{answer::Answer, matrix::Matrix, solution::Solution, vec2::Vec2};
 
@@ -14,8 +12,8 @@ impl Solution for Day22 {
             .bricks
             .sort_unstable_by(|a, b| a.end.2.cmp(&b.end.2));
         let brick_at_levels = playground.release_bricks();
-        let upper_to_base_bricks = get_upper_to_base_bricks(&playground.bricks, brick_at_levels);
-        let critical = upper_to_base_bricks.values().filter(|b| b.len() == 1).fold(
+        let base_bricks = get_base_bricks(&playground.bricks, brick_at_levels);
+        let critical = base_bricks.values().filter(|b| b.len() == 1).fold(
             HashSet::new(),
             |mut acc: HashSet<Brick>, x| {
                 acc.extend(x);
@@ -32,68 +30,38 @@ impl Solution for Day22 {
             .bricks
             .sort_unstable_by(|a, b| a.end.2.cmp(&b.end.2));
         let brick_at_levels = playground.release_bricks();
-        let upper_to_base_bricks = get_upper_to_base_bricks(&playground.bricks, brick_at_levels);
-
-        let mut base_to_upper_bricks: HashMap<Brick, HashSet<Brick>> = HashMap::new();
-        for (brick, base) in upper_to_base_bricks.iter() {
-            for base_brick in base.iter() {
-                base_to_upper_bricks
-                    .entry(*base_brick)
-                    .or_default()
-                    .insert(**brick);
+        let base_bricks = get_base_bricks(&playground.bricks, brick_at_levels);
+        let mut make_fall: HashMap<Brick, HashSet<Brick>> = HashMap::new();
+        for (brick, base) in base_bricks.iter() {
+            if base.len() == 1 {
+                let first = base.iter().nth(0).unwrap();
+                make_fall.entry(*first).or_default().insert(**brick);
             }
         }
-
-        // println!("base to upper");
-        // for (k, v) in base_to_upper_bricks.iter() {
-        //     println!("base : {:?}, upper : {:?}", k, v);
-        // }
-        // println!("");
-        // println!("upper to base");
-        // for (k, v) in upper_to_base_bricks.iter() {
-        //     println!("upper : {:?}, base: {:?}", k, v);
-        // }
-
-        let mut total = 0;
-        for brick in playground.bricks.iter() {
-            if let None = base_to_upper_bricks.get(&brick) {
-                continue;
-            }
-            let mut falling = HashSet::new();
-            if let Some(upper) = base_to_upper_bricks.get(brick) {
-                for upper_brick in upper {
-                    if let Some(ub) = upper_to_base_bricks.get(upper_brick) {
-                        if ub.len() == 1 {
-                            falling.insert(*brick);
-                        }
-                    }
-                }
-            }
-            let mut queue = VecDeque::from(falling.iter().cloned().collect_vec());
-            falling.insert(*brick);
-            while !queue.is_empty() {
-                let upper = queue.pop_front().unwrap();
-                if let None = base_to_upper_bricks.get(&upper) {
-                    continue;
-                }
-                let ups = base_to_upper_bricks
-                    .get(&upper)
-                    .unwrap()
+        loop {
+            let mut change = true;
+            for (brick, base) in base_bricks.iter() {
+                let butterfly = make_fall
                     .iter()
-                    .filter(|v| !falling.contains(v))
-                    .collect::<HashSet<_>>();
-                for up in ups {
-                    // if the brick is only supported by falling brick, this brick falls to
-                    let base_bricks = upper_to_base_bricks.get(up).unwrap();
-                    if base_bricks.iter().all(|support| falling.contains(support)) {
-                        falling.insert(up.clone());
-                        queue.push_back(*up);
-                    }
+                    .filter(|(_, v)| v.is_superset(base))
+                    .map(|(&k, _)| k)
+                    .collect::<Vec<_>>();
+                if butterfly.len() == 0 {
+                    change = false;
+                }
+                for key in butterfly {
+                    make_fall.get_mut(&key).unwrap().insert(**brick);
                 }
             }
-            total += falling.len() - 1;
+            if !change {
+                break;
+            }
         }
-        total.into()
+        make_fall
+            .values()
+            .map(|v| v.iter().count())
+            .sum::<usize>()
+            .into()
     }
 }
 
@@ -123,13 +91,12 @@ fn parse(input: &[String]) -> Playground {
     Playground { bricks, height_map }
 }
 
-fn get_upper_to_base_bricks(
+fn get_base_bricks(
     bricks: &[Brick],
     brick_at_level: HashMap<usize, HashSet<Brick>>,
 ) -> HashMap<&Brick, HashSet<Brick>> {
     let mut out: HashMap<&Brick, HashSet<Brick>> = HashMap::new();
     for brick in bricks {
-        out.insert(brick, HashSet::new());
         if let Some(others) = brick_at_level.get(&(brick.start.2 - 1)) {
             // for bricks that are in the z level below us
             for other in others {
