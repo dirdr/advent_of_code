@@ -6,6 +6,8 @@ use crate::helper_lib::{answer::Answer, matrix::Matrix, solution::Solution, vec2
 
 pub struct Day22;
 
+// this is a pretty bad solution
+// could be refactored a lot
 impl Solution for Day22 {
     fn part_a(&self, input: &[String]) -> Answer {
         let mut playground = parse(input);
@@ -87,32 +89,6 @@ impl Solution for Day22 {
     }
 }
 
-fn parse(input: &[String]) -> Playground {
-    let mut bricks = vec![];
-    for line in input {
-        let (start, end) = line.split_once('~').unwrap();
-        let start = start
-            .split(',')
-            .map(|c| c.parse::<usize>().unwrap())
-            .collect::<Vec<_>>();
-        let end = end
-            .split(',')
-            .map(|c| c.parse::<usize>().unwrap())
-            .collect::<Vec<_>>();
-
-        assert!(start[0] <= end[0]);
-        assert!(start[1] <= end[1]);
-        assert!(start[2] <= end[2]);
-
-        bricks.push(Brick {
-            start: (start[0], start[1], start[2]),
-            end: (end[0], end[1], end[2]),
-        });
-    }
-    let height_map = create_height_map(&bricks);
-    Playground { bricks, height_map }
-}
-
 fn get_upper_to_base_bricks(
     bricks: &[Brick],
     brick_at_level: HashMap<usize, HashSet<Brick>>,
@@ -132,24 +108,26 @@ fn get_upper_to_base_bricks(
     out
 }
 
-fn create_height_map(bricks: &Vec<Brick>) -> HeightMap {
-    let mut min_x = 0;
-    let mut min_y = 0;
-    let mut max_x = 0;
-    let mut max_y = 0;
-    for brick in bricks {
-        max_x = std::cmp::max(max_x, brick.end.0);
-        max_y = std::cmp::max(max_y, brick.end.1);
-        min_x = std::cmp::min(min_x, brick.start.0);
-        min_y = std::cmp::min(min_y, brick.start.1);
-    }
-    HeightMap {
-        map: Matrix::new(max_y - min_y + 1, max_x - min_x + 1, 0usize),
-    }
-}
-
 struct HeightMap {
     map: Matrix<usize>,
+}
+
+impl HeightMap {
+    fn new(bricks: &[Brick]) -> Self {
+        let mut min_x = 0;
+        let mut min_y = 0;
+        let mut max_x = 0;
+        let mut max_y = 0;
+        for brick in bricks {
+            max_x = std::cmp::max(max_x, brick.end.0);
+            max_y = std::cmp::max(max_y, brick.end.1);
+            min_x = std::cmp::min(min_x, brick.start.0);
+            min_y = std::cmp::min(min_y, brick.start.1);
+        }
+        Self {
+            map: Matrix::new(max_y - min_y + 1, max_x - min_x + 1, 0usize),
+        }
+    }
 }
 
 struct Playground {
@@ -172,12 +150,6 @@ impl Playground {
     }
 }
 
-#[derive(Debug)]
-struct Area {
-    tl: Vec2<usize>,
-    br: Vec2<usize>,
-}
-
 impl HeightMap {
     fn get_heighest_z(&self, area: &Area) -> usize {
         let mut max = 0;
@@ -196,6 +168,12 @@ impl HeightMap {
             }
         }
     }
+}
+
+#[derive(Debug)]
+struct Area {
+    tl: Vec2<usize>,
+    br: Vec2<usize>,
 }
 
 #[derive(Debug, Copy, Clone, PartialEq, Eq, Hash)]
@@ -227,6 +205,32 @@ impl Brick {
         self.start.2 -= delta;
         self.end.2 -= delta;
     }
+}
+
+fn parse(input: &[String]) -> Playground {
+    let mut bricks = vec![];
+    for line in input {
+        let (start, end) = line.split_once('~').unwrap();
+        let start = start
+            .split(',')
+            .map(|c| c.parse::<usize>().unwrap())
+            .collect::<Vec<_>>();
+        let end = end
+            .split(',')
+            .map(|c| c.parse::<usize>().unwrap())
+            .collect::<Vec<_>>();
+
+        assert!(start[0] <= end[0]);
+        assert!(start[1] <= end[1]);
+        assert!(start[2] <= end[2]);
+
+        bricks.push(Brick {
+            start: (start[0], start[1], start[2]),
+            end: (end[0], end[1], end[2]),
+        });
+    }
+    let height_map = HeightMap::new(&bricks);
+    Playground { bricks, height_map }
 }
 
 #[cfg(test)]
