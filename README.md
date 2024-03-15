@@ -41,7 +41,7 @@ cargo test
 - [Day 20: Pulse Propagation](src/days/day20.rs) ⭐⭐
 - [Day 21: Step Counter](src/days/day21.rs) ⭐⭐
 - [Day 22: Sand Slabs](src/days/day22.rs) ⭐⭐
-- [Day 23: A Long Walk](src/days/day23.rs)
+- [Day 23: A Long Walk](src/days/day23.rs) ⭐⭐
 - [Day 24: Never Tell Me The Odds](src/days/day24.rs)
 - [Day 25: Snowverload](src/days/day25.rs)
 
