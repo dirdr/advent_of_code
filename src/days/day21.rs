@@ -51,9 +51,6 @@ impl Solution for Day21 {
         let x = points.iter().map(|p| p.x as f64).collect::<Vec<_>>();
         let y = points.iter().map(|p| p.y as f64).collect::<Vec<_>>();
         let pol = Polynomial::lagrange(&x, &y).unwrap();
-        let eval = pol.eval(26501365.0);
-        println!("points : {:?}", points);
-        println!("eval: {:?}", eval);
         (pol.eval(26501365.0).round() as u64).into()
     }
 }
@@ -125,15 +122,5 @@ mod test {
         .unwrap();
         let answer = Day21.part_a(&input);
         assert_eq!(<i32 as Into<Answer>>::into(42), answer);
-    }
-
-    fn test_b() {
-        let input = input::read_file(&format!(
-            "{}day_21_test.txt",
-            helper_lib::consts::FILES_PREFIX_TEST
-        ))
-        .unwrap();
-        let answer = Day21.part_b(&input);
-        assert_eq!(<i32 as Into<Answer>>::into(16733044), answer);
     }
 }
