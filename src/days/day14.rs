@@ -9,9 +9,7 @@ pub struct Day14;
 impl Solution for Day14 {
     fn part_a(&self, input: &[String]) -> Answer {
         let mut plateform = parse(input);
-        println!("{:?}", plateform.plateform);
         plateform.tilt(Direction::North);
-        println!("{:?}", plateform.plateform);
         plateform.score().into()
     }
 
