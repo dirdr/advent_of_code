@@ -14,3 +14,4 @@ num = "0.4.1"
 num-integer = "0.1.45"
 polynomial = "0.2.6"
 rayon = "1.8.0"
+z3 = {version="0.12", features = ["static-link-z3"]}
