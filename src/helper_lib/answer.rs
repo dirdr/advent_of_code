@@ -3,12 +3,14 @@ use std::fmt::Display;
 #[derive(Debug, PartialEq)]
 pub enum Answer {
     Number(usize),
+    Unimplemented,
 }
 
 impl Display for Answer {
     fn fmt(&self, f: &mut std::fmt::Formatter<'_>) -> std::fmt::Result {
         match self {
             Answer::Number(num) => write!(f, "{num}"),
+            Answer::Unimplemented => write!(f, "The answer is not implemented"),
         }
     }
 }

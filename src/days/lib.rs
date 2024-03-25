@@ -27,4 +27,5 @@ pub const ALL: &[&dyn Solution] = &[
     &day22::Day22,
     &day23::Day23,
     &day24::Day24,
+    &day25::Day25,
 ];
