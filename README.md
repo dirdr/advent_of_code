@@ -1,6 +1,6 @@
 # Advent Of Code 🎁 in rust 🦀
 ## About
-This is my attempt to AOC problems in rust !
+This is my attempt to solve AOC problems in rust !
 
 ## Setup
 If you want the run this aoc repo with your input, please provide them with the following name `day_{day_number}.txt`
@@ -42,8 +42,8 @@ cargo test
 - [Day 21: Step Counter](src/days/day21.rs) ⭐⭐
 - [Day 22: Sand Slabs](src/days/day22.rs) ⭐⭐
 - [Day 23: A Long Walk](src/days/day23.rs) ⭐⭐
-- [Day 24: Never Tell Me The Odds](src/days/day24.rs)
-- [Day 25: Snowverload](src/days/day25.rs)
+- [Day 24: Never Tell Me The Odds](src/days/day24.rs) ⭐⭐
+- [Day 25: Snowverload](src/days/day25.rs) ⭐⭐
 
 ## Thanks
 The project structure is inspired by [this repository](https://github.com/Basicprogrammer10/advent-of-code)
