@@ -6,6 +6,7 @@ This is my attempt to solve AOC problems in rust !
 If you want the run this aoc repo with your input, please provide them with the following name `day_{day_number}.txt`
 in the folder ./resources/{year}/real/
 ## Run
+This crate needs the z3 solver in path (for macOS : `brew install z3`)
 ```sh
 Usage: advent_of_code_2023 --day <DAY>
 
