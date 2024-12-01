@@ -54,4 +54,4 @@ pub const ALL: &[&dyn Solution] = &[
     &day25::Day25,
 ];
 
-pub const FILES_PREFIX_TEST: &str = "../resources/test/";
+pub const FILES_PREFIX_TEST: &str = "resources/test/";
