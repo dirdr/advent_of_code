@@ -6,6 +6,7 @@ This is my attempt to solve AOC problems in rust !
 If you want the run this aoc repo with your input, please provide them with the following name `day_{day_number}.txt`
 in the folder ./resources/{year}/real/
 ## Run
+To run the crate, you will need to have cmake in path
 ```sh
 Usage: advent_of_code_2023 --day <DAY>
 
