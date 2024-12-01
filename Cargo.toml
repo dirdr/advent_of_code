@@ -1,19 +1,15 @@
 [package]
-name = "advent_of_code_2023"
-version = "0.1.0"
+name = "advent_of_code"
+version = "0.2.0"
 edition = "2021"
 
-# See more keys and their definitions at https://doc.rust-lang.org/cargo/reference/manifest.html
+[workspace]
+members = ["aoc_lib", "aoc_2023", "aoc_2024"]
 
 [dependencies]
-anyhow = "1.0.75"
-clap = { version = "4.4.10", features = ["derive"] }
-criterion = "0.5.1"
-itertools = "0.12.0"
-num = "0.4.1"
-num-integer = "0.1.45"
-petgraph = "0.6.4"
-polynomial = "0.2.6"
-rayon = "1.8.0"
-rustworkx-core = "0.14.2"
-z3 = {version="0.12", features = ["static-link-z3"]}
+aoc_lib = { path = "aoc_lib" }
+aoc_2023 = { path = "aoc_2023" }
+aoc_2024 = { path = "aoc_2024" }
+
+anyhow = "1.0.93"
+clap = { version = "4.5.21", features = ["derive"] }
