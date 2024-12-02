@@ -19,7 +19,7 @@ Options:
 cargo test
 ```
 ## Progress
-[![aoc_2023](https://github.com/dirdr/advent_of_code_2023/actions/workflows/rust.yml/badge.svg)](https://github.com/dirdr/advent_of_code_2023/actions/workflows/rust.yml)
+[![aoc_2023](https://github.com/dirdr/advent_of_code_2023/actions/workflows/rust.yml/badge.svg)](https://github.com/dirdr/advent_of_code_2023/actions/workflows/aoc_2023.yml)
 - [Day 01: Trebuchet?!](src/days/day01.rs) ⭐⭐
 - [Day 02: Cube Conundrum](src/days/day02.rs) ⭐⭐
 - [Day 03: Gear Ratios](src/days/day03.rs) ⭐⭐
@@ -45,6 +45,10 @@ cargo test
 - [Day 23: A Long Walk](src/days/day23.rs) ⭐⭐
 - [Day 24: Never Tell Me The Odds](src/days/day24.rs) ⭐⭐
 - [Day 25: Snowverload](src/days/day25.rs) ⭐⭐
+
+[![aoc_2024](https://github.com/dirdr/advent_of_code_2023/actions/workflows/rust.yml/badge.svg)](https://github.com/dirdr/advent_of_code_2023/actions/workflows/aoc_2024.yml)
+- [Day 01: Historian Hysteria](src/days/day01.rs) ⭐⭐
+- [Day 02: Red-Nosed Reports](src/days/day02.rs) ⭐⭐
 
 ## Thanks
 The project structure is inspired by [this repository](https://github.com/Basicprogrammer10/advent-of-code)
