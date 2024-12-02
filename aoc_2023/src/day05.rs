@@ -53,7 +53,7 @@ fn parse(input: &[String]) -> Parsed {
         .map(|s| s.parse::<usize>().unwrap())
         .collect();
     let degrouped = lines
-        .group_by(|line| !line.is_empty())
+        .chunk_by(|line| !line.is_empty())
         .into_iter()
         .filter(|(key, _)| *key)
         .map(|(_, group)| group.skip(1).collect::<Vec<_>>())

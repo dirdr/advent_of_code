@@ -40,7 +40,7 @@ fn parse(input: &[String]) -> Parsed {
     let mut patterns = vec![];
     let degrouped = input
         .iter()
-        .group_by(|line| !line.is_empty())
+        .chunk_by(|line| !line.is_empty())
         .into_iter()
         .filter(|(key, _)| *key)
         .map(|(_, group)| group.collect::<Vec<_>>())
@@ -67,7 +67,7 @@ impl Pattern {
             .collect()
     }
 
-    fn count_before_reflection(buffer: &Vec<Vec<char>>, limit: usize) -> usize {
+    fn count_before_reflection(buffer: &[Vec<char>], limit: usize) -> usize {
         for mid in 1..=buffer.len() - 1 {
             let side = mid.min(buffer.len() - mid);
             let start = mid - side;
@@ -94,22 +94,16 @@ mod test {
 
     #[test]
     fn test_a() {
-        let input = input::read_file(&format!(
-            "{}day_13_test.txt",
-            crate::FILES_PREFIX_TEST
-        ))
-        .unwrap();
+        let input =
+            input::read_file(&format!("{}day_13_test.txt", crate::FILES_PREFIX_TEST)).unwrap();
         let answer = Day13.part_a(&input);
         assert_eq!(<i32 as Into<Answer>>::into(405), answer);
     }
 
     #[test]
     fn test_b() {
-        let input = input::read_file(&format!(
-            "{}day_13_test.txt",
-            crate::FILES_PREFIX_TEST
-        ))
-        .unwrap();
+        let input =
+            input::read_file(&format!("{}day_13_test.txt", crate::FILES_PREFIX_TEST)).unwrap();
         let answer = Day13.part_b(&input);
         assert_eq!(<i32 as Into<Answer>>::into(400), answer);
     }

@@ -72,7 +72,7 @@ struct Box<'a> {
     lens: Vec<Lens<'a>>,
 }
 
-impl<'a> Display for Box<'a> {
+impl Display for Box<'_> {
     fn fmt(&self, f: &mut std::fmt::Formatter<'_>) -> std::fmt::Result {
         if !self.lens.is_empty() {
             for l in self.lens.iter() {
@@ -83,7 +83,7 @@ impl<'a> Display for Box<'a> {
     }
 }
 
-impl<'a> Box<'a> {
+impl Box<'_> {
     fn new() -> Self {
         Self { lens: vec![] }
     }
@@ -136,22 +136,16 @@ mod test {
 
     #[test]
     fn test_a() {
-        let input = input::read_file(&format!(
-            "{}day_15_test.txt",
-            crate::FILES_PREFIX_TEST
-        ))
-        .unwrap();
+        let input =
+            input::read_file(&format!("{}day_15_test.txt", crate::FILES_PREFIX_TEST)).unwrap();
         let answer = Day15.part_a(&input);
         assert_eq!(<i32 as Into<Answer>>::into(1320), answer);
     }
 
     #[test]
     fn test_b() {
-        let input = input::read_file(&format!(
-            "{}day_15_test.txt",
-            crate::FILES_PREFIX_TEST
-        ))
-        .unwrap();
+        let input =
+            input::read_file(&format!("{}day_15_test.txt", crate::FILES_PREFIX_TEST)).unwrap();
         let answer = Day15.part_b(&input);
         assert_eq!(<i32 as Into<Answer>>::into(145), answer);
     }

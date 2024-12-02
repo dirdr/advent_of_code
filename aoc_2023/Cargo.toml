@@ -10,4 +10,4 @@ petgraph = "0.6.5"
 polynomial = "0.2.6"
 rayon = "1.10.0"
 rustworkx-core = "0.15.1"
-#z3 = { version = "0.12", features = ["static-link-z3"] }
+#z3 = { version = "0.12.1", features = ["static-link-z3"] }

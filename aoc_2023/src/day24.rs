@@ -159,22 +159,16 @@
 //
 //     #[test]
 //     fn test_a() {
-//         let input = input::read_file(&format!(
-//             "{}day_24_test.txt",
-//             crate::FILES_PREFIX_TEST
-//         ))
-//         .unwrap();
+//         let input =
+//             input::read_file(&format!("{}day_24_test.txt", crate::FILES_PREFIX_TEST)).unwrap();
 //         let answer = solve_a(&parse(&input), 7.0..=27.0).into();
 //         assert_eq!(<i32 as Into<Answer>>::into(2), answer);
 //     }
 //
 //     #[test]
 //     fn test_b() {
-//         let input = input::read_file(&format!(
-//             "{}day_24_test.txt",
-//             crate::FILES_PREFIX_TEST
-//         ))
-//         .unwrap();
+//         let input =
+//             input::read_file(&format!("{}day_24_test.txt", crate::FILES_PREFIX_TEST)).unwrap();
 //         let answer = Day24.part_b(&input);
 //         assert_eq!(<i32 as Into<Answer>>::into(47), answer);
 //     }

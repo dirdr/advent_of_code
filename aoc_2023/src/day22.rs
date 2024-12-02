@@ -48,7 +48,7 @@ impl Solution for Day22 {
 
         let mut total = 0;
         for brick in playground.bricks.iter() {
-            if base_to_upper_bricks.get(brick).is_none() {
+            if !base_to_upper_bricks.contains_key(brick) {
                 continue;
             }
             let mut falling = HashSet::new();
@@ -65,7 +65,7 @@ impl Solution for Day22 {
             falling.insert(*brick);
             while !queue.is_empty() {
                 let upper = queue.pop_front().unwrap();
-                if base_to_upper_bricks.get(&upper).is_none() {
+                if !base_to_upper_bricks.contains_key(&upper) {
                     continue;
                 }
                 let ups = base_to_upper_bricks
@@ -241,22 +241,16 @@ mod test {
 
     #[test]
     fn test_a() {
-        let input = input::read_file(&format!(
-            "{}day_22_test.txt",
-            crate::FILES_PREFIX_TEST
-        ))
-        .unwrap();
+        let input =
+            input::read_file(&format!("{}day_22_test.txt", crate::FILES_PREFIX_TEST)).unwrap();
         let answer = Day22.part_a(&input);
         assert_eq!(<i32 as Into<Answer>>::into(5), answer);
     }
 
     #[test]
     fn test_b() {
-        let input = input::read_file(&format!(
-            "{}day_22_test.txt",
-            crate::FILES_PREFIX_TEST
-        ))
-        .unwrap();
+        let input =
+            input::read_file(&format!("{}day_22_test.txt", crate::FILES_PREFIX_TEST)).unwrap();
         let answer = Day22.part_b(&input);
         assert_eq!(<i32 as Into<Answer>>::into(7), answer);
     }
