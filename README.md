@@ -20,7 +20,7 @@ cargo test
 ```
 ## Progress
 [![aoc_2023](https://github.com/dirdr/advent_of_code_2023/actions/workflows/rust.yml/badge.svg)](https://github.com/dirdr/advent_of_code_2023/actions/workflows/aoc_2023.yml)
-- [Day 01: Trebuchet?!](src/days/day01.rs) ⭐⭐
+- [Day 01: Trebuchet?!](aoc_2024/src/day01.rs) ⭐⭐
 - [Day 02: Cube Conundrum](src/days/day02.rs) ⭐⭐
 - [Day 03: Gear Ratios](src/days/day03.rs) ⭐⭐
 - [Day 04: Scratchcards](src/days/day04.rs) ⭐⭐
