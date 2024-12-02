@@ -20,6 +20,3 @@ jobs:
 
       - name: Run tests 2023
         run: cargo test --verbose -p aoc_2023
-
-      - name: Run tests 2024
-        run: cargo test --verbose -p aoc_2024
