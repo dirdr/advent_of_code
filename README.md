@@ -19,7 +19,7 @@ Options:
 cargo test
 ```
 ## Progress
-[![aoc_2023](https://github.com/dirdr/advent_of_code/actions/workflows/aoc_2023.yml/badge.svg)]
+[![aoc_2023](https://github.com/dirdr/advent_of_code/actions/workflows/aoc_2023.yml/badge.svg)](https://github.com/dirdr/advent_of_code/actions/workflows/aoc_2023.yml)
 - [Day 01: Trebuchet?!](aoc_2023/src/day01.rs) ⭐⭐
 - [Day 02: Cube Conundrum](aoc_2023/src/day02.rs) ⭐⭐
 - [Day 03: Gear Ratios](aoc_2023/src/day03.rs) ⭐⭐
@@ -46,7 +46,7 @@ cargo test
 - [Day 24: Never Tell Me The Odds](aoc_2023/src/day24.rs) ⭐⭐
 - [Day 25: Snowverload](aoc_2023/src/day25.rs) ⭐⭐
 
-[![aoc_2024](https://github.com/dirdr/advent_of_code/actions/workflows/aoc_2024.yml/badge.svg)]
+[![aoc_2024](https://github.com/dirdr/advent_of_code/actions/workflows/aoc_2024.yml/badge.svg)](https://github.com/dirdr/advent_of_code/actions/workflows/aoc_2024.yml)
 - [Day 01: Historian Hysteria](aoc_2024/src/day01.rs) ⭐⭐
 - [Day 02: Red-Nosed Reports](aoc_2024/src/day02.rs) ⭐⭐
 
