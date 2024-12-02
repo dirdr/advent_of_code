@@ -1,4 +1,4 @@
-name: Rust
+name: aoc_2024
 
 on:
   push:
