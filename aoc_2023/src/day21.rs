@@ -3,7 +3,11 @@ use std::collections::HashSet;
 use polynomial::Polynomial;
 
 use aoc_lib::{
-    answer::Answer, directions::Direction, matrix::Matrix, solution::Solution, vec2::Vec2,
+    answer::Answer,
+    directions::{Cardinal, Direction},
+    matrix::Matrix,
+    solution::Solution,
+    vec2::Vec2,
 };
 
 pub struct Day21;
@@ -55,10 +59,20 @@ impl Solution for Day21 {
     }
 }
 
+struct Parsed {
+    map: Matrix<char>,
+    starting_pos: Vec2<usize>,
+}
+
+fn parse(input: &[String]) -> Parsed {
+    let map = Matrix::from_chars(input);
+    let starting_pos = map.find('S').unwrap();
+    Parsed { map, starting_pos }
+}
+
 fn next_tiles(map: &Matrix<char>, pos: Vec2<usize>) -> Vec<Vec2<usize>> {
     let mut possible = vec![];
-    let directions = Direction::all();
-    for direction in directions {
+    for direction in Cardinal::all_clockwise() {
         let next_pos = Vec2::<isize>::from(pos) + direction.to_offset();
         let next_tile = map.get(next_pos);
         if let Some(next_tile) = next_tile {
@@ -73,8 +87,7 @@ fn next_tiles(map: &Matrix<char>, pos: Vec2<usize>) -> Vec<Vec2<usize>> {
 
 fn next_tiles_scaled(map: &Matrix<char>, pos: Vec2<isize>) -> Vec<Vec2<isize>> {
     let mut possible = vec![];
-    let directions = Direction::all();
-    for direction in directions {
+    for direction in Cardinal::all_clockwise() {
         let next_pos = pos + direction.to_offset();
         // scaled is to virtually check on the real map
         let scaled = scale_pos(next_pos);
@@ -96,17 +109,6 @@ fn scale_pos(pos: Vec2<isize>) -> Vec2<usize> {
     Vec2::<usize>::try_from(mapped).unwrap()
 }
 
-struct Parsed {
-    map: Matrix<char>,
-    starting_pos: Vec2<usize>,
-}
-
-fn parse(input: &[String]) -> Parsed {
-    let map = Matrix::from_chars(input);
-    let starting_pos = map.find('S').unwrap();
-    Parsed { map, starting_pos }
-}
-
 #[cfg(test)]
 mod test {
     use aoc_lib::{self, answer::Answer, input, solution::Solution};
@@ -115,11 +117,8 @@ mod test {
 
     #[test]
     fn test_a() {
-        let input = input::read_file(&format!(
-            "{}day_21_test.txt",
-            crate::FILES_PREFIX_TEST
-        ))
-        .unwrap();
+        let input =
+            input::read_file(&format!("{}day_21_test.txt", crate::FILES_PREFIX_TEST)).unwrap();
         let answer = Day21.part_a(&input);
         assert_eq!(<i32 as Into<Answer>>::into(42), answer);
     }

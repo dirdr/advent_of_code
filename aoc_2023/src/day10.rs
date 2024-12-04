@@ -1,5 +1,9 @@
 use aoc_lib::{
-    answer::Answer, directions::Direction, matrix::Matrix, solution::Solution, vec2::Vec2,
+    answer::Answer,
+    directions::{Cardinal, Direction},
+    matrix::{Matrix, TryAdvance},
+    solution::Solution,
+    vec2::Vec2,
 };
 
 pub struct Day10;
@@ -35,6 +39,12 @@ struct Grid {
     start_tile: Tile,
 }
 
+#[derive(Debug, Clone, PartialEq, Eq)]
+struct Tile {
+    position: Vec2<usize>,
+    tile: char,
+}
+
 fn parse(input: &[String]) -> Grid {
     let mut grid = vec![];
     for (y, row) in input.iter().enumerate() {
@@ -66,8 +76,8 @@ impl Grid {
         let mut current_tile = self.start_tile.clone();
         loop {
             let mut next_tile: Option<Tile> = None;
-            for direction in Direction::all() {
-                if let Some(adjacent) = self.try_advance(&current_tile, &direction) {
+            for direction in Cardinal::all_clockwise() {
+                if let Some(adjacent) = self.grid.try_advance(current_tile.position, direction) {
                     if !visited.contains(&adjacent.position)
                         && current_tile.is_connected_to(adjacent, direction)
                     {
@@ -89,21 +99,10 @@ impl Grid {
         }
         visited
     }
-
-    fn try_advance(&self, tile: &Tile, direction: &Direction) -> Option<&Tile> {
-        let next_pos = Vec2::<isize>::from(tile.position) + direction.to_offset();
-        self.grid.get(next_pos)
-    }
-}
-
-#[derive(Debug, Clone, PartialEq, Eq)]
-struct Tile {
-    position: Vec2<usize>,
-    tile: char,
 }
 
 impl Tile {
-    fn is_connected_to(&self, other: &Tile, direction: Direction) -> bool {
+    fn is_connected_to(&self, other: &Tile, direction: Cardinal) -> bool {
         if other.tile == '.' {
             return false;
         }
@@ -112,19 +111,19 @@ impl Tile {
         directions.contains(&direction) && other_directions.contains(&direction.opposite())
     }
 
-    fn get_connections(&self) -> Vec<Direction> {
+    fn get_connections(&self) -> Vec<Cardinal> {
         match self.tile {
-            '|' => vec![Direction::South, Direction::North],
-            '-' => vec![Direction::East, Direction::West],
-            'L' => vec![Direction::North, Direction::East],
-            'J' => vec![Direction::North, Direction::West],
-            '7' => vec![Direction::South, Direction::West],
-            'F' => vec![Direction::South, Direction::East],
+            '|' => vec![Cardinal::South, Cardinal::North],
+            '-' => vec![Cardinal::East, Cardinal::West],
+            'L' => vec![Cardinal::North, Cardinal::East],
+            'J' => vec![Cardinal::North, Cardinal::West],
+            '7' => vec![Cardinal::South, Cardinal::West],
+            'F' => vec![Cardinal::South, Cardinal::East],
             'S' => vec![
-                Direction::North,
-                Direction::South,
-                Direction::East,
-                Direction::West,
+                Cardinal::North,
+                Cardinal::South,
+                Cardinal::East,
+                Cardinal::West,
             ],
             _ => vec![],
         }
@@ -139,22 +138,16 @@ mod test {
 
     #[test]
     fn test_a() {
-        let input = input::read_file(&format!(
-            "{}day_10_a_test.txt",
-            crate::FILES_PREFIX_TEST
-        ))
-        .unwrap();
+        let input =
+            input::read_file(&format!("{}day_10_a_test.txt", crate::FILES_PREFIX_TEST)).unwrap();
         let answer = Day10.part_a(&input);
         assert_eq!(<i32 as Into<Answer>>::into(4), answer);
     }
 
     #[test]
     fn test_b() {
-        let input = input::read_file(&format!(
-            "{}day_10_b_test.txt",
-            crate::FILES_PREFIX_TEST
-        ))
-        .unwrap();
+        let input =
+            input::read_file(&format!("{}day_10_b_test.txt", crate::FILES_PREFIX_TEST)).unwrap();
         let answer = Day10.part_b(&input);
         assert_eq!(<i32 as Into<Answer>>::into(10), answer);
     }

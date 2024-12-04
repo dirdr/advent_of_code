@@ -35,6 +35,12 @@ struct Parsed<'a> {
     bag: HashMap<&'a str, usize>,
 }
 
+#[derive(Debug)]
+struct Game<'a> {
+    id: usize,
+    sets: Vec<[(&'a str, usize); 3]>,
+}
+
 fn parse<'a>(input: &'a [String], starting_bag: [(&'a str, usize); 3]) -> Parsed<'a> {
     let mut games = vec![];
     let bag_map: HashMap<_, _> = starting_bag
@@ -73,12 +79,6 @@ impl<'a> Parsed<'a> {
             .filter(|game| game.is_valid(&self.bag))
             .collect()
     }
-}
-
-#[derive(Debug)]
-struct Game<'a> {
-    id: usize,
-    sets: Vec<[(&'a str, usize); 3]>,
 }
 
 impl<'a> Game<'a> {

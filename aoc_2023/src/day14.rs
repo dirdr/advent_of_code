@@ -1,7 +1,11 @@
 use std::collections::HashMap;
 
 use aoc_lib::{
-    answer::Answer, directions::Direction, matrix::Matrix, solution::Solution, vec2::Vec2,
+    answer::Answer,
+    directions::{Cardinal, Direction},
+    matrix::Matrix,
+    solution::Solution,
+    vec2::Vec2,
 };
 
 pub struct Day14;
@@ -9,7 +13,7 @@ pub struct Day14;
 impl Solution for Day14 {
     fn part_a(&self, input: &[String]) -> Answer {
         let mut plateform = parse(input);
-        plateform.tilt(Direction::North);
+        plateform.tilt(Cardinal::North);
         plateform.score().into()
     }
 
@@ -37,12 +41,12 @@ struct Plateform {
 
 impl Plateform {
     fn tilt_cycle(&mut self) {
-        for direction in Direction::counter_clockwise_cycle() {
+        for direction in Cardinal::all_counter_clockwise() {
             self.tilt(direction);
         }
     }
 
-    fn tilt(&mut self, direction: Direction) {
+    fn tilt(&mut self, direction: Cardinal) {
         let offset = direction.to_offset();
         loop {
             let mut moved = false;
@@ -99,22 +103,16 @@ mod test {
 
     #[test]
     fn test_a() {
-        let input = input::read_file(&format!(
-            "{}day_14_test.txt",
-            crate::FILES_PREFIX_TEST
-        ))
-        .unwrap();
+        let input =
+            input::read_file(&format!("{}day_14_test.txt", crate::FILES_PREFIX_TEST)).unwrap();
         let answer = Day14.part_a(&input);
         assert_eq!(<i32 as Into<Answer>>::into(136), answer);
     }
 
     #[test]
     fn test_b() {
-        let input = input::read_file(&format!(
-            "{}day_14_test.txt",
-            crate::FILES_PREFIX_TEST
-        ))
-        .unwrap();
+        let input =
+            input::read_file(&format!("{}day_14_test.txt", crate::FILES_PREFIX_TEST)).unwrap();
         let answer = Day14.part_b(&input);
         assert_eq!(<i32 as Into<Answer>>::into(64), answer);
     }

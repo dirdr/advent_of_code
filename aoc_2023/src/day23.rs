@@ -1,7 +1,8 @@
 use std::collections::{HashMap, HashSet};
 
+use aoc_lib::directions::Direction;
 use aoc_lib::{answer::Answer, solution::Solution, vec2::Vec2};
-use aoc_lib::{directions::Direction, matrix::Matrix};
+use aoc_lib::{directions::Cardinal, matrix::Matrix};
 
 pub struct Day23;
 
@@ -158,7 +159,7 @@ impl Map {
         let mut possible = vec![];
         // not on a slope
         if directions.is_empty() {
-            directions = Direction::all().collect::<Vec<_>>();
+            directions = Cardinal::all_clockwise().collect::<Vec<_>>();
         }
         for direction in directions {
             let next_pos = Vec2::<isize>::from(*pos) + direction.to_offset();
@@ -174,11 +175,11 @@ impl Map {
     }
 }
 
-const SLOPES: [(char, Direction); 4] = [
-    ('>', Direction::East),
-    ('<', Direction::West),
-    ('^', Direction::North),
-    ('v', Direction::South),
+const SLOPES: [(char, Cardinal); 4] = [
+    ('>', Cardinal::East),
+    ('<', Cardinal::West),
+    ('^', Cardinal::North),
+    ('v', Cardinal::South),
 ];
 
 fn parse(input: &[String]) -> Map {
@@ -199,22 +200,16 @@ mod test {
 
     #[test]
     fn test_a() {
-        let input = input::read_file(&format!(
-            "{}day_23_test.txt",
-            crate::FILES_PREFIX_TEST
-        ))
-        .unwrap();
+        let input =
+            input::read_file(&format!("{}day_23_test.txt", crate::FILES_PREFIX_TEST)).unwrap();
         let answer = Day23.part_a(&input);
         assert_eq!(<i32 as Into<Answer>>::into(94), answer);
     }
 
     #[test]
     fn test_b() {
-        let input = input::read_file(&format!(
-            "{}day_23_test.txt",
-            crate::FILES_PREFIX_TEST
-        ))
-        .unwrap();
+        let input =
+            input::read_file(&format!("{}day_23_test.txt", crate::FILES_PREFIX_TEST)).unwrap();
         let answer = Day23.part_b(&input);
         assert_eq!(<i32 as Into<Answer>>::into(154), answer);
     }

@@ -17,6 +17,11 @@ impl Solution for Day6 {
     }
 }
 
+struct Race {
+    duration: u64,
+    record: u64,
+}
+
 fn parse_a(input: &[String]) -> Vec<Race> {
     let (_, durations) = input[0].split_once("Time:").unwrap();
     let (_, records) = input[1].split_once("Distance:").unwrap();
@@ -51,11 +56,6 @@ fn parse_b(input: &[String]) -> Race {
     Race { duration, record }
 }
 
-struct Race {
-    duration: u64,
-    record: u64,
-}
-
 impl Race {
     fn count_ways(&self) -> u32 {
         (0..self.duration)
@@ -72,22 +72,16 @@ mod test {
 
     #[test]
     fn test_a() {
-        let input = input::read_file(&format!(
-            "{}day_06_test.txt",
-            crate::FILES_PREFIX_TEST
-        ))
-        .unwrap();
+        let input =
+            input::read_file(&format!("{}day_06_test.txt", crate::FILES_PREFIX_TEST)).unwrap();
         let answer = Day6.part_a(&input);
         assert_eq!(<i32 as Into<Answer>>::into(288), answer);
     }
 
     #[test]
     fn test_b() {
-        let input = input::read_file(&format!(
-            "{}day_06_test.txt",
-            crate::FILES_PREFIX_TEST
-        ))
-        .unwrap();
+        let input =
+            input::read_file(&format!("{}day_06_test.txt", crate::FILES_PREFIX_TEST)).unwrap();
         let answer = Day6.part_b(&input);
         assert_eq!(<i32 as Into<Answer>>::into(71503), answer);
     }

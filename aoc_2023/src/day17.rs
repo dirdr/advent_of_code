@@ -1,7 +1,11 @@
 use std::collections::{HashMap, VecDeque};
 
 use aoc_lib::{
-    answer::Answer, directions::Direction, matrix::Matrix, solution::Solution, vec2::Vec2,
+    answer::Answer,
+    directions::{Cardinal, Direction},
+    matrix::Matrix,
+    solution::Solution,
+    vec2::Vec2,
 };
 
 pub struct Day17;
@@ -29,7 +33,7 @@ impl Grid {
         let start = Vec2::new(0, 0);
         let end = Vec2::new(self.grid.cols - 1, self.grid.rows - 1);
 
-        for direction in [Direction::East, Direction::South] {
+        for direction in [Cardinal::East, Cardinal::South] {
             let node = Node::new(start, direction, 1);
             queue.push_back((node, 0));
             seen.insert(node, 0);
@@ -70,7 +74,7 @@ impl Grid {
         curr: &Node,
         min_dist: usize,
         max_dist: usize,
-    ) -> Vec<Direction> {
+    ) -> Vec<Cardinal> {
         // at each state, you can continue straight, go left or right.
         // if the turn distance is 0 you must turn left or right and the straight
         // option will not be avaible
@@ -99,12 +103,12 @@ fn parse(input: &[String]) -> Grid {
 #[derive(Debug, Copy, Clone, PartialEq, Eq, Hash)]
 struct Node {
     pos: Vec2<usize>,
-    facing: Direction,
+    facing: Cardinal,
     turn_counter: usize,
 }
 
 impl Node {
-    fn new(pos: Vec2<usize>, facing: Direction, turn_counter: usize) -> Self {
+    fn new(pos: Vec2<usize>, facing: Cardinal, turn_counter: usize) -> Self {
         Self {
             pos,
             facing,
@@ -121,22 +125,16 @@ mod test {
 
     #[test]
     fn test_a() {
-        let input = input::read_file(&format!(
-            "{}day_17_test.txt",
-            crate::FILES_PREFIX_TEST
-        ))
-        .unwrap();
+        let input =
+            input::read_file(&format!("{}day_17_test.txt", crate::FILES_PREFIX_TEST)).unwrap();
         let answer = Day17.part_a(&input);
         assert_eq!(<i32 as Into<Answer>>::into(102), answer);
     }
 
     #[test]
     fn test_b() {
-        let input = input::read_file(&format!(
-            "{}day_17_test.txt",
-            crate::FILES_PREFIX_TEST
-        ))
-        .unwrap();
+        let input =
+            input::read_file(&format!("{}day_17_test.txt", crate::FILES_PREFIX_TEST)).unwrap();
         let answer = Day17.part_b(&input);
         assert_eq!(<i32 as Into<Answer>>::into(94), answer);
     }

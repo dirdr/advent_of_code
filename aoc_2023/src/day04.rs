@@ -43,6 +43,11 @@ struct Parsed {
     cards: Vec<Card>,
 }
 
+struct Card {
+    winning: Vec<usize>,
+    picks: Vec<usize>,
+}
+
 fn parse(input: &[String]) -> Parsed {
     let mut cards = vec![];
     for line in input {
@@ -53,11 +58,6 @@ fn parse(input: &[String]) -> Parsed {
         cards.push(Card { winning, picks });
     }
     Parsed { cards }
-}
-
-struct Card {
-    winning: Vec<usize>,
-    picks: Vec<usize>,
 }
 
 impl Card {
@@ -85,22 +85,16 @@ mod test {
 
     #[test]
     fn test_a() {
-        let input = input::read_file(&format!(
-            "{}day_04_test.txt",
-            crate::FILES_PREFIX_TEST
-        ))
-        .unwrap();
+        let input =
+            input::read_file(&format!("{}day_04_test.txt", crate::FILES_PREFIX_TEST)).unwrap();
         let answer = Day4.part_a(&input);
         assert_eq!(<i32 as Into<Answer>>::into(13), answer);
     }
 
     #[test]
     fn test_b() {
-        let input = input::read_file(&format!(
-            "{}day_04_test.txt",
-            crate::FILES_PREFIX_TEST
-        ))
-        .unwrap();
+        let input =
+            input::read_file(&format!("{}day_04_test.txt", crate::FILES_PREFIX_TEST)).unwrap();
         let answer = Day4.part_b(&input);
         assert_eq!(<i32 as Into<Answer>>::into(30), answer);
     }

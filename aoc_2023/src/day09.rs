@@ -4,29 +4,17 @@ pub struct Day9;
 
 impl Solution for Day9 {
     fn part_a(&self, input: &[String]) -> Answer {
-        let parsed = parse(input);
-        parsed
-            .reports
-            .iter()
-            .fold(0, |acc, x| acc + x.predict_a())
-            .into()
+        let reports = parse(input);
+        reports.iter().fold(0, |acc, x| acc + x.predict_a()).into()
     }
 
     fn part_b(&self, input: &[String]) -> Answer {
-        let parsed = parse(input);
-        parsed
-            .reports
-            .iter()
-            .fold(0, |acc, x| acc + x.predict_b())
-            .into()
+        let reports = parse(input);
+        reports.iter().fold(0, |acc, x| acc + x.predict_b()).into()
     }
 }
 
-struct Parsed {
-    reports: Vec<Report>,
-}
-
-fn parse(input: &[String]) -> Parsed {
+fn parse(input: &[String]) -> Vec<Report> {
     let mut reports = vec![];
     for line in input {
         let history = line
@@ -35,7 +23,7 @@ fn parse(input: &[String]) -> Parsed {
             .collect();
         reports.push(Report { history });
     }
-    Parsed { reports }
+    reports
 }
 
 struct Report {
@@ -105,22 +93,16 @@ mod test {
 
     #[test]
     fn test_a() {
-        let input = input::read_file(&format!(
-            "{}day_09_test.txt",
-            crate::FILES_PREFIX_TEST
-        ))
-        .unwrap();
+        let input =
+            input::read_file(&format!("{}day_09_test.txt", crate::FILES_PREFIX_TEST)).unwrap();
         let answer = Day9.part_a(&input);
         assert_eq!(<i32 as Into<Answer>>::into(114), answer);
     }
 
     #[test]
     fn test_b() {
-        let input = input::read_file(&format!(
-            "{}day_09_test.txt",
-            crate::FILES_PREFIX_TEST
-        ))
-        .unwrap();
+        let input =
+            input::read_file(&format!("{}day_09_test.txt", crate::FILES_PREFIX_TEST)).unwrap();
         let answer = Day9.part_b(&input);
         assert_eq!(<i32 as Into<Answer>>::into(2), answer);
     }

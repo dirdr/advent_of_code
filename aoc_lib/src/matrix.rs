@@ -3,7 +3,16 @@ use std::{
     ops::{Index, IndexMut},
 };
 
+use crate::directions::Direction;
+
 use super::vec2::Vec2;
+
+pub trait TryAdvance<T, D>
+where
+    D: Direction,
+{
+    fn try_advance(&self, pos: Vec2<usize>, dir: D) -> Option<&T>;
+}
 
 #[derive(Clone, PartialEq, Eq, Hash)]
 pub struct Matrix<T> {
@@ -26,7 +35,6 @@ impl<T> IndexMut<Vec2<usize>> for Matrix<T> {
     }
 }
 
-#[allow(dead_code)]
 impl<T> Matrix<T>
 where
     T: Clone,
@@ -134,5 +142,16 @@ impl<T: Debug> Debug for Matrix<T> {
             writeln!(f)?;
         }
         Ok(())
+    }
+}
+
+impl<T, D> TryAdvance<T, D> for Matrix<T>
+where
+    D: Direction,
+    T: Clone,
+{
+    fn try_advance(&self, pos: Vec2<usize>, dir: D) -> Option<&T> {
+        let next_pos = Vec2::<isize>::from(pos) + dir.to_offset();
+        self.get(next_pos)
     }
 }

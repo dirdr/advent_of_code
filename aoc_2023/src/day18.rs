@@ -1,4 +1,9 @@
-use aoc_lib::{answer::Answer, directions::Direction, solution::Solution, vec2::Vec2};
+use aoc_lib::{
+    answer::Answer,
+    directions::{Cardinal, Direction},
+    solution::Solution,
+    vec2::Vec2,
+};
 
 pub struct Day18;
 
@@ -65,26 +70,26 @@ fn parse_b(input: &[String]) -> DigPlan {
 
 #[derive(Debug, Copy, Clone)]
 struct Instruction {
-    direction: Direction,
+    direction: Cardinal,
     len: usize,
 }
 
-fn to_direction_a(ch: char) -> Direction {
+fn to_direction_a(ch: char) -> Cardinal {
     match ch {
-        'R' => Direction::East,
-        'D' => Direction::South,
-        'U' => Direction::North,
-        'L' => Direction::West,
+        'R' => Cardinal::East,
+        'D' => Cardinal::South,
+        'U' => Cardinal::North,
+        'L' => Cardinal::West,
         _ => unreachable!(),
     }
 }
 
-fn to_direction_b(ch: char) -> Direction {
+fn to_direction_b(ch: char) -> Cardinal {
     match ch {
-        '0' => Direction::East,
-        '1' => Direction::South,
-        '2' => Direction::West,
-        '3' => Direction::North,
+        '0' => Cardinal::East,
+        '1' => Cardinal::South,
+        '2' => Cardinal::West,
+        '3' => Cardinal::North,
         _ => unreachable!(),
     }
 }
@@ -97,22 +102,16 @@ mod test {
 
     #[test]
     fn test_a() {
-        let input = input::read_file(&format!(
-            "{}day_18_test.txt",
-            crate::FILES_PREFIX_TEST
-        ))
-        .unwrap();
+        let input =
+            input::read_file(&format!("{}day_18_test.txt", crate::FILES_PREFIX_TEST)).unwrap();
         let answer = Day18.part_a(&input);
         assert_eq!(<i32 as Into<Answer>>::into(62), answer);
     }
 
     #[test]
     fn test_b() {
-        let input = input::read_file(&format!(
-            "{}day_18_test.txt",
-            crate::FILES_PREFIX_TEST
-        ))
-        .unwrap();
+        let input =
+            input::read_file(&format!("{}day_18_test.txt", crate::FILES_PREFIX_TEST)).unwrap();
         let answer = Day18.part_b(&input);
         assert_eq!(<i64 as Into<Answer>>::into(952408144115), answer);
     }

@@ -45,6 +45,15 @@ struct Parsed {
     maps: Vec<Map>,
 }
 
+struct Map {
+    ranges: Vec<Range>,
+}
+struct Range {
+    src: usize,
+    dest: usize,
+    len: usize,
+}
+
 fn parse(input: &[String]) -> Parsed {
     let mut lines = input.iter();
     let (_, seeds) = lines.next().unwrap().split_once("seeds: ").unwrap();
@@ -74,10 +83,6 @@ fn parse(input: &[String]) -> Parsed {
     Parsed { seeds, maps }
 }
 
-struct Map {
-    ranges: Vec<Range>,
-}
-
 impl Map {
     fn map(&self, seed: usize) -> usize {
         for range in &self.ranges {
@@ -87,12 +92,6 @@ impl Map {
         }
         seed
     }
-}
-
-struct Range {
-    src: usize,
-    dest: usize,
-    len: usize,
 }
 
 impl Range {
