@@ -125,7 +125,7 @@ impl Parsed {
         let mut positions = vec![];
         for &offset in &offsets {
             let new_pos = Vec2::<isize>::from(pos) + offset;
-            let el = self.grid.get(new_pos);
+            let el = self.grid.get(&new_pos);
             if let Some(&el) = el {
                 for part in parts {
                     let cp = Part::from(el);

@@ -74,7 +74,7 @@ fn next_tiles(map: &Matrix<char>, pos: Vec2<usize>) -> Vec<Vec2<usize>> {
     let mut possible = vec![];
     for direction in Cardinal::all_clockwise() {
         let next_pos = Vec2::<isize>::from(pos) + direction.to_offset();
-        let next_tile = map.get(next_pos);
+        let next_tile = map.get(&next_pos);
         if let Some(next_tile) = next_tile {
             let next_pos = Vec2::<usize>::try_from(next_pos).unwrap();
             if *next_tile != '#' {

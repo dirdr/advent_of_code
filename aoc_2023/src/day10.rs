@@ -78,7 +78,7 @@ impl Grid {
             let mut next_tile: Option<Tile> = None;
             for direction in Cardinal::all_clockwise() {
                 let new_pos = direction.advance(Vec2::<isize>::from(current_tile.position));
-                if let Some(adjacent) = self.grid.get(new_pos) {
+                if let Some(adjacent) = self.grid.get(&new_pos) {
                     if !visited.contains(&adjacent.position)
                         && current_tile.is_connected_to(adjacent, direction)
                     {

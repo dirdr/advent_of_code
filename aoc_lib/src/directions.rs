@@ -10,7 +10,7 @@ pub trait Direction {
     fn turn_left(&self) -> Self;
     fn turn_right(&self) -> Self;
 
-    fn to_offset<T: Copy + Num>(&self) -> Vec2<T>;
+    fn to_offset<T: Copy + Num + Signed>(&self) -> Vec2<T>;
 }
 
 pub trait Advance<T> {
@@ -73,7 +73,7 @@ impl Direction for Cardinal {
         }
     }
 
-    fn to_offset<T: Copy + Num>(&self) -> Vec2<T> {
+    fn to_offset<T: Copy + Num + Signed>(&self) -> Vec2<T> {
         match self {
             Self::North => Vec2::new(T::zero(), T::zero() - T::one()),
             Self::South => Vec2::new(T::zero(), T::one()),
@@ -150,16 +150,17 @@ impl Direction for ExtendedCardinal {
             Self::NorthWest => Self::North,
         }
     }
-    fn to_offset<T: Copy + Num>(&self) -> Vec2<T> {
+
+    fn to_offset<T: Copy + Num + Signed>(&self) -> Vec2<T> {
         match self {
-            Self::North => Vec2::new(T::zero(), T::zero() - T::one()),
-            Self::NorthWest => Vec2::new(T::zero() - T::one(), T::zero() - T::one()),
-            Self::NorthEast => Vec2::new(T::one(), T::zero() - T::one()),
+            Self::North => Vec2::new(T::zero(), -T::one()),
+            Self::NorthWest => Vec2::new(-T::one(), -T::one()),
+            Self::NorthEast => Vec2::new(T::one(), -T::one()),
             Self::South => Vec2::new(T::zero(), T::one()),
-            Self::SouthWest => Vec2::new(T::zero() - T::one(), T::one()),
+            Self::SouthWest => Vec2::new(-T::one(), T::one()),
             Self::SouthEast => Vec2::new(T::one(), T::one()),
             Self::East => Vec2::new(T::one(), T::zero()),
-            Self::West => Vec2::new(T::zero() - T::one(), T::zero()),
+            Self::West => Vec2::new(-T::one(), T::zero()),
         }
     }
 }

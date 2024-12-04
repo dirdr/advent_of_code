@@ -73,6 +73,7 @@ impl Debug for ConversionError {
     }
 }
 
+// TODO maybe tryfrom and from generalized over num traits
 impl TryFrom<Vec2<isize>> for Vec2<usize> {
     type Error = ConversionError;
 
@@ -83,8 +84,24 @@ impl TryFrom<Vec2<isize>> for Vec2<usize> {
     }
 }
 
+impl TryFrom<&Vec2<isize>> for Vec2<usize> {
+    type Error = ConversionError;
+
+    fn try_from(value: &Vec2<isize>) -> Result<Self, Self::Error> {
+        let x = usize::try_from(value.x).map_err(|_| ConversionError)?;
+        let y = usize::try_from(value.y).map_err(|_| ConversionError)?;
+        Ok(Vec2::new(x, y))
+    }
+}
+
 impl From<Vec2<usize>> for Vec2<isize> {
     fn from(value: Vec2<usize>) -> Self {
+        Vec2::new(value.x as isize, value.y as isize)
+    }
+}
+
+impl From<&Vec2<usize>> for Vec2<isize> {
+    fn from(value: &Vec2<usize>) -> Self {
         Vec2::new(value.x as isize, value.y as isize)
     }
 }

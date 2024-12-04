@@ -3,8 +3,6 @@ use std::{
     ops::{Index, IndexMut},
 };
 
-use crate::directions::Direction;
-
 use super::vec2::Vec2;
 
 #[derive(Clone, PartialEq, Eq, Hash)]
@@ -40,19 +38,19 @@ where
         }
     }
 
-    pub fn get(&self, pos: Vec2<isize>) -> Option<&T> {
+    pub fn get(&self, pos: &Vec2<isize>) -> Option<&T> {
         Vec2::<usize>::try_from(pos)
             .ok()
-            .and_then(|p| self.in_range(p).then(|| &self[p]))
+            .and_then(|p| self.in_range(&p).then(|| &self[p]))
     }
 
-    pub fn get_mut(&mut self, pos: Vec2<isize>) -> Option<&mut T> {
+    pub fn get_mut(&mut self, pos: &Vec2<isize>) -> Option<&mut T> {
         Vec2::<usize>::try_from(pos)
             .ok()
-            .and_then(|p| self.in_range(p).then(|| &mut self[p]))
+            .and_then(|p| self.in_range(&p).then(|| &mut self[p]))
     }
 
-    pub fn set(&mut self, pos: Vec2<isize>, value: T) -> Result<(), String> {
+    pub fn set(&mut self, pos: &Vec2<isize>, value: T) -> Result<(), String> {
         if let Some(pos) = self.get_mut(pos) {
             *pos = value;
             Ok(())
@@ -72,8 +70,12 @@ where
         new_matrix
     }
 
-    pub fn contains(&self, pos: Vec2<isize>) -> bool {
+    pub fn contains(&self, pos: &Vec2<isize>) -> bool {
         pos.x >= 0 && pos.x < self.cols as isize && pos.y >= 0 && pos.y < self.rows as isize
+    }
+
+    pub fn contains_all(&self, pos: &Vec<Vec2<isize>>) -> bool {
+        pos.iter().all(|p| self.contains(p))
     }
 
     pub fn get_rows_uncheked(&self, index: usize) -> Vec<T> {
@@ -82,7 +84,7 @@ where
             .collect::<Vec<T>>()
     }
 
-    fn in_range(&self, pos: Vec2<usize>) -> bool {
+    fn in_range(&self, pos: &Vec2<usize>) -> bool {
         pos.x < self.cols && pos.y < self.rows
     }
 }

@@ -52,7 +52,7 @@ impl Grid {
             let mut next_rays = vec![];
             for ray in rays.iter_mut() {
                 let pos = ray.pos + ray.direction.to_offset();
-                if !self.grid.contains(pos) {
+                if !self.grid.contains(&pos) {
                     continue;
                 }
                 let tile = self.grid[Vec2::<usize>::try_from(pos).unwrap()];

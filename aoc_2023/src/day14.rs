@@ -58,7 +58,7 @@ impl Plateform {
                         continue;
                     }
                     let new_position = Vec2::<isize>::from(pos) + offset;
-                    let el_at_new_position = self.plateform.get(new_position);
+                    let el_at_new_position = self.plateform.get(&new_position);
                     if let Some(&np) = el_at_new_position {
                         if np != '.' {
                             continue;

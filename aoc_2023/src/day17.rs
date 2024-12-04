@@ -88,7 +88,7 @@ impl Grid {
         }
         avaibles
             .into_iter()
-            .filter(|d| grid.contains(Vec2::<isize>::from(curr.pos) + d.to_offset()))
+            .filter(|d| grid.contains(&(Vec2::<isize>::from(curr.pos) + d.to_offset())))
             .collect()
     }
 }
