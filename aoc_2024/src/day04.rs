@@ -1,8 +1,9 @@
 use aoc_lib::{
     answer::Answer,
-    directions::{Direction, ExtendedCardinal},
-    matrix,
+    directions::{Advance, Direction, ExtendedCardinal},
+    matrix::{self},
     solution::Solution,
+    vec2::Vec2,
 };
 
 pub struct Day4;
@@ -10,14 +11,27 @@ pub struct Day4;
 impl Solution for Day4 {
     fn part_a(&self, input: &[String]) -> Answer {
         let matrix = matrix::Matrix::from_chars(input);
-        for i in 0..matrix.rows {
-            for j in 0..matrix.cols {
-                for dir in ExtendedCardinal::all_clockwise() {
-                    for next in ['M', 'A', 'S'] {}
+        let mut count = 0;
+        for y in 0..matrix.rows {
+            for x in 0..matrix.cols {
+                let start = Vec2::new(x, y);
+                if matrix[start] != 'X' {
+                    continue;
+                }
+                'dir: for dir in ExtendedCardinal::all_clockwise() {
+                    let mut pos = Vec2::<isize>::from(start);
+                    for expected in ['M', 'A', 'S'] {
+                        let next = dir.advance(pos);
+                        if Some(&expected) != matrix.get(next) {
+                            continue 'dir;
+                        }
+                        pos = next;
+                    }
+                    count += 1;
                 }
             }
         }
-        todo!()
+        count.into()
     }
 
     fn part_b(&self, input: &[String]) -> Answer {

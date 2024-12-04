@@ -6,6 +6,7 @@ edition = "2021"
 [dependencies]
 aoc_lib = { path = "../aoc_lib" }
 itertools = "0.13.0"
+num-traits = "0.2.19"
 petgraph = "0.6.5"
 polynomial = "0.2.6"
 rayon = "1.10.0"

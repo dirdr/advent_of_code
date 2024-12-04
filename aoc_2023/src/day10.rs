@@ -1,7 +1,7 @@
 use aoc_lib::{
     answer::Answer,
-    directions::{Cardinal, Direction},
-    matrix::{Matrix, TryAdvance},
+    directions::{Advance, Cardinal, Direction},
+    matrix::Matrix,
     solution::Solution,
     vec2::Vec2,
 };
@@ -77,7 +77,8 @@ impl Grid {
         loop {
             let mut next_tile: Option<Tile> = None;
             for direction in Cardinal::all_clockwise() {
-                if let Some(adjacent) = self.grid.try_advance(current_tile.position, direction) {
+                let new_pos = direction.advance(Vec2::<isize>::from(current_tile.position));
+                if let Some(adjacent) = self.grid.get(new_pos) {
                     if !visited.contains(&adjacent.position)
                         && current_tile.is_connected_to(adjacent, direction)
                     {
