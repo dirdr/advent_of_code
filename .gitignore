@@ -17,3 +17,4 @@ aoc_2023/resources/real/
 aoc_2024/resources/real/
 
 .DS_Store
+.z3-trace
