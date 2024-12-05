@@ -1,12 +1,18 @@
 # Advent Of Code 🎁 in rust 🦀
+
 ## About
+
 This is my attempt to solve AOC problems in rust !
 
 ## Setup
+
 If you want the run this aoc repo with your input, please provide them with the following name `day_{day_number}.txt`
 in the folder ./resources/{year}/real/
+
 ## Run
+
 To run the crate, you will need to have cmake in path
+
 ```sh
 Usage: advent_of_code_2023 --day <DAY>
 
@@ -14,12 +20,17 @@ Options:
   -d, --day <DAY>
   -h, --help       Print help
 ```
+
 ## Test
+
 ```sh
 cargo test
 ```
+
 ## Progress
+
 [![aoc_2023](https://github.com/dirdr/advent_of_code/actions/workflows/aoc_2023.yml/badge.svg)](https://github.com/dirdr/advent_of_code/actions/workflows/aoc_2023.yml)
+
 - [Day 01: Trebuchet?!](aoc_2023/src/day01.rs) ⭐⭐
 - [Day 02: Cube Conundrum](aoc_2023/src/day02.rs) ⭐⭐
 - [Day 03: Gear Ratios](aoc_2023/src/day03.rs) ⭐⭐
@@ -47,8 +58,13 @@ cargo test
 - [Day 25: Snowverload](aoc_2023/src/day25.rs) ⭐⭐
 
 [![aoc_2024](https://github.com/dirdr/advent_of_code/actions/workflows/aoc_2024.yml/badge.svg)](https://github.com/dirdr/advent_of_code/actions/workflows/aoc_2024.yml)
+
 - [Day 01: Historian Hysteria](aoc_2024/src/day01.rs) ⭐⭐
 - [Day 02: Red-Nosed Reports](aoc_2024/src/day02.rs) ⭐⭐
+- [Day 03: Mull It Over](aoc_2024/src/day03.rs) ⭐⭐
+- [Day 04: Ceres Search](aoc_2024/src/day04.rs) ⭐⭐
+- [Day 05: Print Queue](aoc_2024/src/day05.rs) ⭐⭐
 
 ## Thanks
-The project structure is inspired by [this repository](https://github.com/Basicprogrammer10/advent-of-code)
+
+The project structure, as well as solutions when i struggle to find it on my own is inspired by [this repository](https://github.com/Basicprogrammer10/advent-of-code)
