@@ -48,6 +48,7 @@ struct Parsed {
 struct Map {
     ranges: Vec<Range>,
 }
+
 struct Range {
     src: usize,
     dest: usize,
