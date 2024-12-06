@@ -13,30 +13,12 @@ pub struct Day6;
 impl Solution for Day6 {
     fn part_a(&self, input: &[String]) -> Answer {
         let map = parse(input);
-        map.walk().into()
+        map.seen().len().into()
     }
 
     fn part_b(&self, input: &[String]) -> Answer {
         let map = parse(input);
-        let mut count = 0;
-        for y in 0..map.grid.rows {
-            for x in 0..map.grid.cols {
-                let pos = Vec2::new(x, y);
-                if map.grid[pos] == '#' || map.grid[pos] == '^' {
-                    continue;
-                }
-                let mut modified = map.grid.clone();
-                modified[pos] = '#';
-                let new = Map {
-                    grid: modified,
-                    starting_pos: map.starting_pos,
-                };
-                if new.walk() == -1 {
-                    count += 1;
-                }
-            }
-        }
-        count.into()
+        map.seen().iter().filter(|p| map.is_loop(p)).count().into()
     }
 }
 
@@ -52,21 +34,12 @@ struct Map {
 }
 
 impl Map {
-    fn walk(&self) -> isize {
-        let max_loop_threshold = self.grid.rows * self.grid.cols;
+    fn seen(&self) -> HashSet<Vec2<usize>> {
         let mut pos = Vec2::<isize>::from(self.starting_pos);
         let mut dir = Cardinal::North;
         let mut visited: HashSet<Vec2<usize>> = HashSet::new();
-        let mut count = 0;
         loop {
-            if count > max_loop_threshold {
-                return -1;
-            }
-            if visited.insert(Vec2::<usize>::try_from(pos).unwrap()) {
-                count = 0;
-            } else {
-                count += 1;
-            }
+            visited.insert(Vec2::<usize>::try_from(pos).unwrap());
             let next = dir.advance(pos);
             let Some(&ch) = self.grid.get(&next) else {
                 break;
@@ -77,7 +50,31 @@ impl Map {
                 pos = next;
             }
         }
-        visited.len() as isize
+        visited
+    }
+
+    fn is_loop(&self, obstacle: &Vec2<usize>) -> bool {
+        let mut pos = Vec2::<isize>::from(self.starting_pos);
+        let mut dir = Cardinal::North;
+        let mut visited: HashSet<(Vec2<usize>, Cardinal)> = HashSet::new();
+        loop {
+            let Some(&ch) = self.grid.get(&pos) else {
+                break;
+            };
+            if ch == '#' || pos == obstacle.into() {
+                pos = dir.opposite().advance(pos);
+                dir = dir.turn_right();
+            }
+
+            let current_state = (Vec2::<usize>::try_from(pos).unwrap(), dir);
+
+            if !visited.insert(current_state) {
+                return true;
+            }
+
+            pos = dir.advance(pos);
+        }
+        false
     }
 }
 
