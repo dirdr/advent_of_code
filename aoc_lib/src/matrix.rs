@@ -74,11 +74,11 @@ where
         pos.x >= 0 && pos.x < self.cols as isize && pos.y >= 0 && pos.y < self.rows as isize
     }
 
-    pub fn contains_all(&self, pos: &Vec<Vec2<isize>>) -> bool {
+    pub fn contains_all(&self, pos: &[Vec2<isize>]) -> bool {
         pos.iter().all(|p| self.contains(p))
     }
 
-    pub fn get_rows_uncheked(&self, index: usize) -> Vec<T> {
+    pub fn get_rows_unchecked(&self, index: usize) -> Vec<T> {
         (0..self.cols)
             .map(|i| self[Vec2::new(i, index)].clone())
             .collect::<Vec<T>>()
