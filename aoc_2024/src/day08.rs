@@ -40,32 +40,30 @@ impl Map {
 
     fn count_valid_antinodes(&self, count_harmonic: bool) -> usize {
         let mut uniques: HashSet<Vec2<usize>> = HashSet::new();
-        for &node_type in self.antennas.keys() {
-            let positions = self.antennas[&node_type].clone();
+        for positions in self.antennas.values() {
             for perm in positions.iter().permutations(2) {
-                let first_pos = Vec2::<isize>::from(perm[0]);
-                let second_pos = Vec2::<isize>::from(perm[1]);
-                let mut anti_nodes = vec![];
+                let to = Vec2::<isize>::from(perm[0]);
+                let from = Vec2::<isize>::from(perm[1]);
 
-                if count_harmonic {
-                    anti_nodes.push(first_pos);
-                    let mut k = 0;
-                    while self
-                        .map
-                        .contains(&((first_pos) + (first_pos - second_pos) * k))
-                    {
-                        anti_nodes.push((first_pos) + (first_pos - second_pos) * k);
-                        k += 1;
-                    }
+                let positions = if count_harmonic {
+                    (0..)
+                        .map(|k| to + (to - from) * k)
+                        .take_while(|pos| self.map.contains(pos))
+                        .collect::<Vec<_>>()
                 } else {
-                    let pos = (first_pos * 2) - second_pos;
+                    let pos = to + (to - from);
+                    let mut out = vec![];
                     if self.map.contains(&pos) {
-                        anti_nodes.push(pos);
+                        out.push(pos);
                     }
-                }
-                for an in anti_nodes {
-                    uniques.insert(Vec2::<usize>::try_from(an).unwrap());
-                }
+                    out
+                };
+
+                uniques.extend(
+                    positions
+                        .iter()
+                        .map(|p| Vec2::<usize>::try_from(p).unwrap()),
+                );
             }
         }
         uniques.len()
