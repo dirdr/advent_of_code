@@ -1,6 +1,7 @@
 # Advent Of Code 🎁 in rust 🦀
 
 ## About
+
 This is my attempt to solve AOC problems in Rust!
 
 ## Setup
@@ -9,6 +10,7 @@ If you want to run the solutions with your input, please provide them with the f
 in the folder ./resources/{year}/real/
 
 ## Run
+
 ```sh
 Usage: advent_of_code_2023 --day <DAY>
 
@@ -18,11 +20,13 @@ Options:
 ```
 
 ## Test
+
 ```sh
 cargo test -p <crate>
 ```
 
 for example, to test the 2024 crate:
+
 ```sh
 cargo test -p aoc_2024
 ```
@@ -67,6 +71,7 @@ cargo test -p aoc_2024
 - [Day 06: Guard Gallivant](aoc_2024/src/day06.rs) ⭐⭐
 - [Day 07: Bridge Repair](aoc_2024/src/day07.rs) ⭐⭐
 - [Day 08: Resonant Collinearity](aoc_2024/src/day08.rs) ⭐⭐
+- [Day 09: Disk Fragmenter](aoc_2024/src/day09.rs) ⭐⭐
 
 ## Thanks
 
