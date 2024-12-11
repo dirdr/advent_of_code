@@ -72,6 +72,8 @@ cargo test -p aoc_2024
 - [Day 07: Bridge Repair](aoc_2024/src/day07.rs) ⭐⭐
 - [Day 08: Resonant Collinearity](aoc_2024/src/day08.rs) ⭐⭐
 - [Day 09: Disk Fragmenter](aoc_2024/src/day09.rs) ⭐⭐
+- [Day 10: Hoof It](aoc_2024/src/day10.rs) ⭐⭐
+- [Day 11: Plutonian Pebbles](aoc_2024/src/day11.rs) ⭐⭐
 
 ## Thanks
 
