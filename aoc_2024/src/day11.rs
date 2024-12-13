@@ -17,7 +17,7 @@ impl Solution for Day11 {
 }
 
 fn solve(stones: &mut Stones, iterations: usize) -> u64 {
-    for t in 0..iterations {
+    for _ in 0..iterations {
         stones.blink();
     }
     stones.stones_count.values().sum::<u64>()

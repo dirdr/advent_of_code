@@ -2,8 +2,9 @@ use std::fmt::Debug;
 use std::ops::{Add, AddAssign, Mul, Sub};
 
 use num::{Num, Signed};
+use std::hash::Hash;
 
-#[derive(Copy, Clone, Debug, PartialEq, Eq, Hash)]
+#[derive(Copy, Clone, Debug)]
 pub struct Vec2<T> {
     pub x: T,
     pub y: T,
@@ -36,10 +37,34 @@ impl<T: Add<Output = T>> Add for Vec2<T> {
     }
 }
 
+impl<T> Add<T> for Vec2<T>
+where
+    T: Num + Copy,
+{
+    type Output = Self;
+
+    fn add(self, scalar: T) -> Self::Output {
+        Self {
+            x: self.x + scalar,
+            y: self.y + scalar,
+        }
+    }
+}
+
 impl<T: AddAssign> AddAssign for Vec2<T> {
     fn add_assign(&mut self, other: Self) {
         self.x += other.x;
         self.y += other.y;
+    }
+}
+
+impl<T> AddAssign<T> for Vec2<T>
+where
+    T: Num + Copy,
+{
+    fn add_assign(&mut self, scalar: T) {
+        self.x = self.x + scalar;
+        self.y = self.y + scalar;
     }
 }
 
@@ -111,3 +136,18 @@ impl From<Vec2<usize>> for Vec2<f64> {
         Vec2::new(value.x as f64, value.y as f64)
     }
 }
+
+impl<T: Num> PartialEq for Vec2<T> {
+    fn eq(&self, other: &Self) -> bool {
+        self.x == other.x && self.y == other.y
+    }
+}
+
+impl<T: Num + Hash> Hash for Vec2<T> {
+    fn hash<H: std::hash::Hasher>(&self, state: &mut H) {
+        self.x.hash(state);
+        self.y.hash(state);
+    }
+}
+
+impl<T: Num> Eq for Vec2<T> {}
