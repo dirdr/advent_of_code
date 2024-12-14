@@ -74,6 +74,9 @@ cargo test -p aoc_2024
 - [Day 09: Disk Fragmenter](aoc_2024/src/day09.rs) ⭐⭐
 - [Day 10: Hoof It](aoc_2024/src/day10.rs) ⭐⭐
 - [Day 11: Plutonian Pebbles](aoc_2024/src/day11.rs) ⭐⭐
+- [Day 12: Garden Groups](aoc_2024/src/day12.rs) ⭐⭐
+- [Day 13: Claw Contraption](aoc_2024/src/day13.rs) ⭐⭐
+- [Day 14: Restroom Redoubt](aoc_2024/src/day14.rs) ⭐⭐
 
 ## Thanks
 
