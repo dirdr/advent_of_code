@@ -39,7 +39,7 @@ impl Map {
         let mut dir = Cardinal::North;
         let mut visited: HashSet<Vec2<usize>> = HashSet::new();
         loop {
-            visited.insert(Vec2::<usize>::try_from(pos).unwrap());
+            visited.insert(Vec2::<usize>::try_from(&pos).unwrap());
             let next = dir.advance(pos);
             let Some(&ch) = self.grid.get(&next) else {
                 break;
@@ -66,7 +66,7 @@ impl Map {
                 dir = dir.turn_right();
             }
 
-            let current_state = (Vec2::<usize>::try_from(pos).unwrap(), dir);
+            let current_state = (Vec2::<usize>::try_from(&pos).unwrap(), dir);
 
             if !visited.insert(current_state) {
                 return true;

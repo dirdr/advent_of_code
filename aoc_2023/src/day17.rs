@@ -51,7 +51,7 @@ impl Grid {
             // explore all (avaibles) neighboors
             for dir in Grid::avaible_directions(&self.grid, &node, min_dist, max_dist) {
                 let next_pos =
-                    Vec2::<usize>::try_from(Vec2::<isize>::from(node.pos) + dir.to_offset())
+                    Vec2::<usize>::try_from(Vec2::<isize>::from(&node.pos) + dir.to_offset())
                         .unwrap();
                 let counter = if dir == node.facing {
                     node.turn_counter + 1

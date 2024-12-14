@@ -80,7 +80,7 @@ impl Map {
                 continue;
             }
 
-            if let Ok(safe_next) = Vec2::<usize>::try_from(next) {
+            if let Ok(safe_next) = Vec2::<usize>::try_from(&next) {
                 count += self.trailhead_score(safe_next, visited);
             }
         }
@@ -110,7 +110,7 @@ impl Map {
                 continue;
             }
 
-            if let Ok(safe_next) = Vec2::<usize>::try_from(next) {
+            if let Ok(safe_next) = Vec2::<usize>::try_from(&next) {
                 count += self.trailhead_rating(safe_next);
             }
         }

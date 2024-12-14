@@ -1,7 +1,7 @@
-use std::fmt::Debug;
-use std::ops::{Add, AddAssign, Mul, Sub};
+use std::fmt::{self, Debug};
+use std::ops::{Add, AddAssign, Div, DivAssign, Mul, MulAssign, Sub, SubAssign};
 
-use num::{Num, Signed};
+use num::{Num, Signed, ToPrimitive};
 use std::hash::Hash;
 
 #[derive(Copy, Clone, Debug)]
@@ -10,14 +10,18 @@ pub struct Vec2<T> {
     pub y: T,
 }
 
+pub struct ConversionError;
+
 impl<T: Num> Vec2<T> {
     pub fn new(x: T, y: T) -> Self {
         Self { x, y }
     }
 }
 
-#[allow(dead_code)]
-impl<T: Signed + Copy> Vec2<T> {
+impl<T> Vec2<T>
+where
+    T: Signed + Copy,
+{
     pub fn abs(&self) -> Vec2<T> {
         Self {
             x: self.x.abs(),
@@ -26,7 +30,10 @@ impl<T: Signed + Copy> Vec2<T> {
     }
 }
 
-impl<T: Add<Output = T>> Add for Vec2<T> {
+impl<T> Add for Vec2<T>
+where
+    T: Num + Add<Output = T>,
+{
     type Output = Self;
 
     fn add(self, other: Self) -> Self {
@@ -51,7 +58,10 @@ where
     }
 }
 
-impl<T: AddAssign> AddAssign for Vec2<T> {
+impl<T> AddAssign for Vec2<T>
+where
+    T: AddAssign + Num,
+{
     fn add_assign(&mut self, other: Self) {
         self.x += other.x;
         self.y += other.y;
@@ -60,15 +70,18 @@ impl<T: AddAssign> AddAssign for Vec2<T> {
 
 impl<T> AddAssign<T> for Vec2<T>
 where
-    T: Num + Copy,
+    T: Num + Copy + AddAssign,
 {
     fn add_assign(&mut self, scalar: T) {
-        self.x = self.x + scalar;
-        self.y = self.y + scalar;
+        self.x += scalar;
+        self.y += scalar;
     }
 }
 
-impl<T: Sub<Output = T>> Sub for Vec2<T> {
+impl<T> Sub for Vec2<T>
+where
+    T: Num + Sub<Output = T>,
+{
     type Output = Self;
 
     fn sub(self, other: Self) -> Self {
@@ -79,8 +92,31 @@ impl<T: Sub<Output = T>> Sub for Vec2<T> {
     }
 }
 
-impl<T: Num + Copy> Mul<T> for Vec2<T> {
-    type Output = Vec2<T>;
+impl<T> SubAssign for Vec2<T>
+where
+    T: SubAssign + Num,
+{
+    fn sub_assign(&mut self, other: Self) {
+        self.x -= other.x;
+        self.y -= other.y;
+    }
+}
+
+impl<T> SubAssign<T> for Vec2<T>
+where
+    T: Num + Copy + SubAssign,
+{
+    fn sub_assign(&mut self, scalar: T) {
+        self.x -= scalar;
+        self.y -= scalar;
+    }
+}
+
+impl<T> Mul<T> for Vec2<T>
+where
+    T: Num + Copy,
+{
+    type Output = Self;
 
     fn mul(self, scalar: T) -> Vec2<T> {
         Vec2 {
@@ -90,21 +126,52 @@ impl<T: Num + Copy> Mul<T> for Vec2<T> {
     }
 }
 
-pub struct ConversionError;
-
-impl Debug for ConversionError {
-    fn fmt(&self, f: &mut std::fmt::Formatter<'_>) -> std::fmt::Result {
-        writeln!(f, "Conversion cannot be done !")
+impl<T> MulAssign<T> for Vec2<T>
+where
+    T: Num + Copy + MulAssign,
+{
+    fn mul_assign(&mut self, scalar: T) {
+        self.x *= scalar;
+        self.y *= scalar;
     }
 }
 
-// TODO maybe tryfrom and from generalized over num traits
+impl<T> Div<T> for Vec2<T>
+where
+    T: Num + Div<Output = T> + Copy,
+{
+    type Output = Self;
+
+    fn div(self, scalar: T) -> Self::Output {
+        if scalar.is_zero() {
+            panic!("Cannot divide Vec2 by zero");
+        }
+        Self {
+            x: self.x / scalar,
+            y: self.y / scalar,
+        }
+    }
+}
+
+impl<T> DivAssign<T> for Vec2<T>
+where
+    T: Num + Copy + DivAssign,
+{
+    fn div_assign(&mut self, scalar: T) {
+        if scalar.is_zero() {
+            panic!("Cannot divide Vec2 by zero");
+        }
+        self.x /= scalar;
+        self.y /= scalar;
+    }
+}
+
 impl TryFrom<Vec2<isize>> for Vec2<usize> {
     type Error = ConversionError;
 
     fn try_from(value: Vec2<isize>) -> Result<Self, Self::Error> {
-        let x = usize::try_from(value.x).map_err(|_| ConversionError)?;
-        let y = usize::try_from(value.y).map_err(|_| ConversionError)?;
+        let x = value.x.to_usize().ok_or(ConversionError)?;
+        let y = value.y.to_usize().ok_or(ConversionError)?;
         Ok(Vec2::new(x, y))
     }
 }
@@ -113,8 +180,28 @@ impl TryFrom<&Vec2<isize>> for Vec2<usize> {
     type Error = ConversionError;
 
     fn try_from(value: &Vec2<isize>) -> Result<Self, Self::Error> {
-        let x = usize::try_from(value.x).map_err(|_| ConversionError)?;
-        let y = usize::try_from(value.y).map_err(|_| ConversionError)?;
+        let x = value.x.to_usize().ok_or(ConversionError)?;
+        let y = value.y.to_usize().ok_or(ConversionError)?;
+        Ok(Vec2::new(x, y))
+    }
+}
+
+impl TryFrom<Vec2<i32>> for Vec2<usize> {
+    type Error = ConversionError;
+
+    fn try_from(value: Vec2<i32>) -> Result<Self, Self::Error> {
+        let x = value.x.to_usize().ok_or(ConversionError)?;
+        let y = value.y.to_usize().ok_or(ConversionError)?;
+        Ok(Vec2::new(x, y))
+    }
+}
+
+impl TryFrom<&Vec2<i32>> for Vec2<usize> {
+    type Error = ConversionError;
+
+    fn try_from(value: &Vec2<i32>) -> Result<Self, Self::Error> {
+        let x = value.x.to_usize().ok_or(ConversionError)?;
+        let y = value.y.to_usize().ok_or(ConversionError)?;
         Ok(Vec2::new(x, y))
     }
 }
@@ -151,3 +238,15 @@ impl<T: Num + Hash> Hash for Vec2<T> {
 }
 
 impl<T: Num> Eq for Vec2<T> {}
+
+impl<T: fmt::Display> fmt::Display for Vec2<T> {
+    fn fmt(&self, f: &mut fmt::Formatter<'_>) -> fmt::Result {
+        write!(f, "({}, {})", self.x, self.y)
+    }
+}
+
+impl Debug for ConversionError {
+    fn fmt(&self, f: &mut std::fmt::Formatter<'_>) -> std::fmt::Result {
+        writeln!(f, "Conversion cannot be done !")
+    }
+}

@@ -12,17 +12,23 @@ pub struct Matrix<T> {
     data: Vec<T>,
 }
 
-impl<T> Index<Vec2<usize>> for Matrix<T> {
+impl<T, Idx> Index<Vec2<Idx>> for Matrix<T>
+where
+    Idx: Into<usize> + Copy,
+{
     type Output = T;
 
-    fn index(&self, index: Vec2<usize>) -> &Self::Output {
-        &self.data[index.y * self.cols + index.x]
+    fn index(&self, index: Vec2<Idx>) -> &Self::Output {
+        &self.data[index.y.into() * self.cols + index.x.into()]
     }
 }
 
-impl<T> IndexMut<Vec2<usize>> for Matrix<T> {
-    fn index_mut(&mut self, index: Vec2<usize>) -> &mut T {
-        &mut self.data[index.y * self.cols + index.x]
+impl<T, Idx> IndexMut<Vec2<Idx>> for Matrix<T>
+where
+    Idx: Into<usize> + Copy,
+{
+    fn index_mut(&mut self, index: Vec2<Idx>) -> &mut T {
+        &mut self.data[index.y.into() * self.cols + index.x.into()]
     }
 }
 

@@ -55,7 +55,7 @@ impl Grid {
                 if !self.grid.contains(&pos) {
                     continue;
                 }
-                let tile = self.grid[Vec2::<usize>::try_from(pos).unwrap()];
+                let tile = self.grid[Vec2::<usize>::try_from(&pos).unwrap()];
                 let not_seen = energized.insert(pos);
 
                 if tile == Tile::Empty || tile.matching_direction(&ray.direction) {

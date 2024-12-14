@@ -130,7 +130,7 @@ impl Parsed {
                 for part in parts {
                     let cp = Part::from(el);
                     if cp == *part {
-                        positions.push(Vec2::<usize>::try_from(new_pos).unwrap())
+                        positions.push(Vec2::<usize>::try_from(&new_pos).unwrap())
                     }
                 }
             }

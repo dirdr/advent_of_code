@@ -63,7 +63,7 @@ impl Plateform {
                         if np != '.' {
                             continue;
                         }
-                        self.plateform[Vec2::<usize>::try_from(new_position).unwrap()] = 'O';
+                        self.plateform[Vec2::<usize>::try_from(&new_position).unwrap()] = 'O';
                         self.plateform[pos] = '.';
                         moved = true;
                     }

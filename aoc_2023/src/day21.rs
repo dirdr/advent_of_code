@@ -76,7 +76,7 @@ fn next_tiles(map: &Matrix<char>, pos: Vec2<usize>) -> Vec<Vec2<usize>> {
         let next_pos = Vec2::<isize>::from(pos) + direction.to_offset();
         let next_tile = map.get(&next_pos);
         if let Some(next_tile) = next_tile {
-            let next_pos = Vec2::<usize>::try_from(next_pos).unwrap();
+            let next_pos = Vec2::<usize>::try_from(&next_pos).unwrap();
             if *next_tile != '#' {
                 possible.push(next_pos);
             }
@@ -106,7 +106,7 @@ fn scale_pos(pos: Vec2<isize>) -> Vec2<usize> {
         (SIZE as isize + mapped.x % SIZE as isize) % SIZE as isize,
         (SIZE as isize + mapped.y % SIZE as isize) % SIZE as isize,
     );
-    Vec2::<usize>::try_from(mapped).unwrap()
+    Vec2::<usize>::try_from(&mapped).unwrap()
 }
 
 #[cfg(test)]

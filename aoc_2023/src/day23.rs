@@ -165,7 +165,7 @@ impl Map {
             let next_pos = Vec2::<isize>::from(*pos) + direction.to_offset();
             let next_tile = self.map.get(&next_pos);
             if let Some(next_tile) = next_tile {
-                let next_pos = Vec2::<usize>::try_from(next_pos).unwrap();
+                let next_pos = Vec2::<usize>::try_from(&next_pos).unwrap();
                 if *next_tile != '#' {
                     possible.push(next_pos);
                 }

@@ -88,7 +88,7 @@ impl Map {
                     continue;
                 }
 
-                if let Ok(n) = Vec2::<usize>::try_from(next) {
+                if let Ok(n) = Vec2::<usize>::try_from(&next) {
                     if !visited.contains(&n) {
                         visited.insert(n);
                         queue.push_back(n);
