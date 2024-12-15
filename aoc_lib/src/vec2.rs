@@ -239,6 +239,12 @@ impl<T: Num + Hash> Hash for Vec2<T> {
 
 impl<T: Num> Eq for Vec2<T> {}
 
+impl Vec2<isize> {
+    pub fn to_usize_unchecked(self) -> Vec2<usize> {
+        Vec2::new(self.x as usize, self.y as usize)
+    }
+}
+
 impl<T: fmt::Display> fmt::Display for Vec2<T> {
     fn fmt(&self, f: &mut fmt::Formatter<'_>) -> fmt::Result {
         write!(f, "({}, {})", self.x, self.y)

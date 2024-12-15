@@ -1,5 +1,5 @@
 use std::{
-    fmt::Debug,
+    fmt::{Debug, Display},
     ops::{Index, IndexMut},
 };
 
@@ -139,6 +139,18 @@ impl<T: Debug> Debug for Matrix<T> {
         for y in 0..self.rows {
             for x in 0..self.cols {
                 write!(f, "{:?}", self[Vec2::new(x, y)])?;
+            }
+            writeln!(f)?;
+        }
+        Ok(())
+    }
+}
+
+impl<T: Display> Display for Matrix<T> {
+    fn fmt(&self, f: &mut std::fmt::Formatter<'_>) -> std::fmt::Result {
+        for y in 0..self.rows {
+            for x in 0..self.cols {
+                write!(f, "{}", self[Vec2::new(x, y)])?;
             }
             writeln!(f)?;
         }
