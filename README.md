@@ -1,11 +1,9 @@
 # Advent Of Code 🎁 in rust 🦀
 
 ## About
-
 This is my attempt to solve AOC problems in Rust!
 
 ## Setup
-
 If you want to run the solutions with your input, please provide them with the following name `day_{day_number}.txt`
 in the folder ./resources/{year}/real/
 
@@ -32,7 +30,7 @@ cargo test -p aoc_2024
 ```
 
 ## Progress
-
+### 2023
 [![aoc_2023](https://github.com/dirdr/advent_of_code/actions/workflows/aoc_2023.yml/badge.svg)](https://github.com/dirdr/advent_of_code/actions/workflows/aoc_2023.yml)
 
 - [Day 01: Trebuchet?!](aoc_2023/src/day01.rs) ⭐⭐
@@ -61,6 +59,7 @@ cargo test -p aoc_2024
 - [Day 24: Never Tell Me The Odds](aoc_2023/src/day24.rs) ⭐⭐
 - [Day 25: Snowverload](aoc_2023/src/day25.rs) ⭐⭐
 
+### 2024
 [![aoc_2024](https://github.com/dirdr/advent_of_code/actions/workflows/aoc_2024.yml/badge.svg)](https://github.com/dirdr/advent_of_code/actions/workflows/aoc_2024.yml)
 
 - [Day 01: Historian Hysteria](aoc_2024/src/day01.rs) ⭐⭐
@@ -77,6 +76,7 @@ cargo test -p aoc_2024
 - [Day 12: Garden Groups](aoc_2024/src/day12.rs) ⭐⭐
 - [Day 13: Claw Contraption](aoc_2024/src/day13.rs) ⭐⭐
 - [Day 14: Restroom Redoubt](aoc_2024/src/day14.rs) ⭐⭐
+- [Day 15: Warehouse Woes](aoc_2024/src/day15.rs) ⭐⭐
 
 ## Thanks
 
