@@ -2,9 +2,8 @@ use std::fmt::{self, Debug};
 use std::ops::{Add, AddAssign, Div, DivAssign, Mul, MulAssign, Sub, SubAssign};
 
 use num::{Num, Signed, ToPrimitive};
-use std::hash::Hash;
 
-#[derive(Copy, Clone, Debug)]
+#[derive(Copy, Clone, Debug, Hash, PartialEq, Eq)]
 pub struct Vec2<T> {
     pub x: T,
     pub y: T,
@@ -223,21 +222,6 @@ impl From<Vec2<usize>> for Vec2<f64> {
         Vec2::new(value.x as f64, value.y as f64)
     }
 }
-
-impl<T: Num> PartialEq for Vec2<T> {
-    fn eq(&self, other: &Self) -> bool {
-        self.x == other.x && self.y == other.y
-    }
-}
-
-impl<T: Num + Hash> Hash for Vec2<T> {
-    fn hash<H: std::hash::Hasher>(&self, state: &mut H) {
-        self.x.hash(state);
-        self.y.hash(state);
-    }
-}
-
-impl<T: Num> Eq for Vec2<T> {}
 
 impl Vec2<isize> {
     pub fn to_usize_unchecked(self) -> Vec2<usize> {

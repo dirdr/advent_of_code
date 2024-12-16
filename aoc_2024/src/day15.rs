@@ -225,7 +225,6 @@ impl Expanded {
         if value == Tile::Empty {
             return true;
         }
-
         let other_box = match value {
             Tile::BoxLeft => pos + Vec2::new(1, 0),
             Tile::BoxRight => pos - Vec2::new(1, 0),
@@ -233,7 +232,6 @@ impl Expanded {
         };
 
         let other_value = self.map[other_box];
-
         let new_a = dir.advance(pos.into());
         let new_b = dir.advance(other_box.into());
 
