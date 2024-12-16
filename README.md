@@ -77,7 +77,7 @@ cargo test -p aoc_2024
 - [Day 13: Claw Contraption](aoc_2024/src/day13.rs) ⭐⭐
 - [Day 14: Restroom Redoubt](aoc_2024/src/day14.rs) ⭐⭐
 - [Day 15: Warehouse Woes](aoc_2024/src/day15.rs) ⭐⭐
+- [Day 16: Reindeer Maze](aoc_2024/src/day16.rs) ⭐⭐
 
 ## Thanks
-
-The project structure, as well as solutions when I struggle to find them on my own, is inspired by [this repository](https://github.com/Basicprogrammer10/advent-of-code).
+The project structure, as well as solutions when I struggle to find them on my own, are inspired by [this repository](https://github.com/Basicprogrammer10/advent-of-code).
