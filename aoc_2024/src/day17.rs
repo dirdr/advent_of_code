@@ -9,7 +9,7 @@ impl Solution for Day17 {
     }
 
     fn part_b(&self, input: &[String]) -> Answer {
-        Answer::Unimplemented
+        Computer::from_input(input).part_b().into()
     }
 }
 
@@ -75,6 +75,10 @@ impl Computer {
             .map(|token| token.to_string())
             .collect::<Vec<String>>()
             .join(",")
+    }
+
+    fn part_b(mut self) -> u64 {
+        todo!()
     }
 }
 
@@ -221,6 +225,6 @@ mod test {
         let input =
             input::read_file(&format!("{}day_17_test.txt", crate::FILES_PREFIX_TEST)).unwrap();
         let answer = Day17.part_b(&input);
-        assert_eq!(<i32 as Into<Answer>>::into(31), answer);
+        assert_eq!(<i32 as Into<Answer>>::into(117440), answer);
     }
 }
