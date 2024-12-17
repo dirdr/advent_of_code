@@ -3,15 +3,23 @@ use std::fmt::Display;
 #[derive(Debug, PartialEq)]
 pub enum Answer {
     Number(usize),
+    String(String),
     Unimplemented,
 }
 
 impl Display for Answer {
     fn fmt(&self, f: &mut std::fmt::Formatter<'_>) -> std::fmt::Result {
         match self {
-            Answer::Number(num) => write!(f, "{num}"),
+            Answer::Number(num) => write!(f, "{}", num),
+            Answer::String(string) => write!(f, "{}", string),
             Answer::Unimplemented => write!(f, "The answer is not implemented"),
         }
+    }
+}
+
+impl From<String> for Answer {
+    fn from(value: String) -> Self {
+        Self::String(value)
     }
 }
 
