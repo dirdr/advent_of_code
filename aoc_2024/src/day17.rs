@@ -23,13 +23,13 @@ impl Solution for Day17 {
         let mut to_visit = VecDeque::from([(program_len, 0)]);
 
         while let Some((pos, a)) = to_visit.pop_front() {
-            for i in 0..8 {
-                let n_a = a * 8 + i;
-                let out = computer.run_program(&mut [n_a, 0, 0]);
+            for i in 0..0b111u64 {
+                let new_a = (a << 3) | i;
+                let out = computer.run_program(&mut [new_a, 0, 0]);
                 if out == computer.raw_program[pos - 1..] {
-                    to_visit.push_back((pos - 1, n_a));
+                    to_visit.push_back((pos - 1, new_a));
                     if out.len() == program_len {
-                        return n_a.into();
+                        return new_a.into();
                     }
                 }
             }

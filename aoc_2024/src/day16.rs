@@ -3,6 +3,7 @@ use std::{
     cmp::Ordering,
     collections::{BinaryHeap, HashMap, HashSet},
     fmt::{Display, Write},
+    u64,
 };
 
 use aoc_lib::{
