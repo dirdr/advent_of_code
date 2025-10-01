@@ -83,6 +83,16 @@ cargo test -p aoc_2024
 - [Day 14: Restroom Redoubt](aoc_2024/src/day14.rs) ⭐⭐
 - [Day 15: Warehouse Woes](aoc_2024/src/day15.rs) ⭐⭐
 - [Day 16: Reindeer Maze](aoc_2024/src/day16.rs) ⭐⭐
+- [Day 17: Chronospatial Computer](aoc_2024/src/day17.rs) ⭐⭐
+- [Day 18: RAM Run](aoc_2024/src/day18.rs) ⭐⭐
+- [Day 19: Linen Layout](aoc_2024/src/day19.rs) ⭐⭐
+- [Day 20: Race Condition](aoc_2024/src/day20.rs) 
+- [Day 21: Keypad Conundrum](aoc_2024/src/day21.rs) 
+- [Day 22: Monkey Market](aoc_2024/src/day22.rs) 
+- [Day 23: LAN Party](aoc_2024/src/day23.rs) 
+- [Day 24: Crossed Wires](aoc_2024/src/day24.rs) 
+- [Day 25: Code Chronicle](aoc_2024/src/day25.rs) 
+
 
 ## Thanks
 
