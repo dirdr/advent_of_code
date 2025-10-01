@@ -18,6 +18,7 @@ pub mod day15;
 pub mod day16;
 pub mod day17;
 pub mod day18;
+pub mod day19;
 
 pub const ALL: &[&dyn Solution] = &[
     &day01::Day1,
@@ -38,6 +39,7 @@ pub const ALL: &[&dyn Solution] = &[
     &day16::Day16,
     &day17::Day17,
     &day18::Day18,
+    &day19::Day19,
 ];
 
 pub const FILES_PREFIX_TEST: &str = "resources/test/";
