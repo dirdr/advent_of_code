@@ -24,12 +24,12 @@ impl Solution for Day17 {
 
         while let Some((pos, a)) = to_visit.pop_front() {
             for i in 0..0b111u64 {
-                let new_a = (a << 3) | i;
-                let out = computer.run_program(&mut [new_a, 0, 0]);
+                let n_a = (a << 3) | i;
+                let out = computer.run_program(&mut [n_a, 0, 0]);
                 if out == computer.raw_program[pos - 1..] {
-                    to_visit.push_back((pos - 1, new_a));
+                    to_visit.push_back((pos - 1, n_a));
                     if out.len() == program_len {
-                        return new_a.into();
+                        return n_a.into();
                     }
                 }
             }
@@ -145,7 +145,7 @@ impl Instruction {
             5 => 1 << registers[1],
             6 => 1 << registers[2],
             other => {
-                println!("Unsupported operand: {}", other);
+                println!("Unsupported operand: {other}");
                 return;
             }
         };
@@ -164,7 +164,7 @@ impl Instruction {
             5 => registers[1],
             6 => registers[2],
             other => {
-                println!("Unsupported operand: {}", other);
+                println!("Unsupported operand: {other}");
                 return;
             }
         } % 8;
@@ -188,7 +188,7 @@ impl Instruction {
             5 => registers[1],
             6 => registers[2],
             other => {
-                println!("Unsupported operand: {}", other);
+                println!("Unsupported operand: {other}");
                 return;
             }
         };
@@ -202,7 +202,7 @@ impl Instruction {
             5 => 1 << registers[1],
             6 => 1 << registers[2],
             other => {
-                println!("Unsupported operand: {}", other);
+                println!("Unsupported operand: {other}");
                 return;
             }
         };
@@ -217,7 +217,7 @@ impl Instruction {
             5 => 1 << registers[1],
             6 => 1 << registers[2],
             other => {
-                println!("Unsupported operand: {}", other);
+                println!("Unsupported operand: {other}");
                 return;
             }
         };

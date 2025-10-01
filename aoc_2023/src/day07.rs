@@ -94,17 +94,17 @@ impl Hand {
         for card in self.cards.iter() {
             count[*card as usize] += 1;
         }
-        if count.iter().any(|&card| card == 5) {
+        if count.contains(&5) {
             HandType::FiveOfAKind
-        } else if count.iter().any(|&card| card == 4) {
+        } else if count.contains(&4) {
             HandType::FourOfAKind
-        } else if count.iter().any(|&card| card == 3) && count.iter().any(|&card| card == 2) {
+        } else if count.contains(&3) && count.contains(&2) {
             HandType::FullHouse
-        } else if count.iter().any(|&card| card == 3) {
+        } else if count.contains(&3) {
             HandType::ThreeOfAKind
         } else if count.iter().filter(|&&card| card == 2).count() == 2 {
             HandType::TwoPair
-        } else if count.iter().any(|&card| card == 2) {
+        } else if count.contains(&2) {
             HandType::OnePair
         } else {
             HandType::HighCard

@@ -1,6 +1,6 @@
 use std::{
-    collections::{BinaryHeap, HashSet},
-    fmt::Display,
+    collections::{BinaryHeap, HashMap, HashSet},
+    fmt::{self, Debug, Display},
 };
 
 use aoc_lib::{
@@ -19,11 +19,20 @@ impl Solution for Day18 {
         let mut memory_space = MemorySpace::from_input(input, 71);
         memory_space.simulate_bytes_fall(1024);
         let answer = memory_space.walk();
-        answer.len().into()
+        (answer.unwrap().len() - 1).into()
     }
 
     fn part_b(&self, input: &[String]) -> Answer {
-        Answer::Unimplemented
+        let mut memory_space = MemorySpace::from_input(input, 71);
+        for fallen in 1..i32::MAX {
+            memory_space.simulate_bytes_fall(fallen as usize);
+            let path = memory_space.walk();
+            if path.is_none() {
+                let blocking = memory_space.get_last_byte_fall(fallen as usize);
+                return format!("{},{}", blocking.x, blocking.y).into();
+            }
+        }
+        unreachable!()
     }
 }
 
@@ -38,6 +47,15 @@ enum Tile {
     Empty,
 }
 
+impl Debug for Tile {
+    fn fmt(&self, f: &mut fmt::Formatter<'_>) -> fmt::Result {
+        match self {
+            Self::Corrupted => write!(f, "#"),
+            Self::Empty => write!(f, "."),
+        }
+    }
+}
+
 #[derive(Copy, Clone, Eq, PartialEq)]
 struct State {
     cost: usize,
@@ -45,24 +63,33 @@ struct State {
 }
 
 impl MemorySpace {
-    fn walk(&self) -> Vec<Vec2<usize>> {
-        let mut path = vec![];
+    fn walk(&self) -> Option<Vec<Vec2<usize>>> {
         let mut pq = BinaryHeap::new();
         pq.push(State {
             cost: 0,
             pos: Vec2::new(0, 0),
         });
         let mut visited = HashSet::new();
+        let mut parent: HashMap<Vec2<usize>, Vec2<usize>> = HashMap::new();
+        let goal = Vec2::new(self.map.cols - 1, self.map.rows - 1);
+
         while let Some(State { cost, pos }) = pq.pop() {
-            if visited.contains(&(pos, cost)) {
+            if visited.contains(&pos) {
                 continue;
             }
-            path.push(pos);
-            visited.insert((pos, cost));
-            println!("{}", pos);
-            if pos == Vec2::new(self.map.cols - 1, self.map.rows - 1) {
-                return path;
+            visited.insert(pos);
+
+            if pos == goal {
+                let mut path = vec![pos];
+                let mut current = pos;
+                while let Some(&p) = parent.get(&current) {
+                    path.push(p);
+                    current = p;
+                }
+                path.reverse();
+                return Some(path);
             }
+
             for dir in Cardinal::all_clockwise() {
                 let next = dir.advance(pos.into());
                 let Some(&front) = self.map.get(&next) else {
@@ -71,18 +98,18 @@ impl MemorySpace {
                 if front == Tile::Corrupted {
                     continue;
                 }
-
                 let next = Vec2::<usize>::try_from(next).unwrap();
-                if visited.contains(&(next, cost + 1)) {
+                if visited.contains(&next) {
                     continue;
                 }
+                parent.insert(next, pos);
                 pq.push(State {
                     cost: cost + 1,
                     pos: next,
                 });
             }
         }
-        unreachable!()
+        None
     }
 
     fn from_input(input: &[String], space_size: usize) -> Self {
@@ -93,7 +120,6 @@ impl MemorySpace {
                 (x.parse::<usize>().unwrap(), y.parse::<usize>().unwrap())
             })
             .collect::<Vec<_>>();
-        let mut size = bytes_fall_predictions.iter().max().unwrap();
         Self {
             map: Matrix::new(space_size, space_size, Tile::Empty),
             bytes_fall_predictions,
@@ -105,6 +131,16 @@ impl MemorySpace {
             let pos = Vec2::new(x, y);
             self.map[pos] = Tile::Corrupted;
         }
+    }
+
+    fn get_last_byte_fall(&self, amount: usize) -> Vec2<usize> {
+        let last: &(usize, usize) = self
+            .bytes_fall_predictions
+            .iter()
+            .take(amount)
+            .next_back()
+            .unwrap();
+        Vec2::new(last.0, last.1)
     }
 }
 
@@ -131,11 +167,9 @@ impl Display for Tile {
 
 #[cfg(test)]
 mod test {
-    use aoc_lib::{answer::Answer, input, solution::Solution};
+    use aoc_lib::{answer::Answer, input};
 
     use crate::day18::MemorySpace;
-
-    use super::Day18;
 
     #[test]
     fn test_a() {
@@ -143,15 +177,28 @@ mod test {
             input::read_file(&format!("{}day_18_test.txt", crate::FILES_PREFIX_TEST)).unwrap();
         let mut memory_space = MemorySpace::from_input(&input, 7);
         memory_space.simulate_bytes_fall(12);
-        let answer = memory_space.walk().len().into();
-        assert_eq!(<i32 as Into<Answer>>::into(22), answer);
+        let answer = memory_space.walk();
+        assert_eq!(
+            <i32 as Into<Answer>>::into(22),
+            (answer.unwrap().len() - 1).into()
+        );
     }
 
     #[test]
     fn test_b() {
         let input =
             input::read_file(&format!("{}day_18_test.txt", crate::FILES_PREFIX_TEST)).unwrap();
-        let answer = Day18.part_b(&input);
-        assert_eq!(<i32 as Into<Answer>>::into(31), answer);
+        for fallen in 1..i32::MAX {
+            let mut memory_space = MemorySpace::from_input(&input, 7);
+            memory_space.simulate_bytes_fall(fallen as usize);
+            let path = memory_space.walk();
+            if path.is_none() {
+                let blocking = memory_space.get_last_byte_fall(fallen as usize);
+                let answer = format!("{},{}", blocking.x, blocking.y).into();
+                assert_eq!(<String as Into<Answer>>::into("6,1".to_string()), answer);
+                return;
+            }
+        }
+        unreachable!()
     }
 }

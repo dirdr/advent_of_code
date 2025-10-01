@@ -10,8 +10,8 @@ pub enum Answer {
 impl Display for Answer {
     fn fmt(&self, f: &mut std::fmt::Formatter<'_>) -> std::fmt::Result {
         match self {
-            Answer::Number(num) => write!(f, "{}", num),
-            Answer::String(string) => write!(f, "{}", string),
+            Answer::Number(num) => write!(f, "{num}"),
+            Answer::String(string) => write!(f, "{string}"),
             Answer::Unimplemented => write!(f, "The answer is not implemented"),
         }
     }

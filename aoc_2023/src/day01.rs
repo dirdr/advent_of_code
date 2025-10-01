@@ -9,7 +9,7 @@ impl Solution for Day1 {
             .map(|l| {
                 let mut digits = l.chars().filter_map(|c| c.to_digit(10));
                 let first = digits.next().unwrap();
-                let last = digits.last().unwrap_or(first);
+                let last = digits.next_back().unwrap_or(first);
                 first * 10 + last
             })
             .sum();
