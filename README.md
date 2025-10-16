@@ -61,7 +61,7 @@ cargo test -p aoc_2024
 - [Day 22: Sand Slabs](aoc_2023/src/day22.rs) ⭐⭐
 - [Day 23: A Long Walk](aoc_2023/src/day23.rs) ⭐⭐
 - [Day 24: Never Tell Me The Odds](aoc_2023/src/day24.rs) ⭐⭐
-- [Day 25: Snowverload](aoc_2023/src/day25.rs) ⭐⭐
+- [Day 25: Snowverload](aoc_2023/src/day25.rs) ⭐
 
 ### 2024
 
@@ -90,8 +90,8 @@ cargo test -p aoc_2024
 - [Day 21: Keypad Conundrum](aoc_2024/src/day21.rs) ⭐⭐
 - [Day 22: Monkey Market](aoc_2024/src/day22.rs) ⭐⭐
 - [Day 23: LAN Party](aoc_2024/src/day23.rs) ⭐⭐
-- [Day 24: Crossed Wires](aoc_2024/src/day24.rs)
-- [Day 25: Code Chronicle](aoc_2024/src/day25.rs)
+- [Day 24: Crossed Wires](aoc_2024/src/day24.rs) ⭐⭐
+- [Day 25: Code Chronicle](aoc_2024/src/day25.rs) ⭐
 
 ## Thanks
 
