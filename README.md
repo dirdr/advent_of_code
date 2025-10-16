@@ -88,8 +88,8 @@ cargo test -p aoc_2024
 - [Day 19: Linen Layout](aoc_2024/src/day19.rs) ⭐⭐
 - [Day 20: Race Condition](aoc_2024/src/day20.rs) ⭐⭐
 - [Day 21: Keypad Conundrum](aoc_2024/src/day21.rs) ⭐⭐
-- [Day 22: Monkey Market](aoc_2024/src/day22.rs)
-- [Day 23: LAN Party](aoc_2024/src/day23.rs)
+- [Day 22: Monkey Market](aoc_2024/src/day22.rs) ⭐⭐
+- [Day 23: LAN Party](aoc_2024/src/day23.rs) ⭐⭐
 - [Day 24: Crossed Wires](aoc_2024/src/day24.rs)
 - [Day 25: Code Chronicle](aoc_2024/src/day25.rs)
 
