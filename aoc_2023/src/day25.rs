@@ -19,7 +19,6 @@ impl Solution for Day25 {
         ((total - side.len()) * side.len()).into()
     }
 
-    #[allow(dead_code)]
     fn part_b(&self, _: &[String]) -> Answer {
         Answer::Unimplemented
     }
