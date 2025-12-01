@@ -10,6 +10,7 @@ members = ["aoc_lib", "aoc_2023", "aoc_2024", "aoc_2025"]
 aoc_lib = { path = "aoc_lib" }
 aoc_2023 = { path = "aoc_2023" }
 aoc_2024 = { path = "aoc_2024" }
+aoc_2025 = { path = "aoc_2025" }
 
 anyhow = "1.0.93"
 clap = { version = "4.5.21", features = ["derive"] }

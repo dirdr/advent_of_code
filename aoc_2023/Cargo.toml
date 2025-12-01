@@ -5,10 +5,10 @@ edition = "2021"
 
 [dependencies]
 aoc_lib = { path = "../aoc_lib" }
-itertools = "0.13.0"
+itertools = "0.14.0"
 num-traits = "0.2.19"
-petgraph = "0.6.5"
+petgraph = "0.8.3"
 polynomial = "0.2.6"
 rayon = "1.10.0"
-rustworkx-core = "0.15.1"
+rustworkx-core = "0.17.1"
 #z3 = { version = "0.12.1", features = ["static-link-z3"] }

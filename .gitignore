@@ -13,8 +13,7 @@ Cargo.lock
 # MSVC Windows builds of rustc generate these, which store debugging information
 *.pdb
 
-aoc_2023/resources/real/
-aoc_2024/resources/real/
+real/
 
 .DS_Store
 .z3-trace
