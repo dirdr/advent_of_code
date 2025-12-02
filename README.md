@@ -65,7 +65,7 @@ cargo test -p aoc_2024
 
 ### 2024
 
-[![aoc_2024](https://github.com/dirdr/advent_of_code/actions/workflows/aoc_2024.yml/badge.svg)](https://github.com/dirdr/advent_of_code/actions/workflows/aoc_2024.yml)
+[![aoc_2024](https://github.com/dirdr/advent_of_code/actions/workflows/aoc_2024.yml/badge.svg)](https://github.com/dirdr/advent_of_code/actions/workflows/aoc_2024.yaml)
 
 - [Day 01: Historian Hysteria](aoc_2024/src/day01.rs) ⭐⭐
 - [Day 02: Red-Nosed Reports](aoc_2024/src/day02.rs) ⭐⭐
@@ -93,6 +93,14 @@ cargo test -p aoc_2024
 - [Day 24: Crossed Wires](aoc_2024/src/day24.rs) ⭐⭐
 - [Day 25: Code Chronicle](aoc_2024/src/day25.rs) ⭐
 
+### 2025
+
+[![aoc_2024](https://github.com/dirdr/advent_of_code/actions/workflows/aoc_2024.yml/badge.svg)](https://github.com/dirdr/advent_of_code/actions/workflows/aoc_2024.yaml)
+
+- [Day 01: Secret Entrance](aoc_2025/src/day01.rs) ⭐⭐
+- [Day 02: Gift Shop](aoc_2025/src/day02.rs) ⭐⭐
+
 ## Thanks
 
-The project structure, as well as solutions when I struggle to find them on my own, are inspired by [this repository](https://github.com/Basicprogrammer10/advent-of-code).
+The project structure, as well as solutions when I struggle to find them on my own,
+are inspired by [this repository](https://github.com/Basicprogrammer10/advent-of-code).
