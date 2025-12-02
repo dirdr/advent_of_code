@@ -23,7 +23,7 @@ impl Solution for Day14 {
         let mut seen = HashMap::new();
         for i in 0..ITERATIONS {
             if let Some(previous) = seen.get(&plateform) {
-                if (ITERATIONS - i) % (i - previous) == 0 {
+                if (ITERATIONS - i).is_multiple_of(i - previous) {
                     return plateform.score().into();
                 }
             }
@@ -63,7 +63,7 @@ impl Plateform {
                         if np != '.' {
                             continue;
                         }
-                        self.plateform[Vec2::<usize>::try_from(&new_position).unwrap()] = 'O';
+                        self.plateform[Vec2::<usize>::try_from(new_position).unwrap()] = 'O';
                         self.plateform[pos] = '.';
                         moved = true;
                     }

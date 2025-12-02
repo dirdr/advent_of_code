@@ -138,7 +138,7 @@ fn important_connections<'a>(modules: &HashMap<&'a str, Module>) -> Vec<&'a str>
         .collect::<Vec<_>>()
 }
 
-fn parse(input: &[String]) -> HashMap<&str, Module> {
+fn parse(input: &[String]) -> HashMap<&str, Module<'_>> {
     let mut modules = HashMap::new();
     for line in input {
         let (source, dest) = line.split_once("->").unwrap();
@@ -208,33 +208,24 @@ mod test {
 
     #[test]
     fn test_a_1() {
-        let input = input::read_file(&format!(
-            "{}day_20_a_test_1.txt",
-            crate::FILES_PREFIX_TEST
-        ))
-        .unwrap();
+        let input =
+            input::read_file(&format!("{}day_20_a_test_1.txt", crate::FILES_PREFIX_TEST)).unwrap();
         let answer = Day20.part_a(&input);
         assert_eq!(<i32 as Into<Answer>>::into(32000000), answer);
     }
 
     #[test]
     fn test_a_2() {
-        let input = input::read_file(&format!(
-            "{}day_20_a_test_2.txt",
-            crate::FILES_PREFIX_TEST
-        ))
-        .unwrap();
+        let input =
+            input::read_file(&format!("{}day_20_a_test_2.txt", crate::FILES_PREFIX_TEST)).unwrap();
         let answer = Day20.part_a(&input);
         assert_eq!(<i32 as Into<Answer>>::into(11687500), answer);
     }
 
     #[test]
     fn test_b() {
-        let input = input::read_file(&format!(
-            "{}day_20_b_test.txt",
-            crate::FILES_PREFIX_TEST
-        ))
-        .unwrap();
+        let input =
+            input::read_file(&format!("{}day_20_b_test.txt", crate::FILES_PREFIX_TEST)).unwrap();
         let answer = Day20.part_b(&input);
         assert_eq!(<i64 as Into<Answer>>::into(228282646835717), answer);
     }

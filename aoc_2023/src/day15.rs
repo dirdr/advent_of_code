@@ -53,7 +53,7 @@ enum Operation<'a> {
     Equal(&'a str, usize),
 }
 
-fn parse(input: &[String]) -> InitializationSequence {
+fn parse(input: &[String]) -> InitializationSequence<'_> {
     let mut sequences = vec![];
     let raws = input[0].split(',').collect::<Vec<&str>>();
     for raw_op in raws {
