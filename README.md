@@ -95,7 +95,7 @@ cargo test -p aoc_2024
 
 ### 2025
 
-[![aoc_2024](https://github.com/dirdr/advent_of_code/actions/workflows/aoc_2024.yaml/badge.svg)](https://github.com/dirdr/advent_of_code/actions/workflows/aoc_2024.yaml)
+[![aoc_2025](https://github.com/dirdr/advent_of_code/actions/workflows/aoc_2024.yaml/badge.svg)](https://github.com/dirdr/advent_of_code/actions/workflows/aoc_2024.yaml)
 
 - [Day 01: Secret Entrance](aoc_2025/src/day01.rs) ⭐⭐
 - [Day 02: Gift Shop](aoc_2025/src/day02.rs) ⭐⭐
