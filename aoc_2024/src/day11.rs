@@ -60,7 +60,7 @@ impl Stones {
 
 fn split_stone(stone: u64) -> Option<(u64, u64)> {
     let num_digit = (stone as f64).log10() as u32 + 1;
-    if num_digit % 2 != 0 {
+    if !num_digit.is_multiple_of(2) {
         return None;
     }
     let temp = 10u64.pow(num_digit / 2);
