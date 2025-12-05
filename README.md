@@ -100,6 +100,8 @@ cargo test -p aoc_2024
 - [Day 01: Secret Entrance](aoc_2025/src/day01.rs) ⭐⭐
 - [Day 02: Gift Shop](aoc_2025/src/day02.rs) ⭐⭐
 - [Day 03: Lobby](aoc_2025/src/day03.rs) ⭐⭐
+- [Day 04: Printing Department](aoc_2025/src/day04.rs) ⭐⭐
+- [Day 05: Cafetaria](aoc_2025/src/day05.rs) ⭐⭐
 
 ## Thanks
 
