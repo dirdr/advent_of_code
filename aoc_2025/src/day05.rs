@@ -38,7 +38,6 @@ impl Database {
     fn merge_intervals(&self) -> Vec<RangeInclusive<usize>> {
         let mut sorted = self.ranges.clone();
         sorted.sort_unstable_by(|a, b| a.start().cmp(b.start()));
-        println!("{:?}", sorted);
         let mut merged = vec![sorted[0].clone()];
         for curr in sorted.iter().skip(1) {
             let last = merged.last().unwrap();
