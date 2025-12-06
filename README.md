@@ -102,6 +102,7 @@ cargo test -p aoc_2024
 - [Day 03: Lobby](aoc_2025/src/day03.rs) ⭐⭐
 - [Day 04: Printing Department](aoc_2025/src/day04.rs) ⭐⭐
 - [Day 05: Cafetaria](aoc_2025/src/day05.rs) ⭐⭐
+- [Day 06: Trash Compactor](aoc_2025/src/day06.rs) ⭐⭐
 
 ## Thanks
 
