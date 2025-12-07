@@ -200,22 +200,16 @@ mod test {
 
     #[test]
     fn test_a() {
-        let input = input::read_file(&format!(
-            "{}day_19_test.txt",
-            crate::FILES_PREFIX_TEST
-        ))
-        .unwrap();
+        let input =
+            input::read_file(&format!("{}day_19_test.txt", crate::FILES_PREFIX_TEST)).unwrap();
         let answer = Day19.part_a(&input);
         assert_eq!(<i32 as Into<Answer>>::into(19114), answer);
     }
 
     #[test]
     fn test_b() {
-        let input = input::read_file(&format!(
-            "{}day_19_test.txt",
-            crate::FILES_PREFIX_TEST
-        ))
-        .unwrap();
+        let input =
+            input::read_file(&format!("{}day_19_test.txt", crate::FILES_PREFIX_TEST)).unwrap();
         let answer = Day19.part_b(&input);
         assert_eq!(<i64 as Into<Answer>>::into(167409079868000), answer);
     }
