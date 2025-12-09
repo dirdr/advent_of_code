@@ -12,9 +12,10 @@ in the folder ./resources/{year}/real/
 ## Run
 
 ```sh
-Usage: advent_of_code_2023 --day <DAY>
+Usage: cargo run --release --year <YEAR> --day <DAY>
 
 Options:
+  -y, --year <YEAR>
   -d, --day <DAY>
   -h, --help       Print help
 ```
@@ -22,16 +23,10 @@ Options:
 ## Test
 
 ```sh
-cargo test -p <crate>
+cargo test --workspace
 ```
 
-for example, to test the 2024 crate:
-
-```sh
-cargo test -p aoc_2024
-```
-
-## Progress
+## Editions
 
 ### 2023
 
@@ -104,8 +99,14 @@ cargo test -p aoc_2024
 - [Day 05: Cafetaria](aoc_2025/src/day05.rs) ⭐⭐
 - [Day 06: Trash Compactor](aoc_2025/src/day06.rs) ⭐⭐
 - [Day 07: Laboratories](aoc_2025/src/day07.rs) ⭐⭐
+- [Day 08: Playground](aoc_2025/src/day08.rs) ⭐⭐
+- [Day 09: Movie Theater](aoc_2025/src/day09.rs) ⭐⭐
 
 ## Thanks
 
 The project structure, as well as solutions when I struggle to find them on my own,
 are inspired by [this repository](https://github.com/Basicprogrammer10/advent-of-code).
+
+```
+
+```
