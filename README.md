@@ -106,7 +106,3 @@ cargo test --workspace
 
 The project structure, as well as solutions when I struggle to find them on my own,
 are inspired by [this repository](https://github.com/Basicprogrammer10/advent-of-code).
-
-```
-
-```
