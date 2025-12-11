@@ -9,7 +9,7 @@ impl Solution for Day10 {
         let machines = parse(input);
         let mut total = 0;
         for machine in &machines {
-            total += machine.correct_lights_fewest_press();
+            total += machine.fewest_lights_presses();
         }
         total.into()
     }
@@ -39,7 +39,7 @@ struct Machine {
 }
 
 impl Machine {
-    fn correct_lights_fewest_press(&self) -> usize {
+    fn fewest_lights_presses(&self) -> usize {
         fn backtrack(buttons: &[u16], curr: u16, target: u16, idx: usize, press: usize) -> usize {
             if curr == target {
                 return press;
