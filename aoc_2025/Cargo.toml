@@ -3,7 +3,10 @@ name = "aoc_2025"
 version = "0.1.0"
 edition = "2024"
 
+[features]
+good_lp_solver = ["good_lp"]
+
 [dependencies]
 aoc_lib = { path = "../aoc_lib" }
 rayon = "1.11.0"
-good_lp = { version = "1.14.2" }
+good_lp = { version = "1.14.2", optional = true }

@@ -101,6 +101,8 @@ cargo test --workspace
 - [Day 07: Laboratories](aoc_2025/src/day07.rs) ⭐⭐
 - [Day 08: Playground](aoc_2025/src/day08.rs) ⭐⭐
 - [Day 09: Movie Theater](aoc_2025/src/day09.rs) ⭐⭐
+- [Day 10: Factory](aoc_2025/src/day10.rs) ⭐⭐
+- [Day 11: Reactor](aoc_2025/src/day11.rs) ⭐⭐
 
 ## Thanks
 
