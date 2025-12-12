@@ -103,6 +103,7 @@ cargo test --workspace
 - [Day 09: Movie Theater](aoc_2025/src/day09.rs) ⭐⭐
 - [Day 10: Factory](aoc_2025/src/day10.rs) ⭐⭐
 - [Day 11: Reactor](aoc_2025/src/day11.rs) ⭐⭐
+- [Day 12: Christmas Tree Farm](aoc_2025/src/day12.rs) ⭐⭐
 
 ## Thanks
 
